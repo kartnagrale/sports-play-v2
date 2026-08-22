@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Entity
-@Table(name = "matches")
+@Table(name = "matches", indexes = @Index(name = "idx_match_championship", columnList = "championship_id"))
 @Getter
 @Setter
 @NoArgsConstructor
@@ -19,6 +19,10 @@ public class Match {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "championship_id", nullable = false)
+    private Championship championship;
 
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "team_a_id", nullable = false)
@@ -53,4 +57,9 @@ public class Match {
     private List<MatchFormat> formats = new ArrayList<>();
 
     private String venue;
+
+    /** Sport-defined score/period/set data, kept as JSON text for portability across PostgreSQL and H2. */
+    @Column(name = "score_data", columnDefinition = "text")
+    @Builder.Default
+    private String scoreData = "{}";
 }

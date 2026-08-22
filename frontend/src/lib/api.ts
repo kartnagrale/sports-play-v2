@@ -16,20 +16,59 @@ export const api: AxiosInstance = axios.create({
   withCredentials: true,
 });
 
+api.interceptors.request.use((config) => {
+  if (typeof window === "undefined") return config;
+  const viewerToken = localStorage.getItem("sports_viewer_token");
+  if (viewerToken) config.headers.Authorization = `Bearer ${viewerToken}`;
+  const championshipId = localStorage.getItem("sports_active_championship");
+  const auctionId = localStorage.getItem("sports_active_auction");
+  if (!championshipId || !config.url) return config;
+  const u = config.url;
+  if (auctionId && u === "/auction/state") config.url = `/championships/${championshipId}/auctions/${auctionId}/state`;
+  else if (auctionId && u === "/auction/bid") config.url = `/championships/${championshipId}/auctions/${auctionId}/bid`;
+  else if (auctionId && u.startsWith("/admin/auction/")) config.url = `/championships/${championshipId}/auctions/${auctionId}/admin/${u.slice(15)}`;
+  else if (u === "/teams" || u.startsWith("/teams/")) config.url = `/championships/${championshipId}${u}`;
+  else if (u === "/players" || u.startsWith("/players/")) config.url = `/championships/${championshipId}${u}`;
+  else if ((config.method || "get").toLowerCase() === "get" && (u === "/matches" || u.startsWith("/matches/"))) config.url = `/championships/${championshipId}${u}`;
+  else if (u === "/admin/matches" || u.startsWith("/admin/matches/")) config.url = `/championships/${championshipId}${u}`;
+  else if (u === "/analytics" || u.startsWith("/analytics/")) config.url = `/championships/${championshipId}${u}`;
+  return config;
+});
+
 api.interceptors.response.use(
   (r) => r,
   (err) => Promise.reject(err)
 );
 
-export type Role = "ADMIN" | "TEAM_OWNER" | "VIEWER";
+export type Role = "SUPER_ADMIN" | "USER";
+export type ChampionshipRole = "CHAMPIONSHIP_ADMIN" | "TEAM_CAPTAIN" | "SPECTATOR";
+export type NavigationRole = "SUPER_ADMIN" | ChampionshipRole;
+
+export interface ScreenDto {
+  code: string;
+  label: string;
+  path: string;
+  icon: string;
+  section: string;
+  displayOrder: number;
+}
+
+export interface NavigationResponse {
+  role: NavigationRole;
+  screens: ScreenDto[];
+}
+
+export interface ChampionshipDto {
+  id: string; name: string; sportType: string; roomCode: string; isPublic: boolean;
+  status: "DRAFT" | "ACTIVE" | "COMPLETED" | "ARCHIVED"; defaultAuctionId?: string | null;
+}
 
 export interface UserInfo {
   id: string;
   email: string;
   fullName: string;
   role: Role;
-  teamId?: string | null;
-  teamName?: string | null;
+  championships: { championshipId: string; role: ChampionshipRole; teamId?: string | null }[];
 }
 
 export interface TeamDto {

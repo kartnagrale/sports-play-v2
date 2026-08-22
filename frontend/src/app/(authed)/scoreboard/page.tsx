@@ -85,7 +85,7 @@ export default function ScoreboardPage() {
           <button className="btn btn-ghost" onClick={() => load(penaltiesOn)} data-testid="refresh-standings">
             <RefreshCw size={14} /> Refresh
           </button>
-          {user?.role === "ADMIN" && (
+          {user?.role === "SUPER_ADMIN" && (
             <>
               <button className="btn btn-cyan" disabled={populating} onClick={populate} data-testid="populate-demo">
                 <Sparkles size={14} /> {populating ? "Loading…" : "Populate demo data"}
@@ -104,7 +104,7 @@ export default function ScoreboardPage() {
           <div>
             <div className="h-heading text-lg">No completed matches yet</div>
             <div className="text-white/50 text-sm mt-1">
-              {user?.role === "ADMIN"
+              {user?.role === "SUPER_ADMIN"
                 ? "Click 'Populate demo data' above to auto-seed squads and simulate a full round-robin."
                 : "Waiting for the tournament to begin. Standings appear once matches are played."}
             </div>

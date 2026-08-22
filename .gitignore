@@ -21,12 +21,15 @@ node_modules/
 
 # Next.js
 /.next/
+/frontend/.next/
+/frontend/.next-local/
 /out/
 next-env.d.ts
 *.tsbuildinfo
 
 # Production builds
 /build
+backend/target/
 dist/
 dist
 

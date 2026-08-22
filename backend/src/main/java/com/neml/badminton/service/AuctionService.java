@@ -163,15 +163,6 @@ public class AuctionService {
         Team team = teamRepository.findById(req.teamId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Team not found"));
 
-        // Role-based scoping: TEAM_OWNER can only bid for their own team
-        User caller = currentUser();
-        if (caller != null && caller.getRole() == Role.TEAM_OWNER) {
-            if (caller.getTeam() == null || !caller.getTeam().getId().equals(team.getId())) {
-                throw new ResponseStatusException(HttpStatus.FORBIDDEN,
-                        "Team owners can only bid on behalf of their own team");
-            }
-        }
-
         BigDecimal amount = req.amount();
         BigDecimal currentHighest = bidRepository.findFirstByPlayerAndActiveTrueOrderByCreatedAtDesc(player)
                 .map(Bid::getAmount).orElse(player.getBasePrice().subtract(BigDecimal.valueOf(bidIncrement)));
@@ -412,7 +403,6 @@ public class AuctionService {
      * Runs every second. If auction is RUNNING and the current player's bid deadline has passed,
      * auto-mark unsold (or auto-sell to highest bidder if there is one).
      */
-    @Scheduled(fixedRate = 1000L)
     @Transactional
     public void timerSweep() {
         AuctionState s;

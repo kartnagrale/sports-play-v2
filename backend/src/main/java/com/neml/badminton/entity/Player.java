@@ -7,7 +7,10 @@ import java.math.BigDecimal;
 import java.util.UUID;
 
 @Entity
-@Table(name = "players")
+@Table(name = "players", indexes = {
+        @Index(name = "idx_player_championship", columnList = "championship_id"),
+        @Index(name = "idx_player_auction", columnList = "auction_id")
+})
 @Getter
 @Setter
 @NoArgsConstructor
@@ -17,6 +20,14 @@ public class Player {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "championship_id", nullable = false)
+    private Championship championship;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "auction_id")
+    private Auction auction;
 
     @Column(nullable = false)
     private String fullName;
@@ -38,10 +49,6 @@ public class Player {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "team_id")
     private Team team;
-
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", unique = true)
-    private User user;
 
     private String skillLevel;
 

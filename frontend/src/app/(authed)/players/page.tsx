@@ -10,7 +10,7 @@ import PlayerDialog from "@/components/players/PlayerDialog";
 
 export default function PlayersPage() {
   const { user } = useAuth();
-  const isAdmin = user?.role === "ADMIN";
+  const isAdmin = user?.role === "SUPER_ADMIN";
   const [players, setPlayers] = useState<PlayerDto[]>([]);
   const [loading, setLoading] = useState(true);
   

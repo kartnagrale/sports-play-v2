@@ -34,6 +34,12 @@ export const useAuth = create<AuthState>((set) => ({
     }
   },
   login: async (email, password) => {
+    // Viewer authorization takes precedence over cookies in the API interceptor.
+    // Clear it before staff login so the newly authenticated role is used.
+    if (typeof window !== "undefined") {
+      localStorage.removeItem("sports_viewer_token");
+      localStorage.removeItem("sports_viewer_championship");
+    }
     // Server sets the httpOnly cookie on success; we still get the user info back.
     const { data } = await api.post<{ token: string; user: UserInfo }>("/auth/login", { email, password });
     set({ user: data.user });
@@ -45,6 +51,12 @@ export const useAuth = create<AuthState>((set) => ({
     } catch (error) {
       // Failure to reach server shouldn't block client-side logout.
       console.warn("Server logout failed, clearing local state anyway:", error);
+    }
+    if (typeof window !== "undefined") {
+      localStorage.removeItem("sports_viewer_token");
+      localStorage.removeItem("sports_viewer_championship");
+      localStorage.removeItem("sports_active_championship");
+      localStorage.removeItem("sports_active_auction");
     }
     set({ user: null });
   },

@@ -27,15 +27,17 @@ public class MatchService {
     private final TeamRepository teamRepository;
     private final PlayerRepository playerRepository;
     private final AuctionBroadcaster broadcaster;
+    private final ChampionshipRepository championshipRepository;
 
     public MatchService(MatchRepository matchRepository, MatchFormatRepository formatRepository,
                         TeamRepository teamRepository, PlayerRepository playerRepository,
-                        AuctionBroadcaster broadcaster) {
+                        AuctionBroadcaster broadcaster, ChampionshipRepository championshipRepository) {
         this.matchRepository = matchRepository;
         this.formatRepository = formatRepository;
         this.teamRepository = teamRepository;
         this.playerRepository = playerRepository;
         this.broadcaster = broadcaster;
+        this.championshipRepository = championshipRepository;
     }
 
     public List<MatchDto> listAll() {
@@ -45,6 +47,57 @@ public class MatchService {
     public MatchDto get(UUID id) {
         return MatchDto.from(matchRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Match not found")));
+    }
+
+    public List<MatchDto> listAll(UUID championshipId) {
+        return matchRepository.findAllByChampionshipIdOrderByMatchNumberAsc(championshipId).stream().map(MatchDto::from).toList();
+    }
+
+    public MatchDto get(UUID championshipId, UUID id) {
+        return MatchDto.from(matchRepository.findByIdAndChampionshipId(id, championshipId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Match not found")));
+    }
+
+    @Transactional
+    public MatchDto create(UUID championshipId, CreateMatchRequest req) {
+        Championship championship = championshipRepository.findById(championshipId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Championship not found"));
+        Team a = teamRepository.findByIdAndChampionshipId(req.teamAId(), championshipId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Team A not found"));
+        Team b = teamRepository.findByIdAndChampionshipId(req.teamBId(), championshipId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Team B not found"));
+        if (a.getId().equals(b.getId())) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Teams must be different");
+        int nextNumber = matchRepository.findAllByChampionshipIdOrderByMatchNumberAsc(championshipId).size() + 1;
+        Match m = matchRepository.save(Match.builder().championship(championship).teamA(a).teamB(b)
+                .scheduledAt(req.scheduledAt()).status(MatchStatus.SCHEDULED).teamAFormatWins(0).teamBFormatWins(0)
+                .matchNumber(nextNumber).venue(req.venue()).build());
+        if ("BADMINTON".equalsIgnoreCase(championship.getSportType())) {
+            for (int i=0;i<FIVE_FORMATS.length;i++) {
+                MatchFormat f=formatRepository.save(MatchFormat.builder().match(m).formatType(FIVE_FORMATS[i])
+                        .formatOrder(i+1).scoreA(0).scoreB(0).completed(false).build()); m.getFormats().add(f);
+            }
+        }
+        broadcaster.broadcastMatch(championshipId,"MATCH_CREATED",Map.of("matchId",m.getId().toString()));
+        return MatchDto.from(matchRepository.findByIdAndChampionshipId(m.getId(),championshipId).orElseThrow());
+    }
+
+    public MatchDto assignPlayers(UUID championshipId, UUID formatId, AssignPlayersRequest req) {
+        verifyFormatTenant(championshipId, formatId); return assignPlayers(formatId, req);
+    }
+    public MatchDto reportFormatResult(UUID championshipId, UUID formatId, ReportFormatResultRequest req) {
+        verifyFormatTenant(championshipId, formatId); return reportFormatResult(formatId, req);
+    }
+    public MatchDto reportLiveScore(UUID championshipId, UUID formatId, ReportFormatResultRequest req) {
+        verifyFormatTenant(championshipId, formatId); return reportLiveScore(formatId, req);
+    }
+    @Transactional public void deleteMatch(UUID championshipId, UUID id) {
+        matchRepository.findByIdAndChampionshipId(id,championshipId).orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND,"Match not found"));
+        matchRepository.deleteById(id); broadcaster.broadcastMatch(championshipId,"MATCH_DELETED",Map.of("id",id.toString()));
+    }
+    private void verifyFormatTenant(UUID championshipId, UUID formatId) {
+        MatchFormat f=formatRepository.findById(formatId).orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND,"Format not found"));
+        if(f.getMatch().getChampionship()==null||!f.getMatch().getChampionship().getId().equals(championshipId))
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Format not found");
     }
 
     @Transactional

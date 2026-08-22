@@ -12,4 +12,6 @@ public interface BidRepository extends JpaRepository<Bid, UUID> {
     List<Bid> findAllByPlayerOrderByCreatedAtDesc(Player player);
     Optional<Bid> findFirstByPlayerAndActiveTrueOrderByCreatedAtDesc(Player player);
     List<Bid> findTop50ByOrderByCreatedAtDesc();
+    List<Bid> findTop50ByAuctionIdOrderByCreatedAtDesc(UUID auctionId);
+    Optional<Bid> findFirstByAuctionIdAndPlayerAndActiveTrueOrderByCreatedAtDesc(UUID auctionId, Player player);
 }

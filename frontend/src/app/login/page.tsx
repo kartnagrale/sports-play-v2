@@ -38,14 +38,13 @@ export default function LoginPage() {
 
   const quickFill = (role: "admin" | "owner" | "viewer") => {
     if (role === "admin") {
-      setEmail("admin@neml.com");
+      setEmail("admin@sports.local");
       setPassword("Admin@123");
     } else if (role === "owner") {
-      setEmail("owner-mum@neml.com");
-      setPassword("Owner@123");
+      setEmail("cricket.admin@sports.local");
+      setPassword("Admin@123");
     } else {
-      setEmail("viewer@neml.com");
-      setPassword("Viewer@123");
+      router.push("/room/join");
     }
   };
 
@@ -131,7 +130,7 @@ export default function LoginPage() {
             <div className="label-cap">Sign in</div>
             <h1 className="h-heading text-4xl font-bold mt-2">Access Control</h1>
             <p className="opacity-50 mt-2 text-sm">
-              Enter your credentials. Roles: Admin, Team Owner, or Viewer.
+              Sign in as platform staff, or join a room for read-only viewer access.
             </p>
           </div>
 
@@ -201,7 +200,7 @@ export default function LoginPage() {
               </button>
             </div>
             <p className="opacity-40 text-xs mt-3 leading-relaxed">
-              admin@neml.com / Admin@123 · owner-mum@neml.com / Owner@123 · viewer@neml.com / Viewer@123
+              admin@sports.local · cricket.admin@sports.local · captain@sports.local / Admin@123 · viewer room CRIC-8821 / cricket123
             </p>
           </div>
         </div>

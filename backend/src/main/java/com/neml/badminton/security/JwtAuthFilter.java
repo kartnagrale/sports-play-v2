@@ -58,6 +58,17 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         if (token != null) {
             try {
                 Claims claims = jwtService.parse(token);
+                if ("viewer".equals(claims.get("token_type", String.class))) {
+                    UUID championshipId = UUID.fromString(claims.get("championship_id", String.class));
+                    UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
+                            new ViewerPrincipal(championshipId), null,
+                            List.of(new SimpleGrantedAuthority("ROLE_VIEWER"),
+                                    new SimpleGrantedAuthority("CHAMPIONSHIP_" + championshipId)));
+                    auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    SecurityContextHolder.getContext().setAuthentication(auth);
+                    filterChain.doFilter(request, response);
+                    return;
+                }
                 String userId = claims.getSubject();
                 Optional<User> userOpt = userRepository.findById(UUID.fromString(userId));
                 if (userOpt.isPresent() && SecurityContextHolder.getContext().getAuthentication() == null) {

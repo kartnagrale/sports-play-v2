@@ -6,9 +6,10 @@ import lombok.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.math.BigDecimal;
 
 @Entity
-@Table(name = "tournament_settings")
+@Table(name = "tournament_settings", uniqueConstraints = @UniqueConstraint(columnNames = "championship_id"))
 @Getter
 @Setter
 @NoArgsConstructor
@@ -19,10 +20,28 @@ public class TournamentSettings {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "championship_id", nullable = false, unique = true)
+    private Championship championship;
+
     @Column(nullable = false)
+    @Builder.Default
+    private Integer maxSquadSize = 12;
+
+    @Column(nullable = false, precision = 19, scale = 2)
+    @Builder.Default
+    private BigDecimal purseLimit = new BigDecimal("1000000000");
+
+    @Column(name = "custom_rules", columnDefinition = "text")
+    @Builder.Default
+    private String customRules = "{}";
+
+    @Column(nullable = false)
+    @Builder.Default
     private Integer pointsPerWin = 3;
 
     @Column(nullable = false)
+    @Builder.Default
     private Integer penaltyPerUnplayed = 2;
 
     @ElementCollection(fetch = FetchType.EAGER)

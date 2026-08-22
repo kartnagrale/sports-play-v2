@@ -11,4 +11,7 @@ import java.util.UUID;
 public interface MatchRepository extends JpaRepository<Match, UUID> {
     List<Match> findAllByOrderByMatchNumberAsc();
     List<Match> findAllByStatusOrderByScheduledAtAsc(MatchStatus status);
+    List<Match> findAllByChampionshipIdOrderByMatchNumberAsc(UUID championshipId);
+    List<Match> findAllByChampionshipIdAndStatusOrderByScheduledAtAsc(UUID championshipId, MatchStatus status);
+    java.util.Optional<Match> findByIdAndChampionshipId(UUID id, UUID championshipId);
 }

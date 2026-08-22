@@ -6,7 +6,7 @@ import lombok.*;
 import java.util.UUID;
 
 @Entity
-@Table(name = "auction_state")
+@Table(name = "auction_state", uniqueConstraints = @UniqueConstraint(columnNames = "auction_id"))
 @Getter
 @Setter
 @NoArgsConstructor
@@ -16,6 +16,10 @@ public class AuctionState {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
+
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "auction_id", nullable = false, unique = true)
+    private Auction auction;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

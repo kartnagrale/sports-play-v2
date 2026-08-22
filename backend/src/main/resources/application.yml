@@ -5,12 +5,11 @@ server:
 
 spring:
   application:
-    name: neml-badminton
+    name: universal-sports-platform
   datasource:
-    url: ${DB_URL:jdbc:postgresql://uat-auction-hyd-cluster.cluster-cqiizwijdxjv.ap-south-2.rds.amazonaws.com:1521/postgres?currentSchema=play_neml&lock_timeout=300&idle_in_transaction_session_timeout=10000}
-    username: ${DB_USER:participant-masterv2_replica}
-    password: ${DB_PASSWORD:password123}
-    driver-class-name: org.postgresql.Driver
+    url: ${DB_URL:jdbc:h2:mem:sports_platform;MODE=PostgreSQL;DB_CLOSE_DELAY=-1;DATABASE_TO_LOWER=TRUE}
+    username: ${DB_USER:sa}
+    password: ${DB_PASSWORD:}
     hikari:
       max-lifetime: 600000
       keepalive-time: 300000
@@ -21,7 +20,6 @@ spring:
     show-sql: false
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
   jackson:
     serialization:

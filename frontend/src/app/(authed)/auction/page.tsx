@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { api, AuctionStateDto, PlayerDto } from "@/lib/api";
 import { createAuctionSocket } from "@/lib/ws";
 import { useAuth } from "@/lib/auth";
+import { useChampionship } from "@/lib/championship";
 import { formatCr } from "@/lib/format";
 import { toast } from "sonner";
 import type { Client } from "@stomp/stompjs";
@@ -18,6 +19,7 @@ const BID_INCREMENT = 500_000;
 
 export default function AuctionPage() {
   const { user } = useAuth();
+  const { active } = useChampionship();
   const [state, setState] = useState<AuctionStateDto | null>(null);
   const [flash, setFlash] = useState(false);
   const [availablePlayers, setAvailablePlayers] = useState<PlayerDto[]>([]);
@@ -26,8 +28,9 @@ export default function AuctionPage() {
   const [soldCelebration, setSoldCelebration] = useState<{ playerName: string; teamName: string; price: number } | null>(null);
   const [now, setNow] = useState(() => Date.now());
   const clientRef = useRef<Client | null>(null);
-  const isAdmin = user?.role === "ADMIN";
-  const isOwner = user?.role === "TEAM_OWNER";
+  const access = user?.championships?.find((c) => c.championshipId === active?.id);
+  const isAdmin = user?.role === "SUPER_ADMIN" || access?.role === "CHAMPIONSHIP_ADMIN";
+  const isOwner = access?.role === "TEAM_CAPTAIN";
 
   // Countdown ticker
   useEffect(() => {
@@ -106,7 +109,7 @@ export default function AuctionPage() {
   const canQuickBid = (teamId: string) => {
     if (state?.status !== "RUNNING" || !state.currentPlayer) return false;
     if (isAdmin) return true;
-    if (isOwner && user?.teamId === teamId) return true;
+    if (isOwner && access?.teamId === teamId) return true;
     return false;
   };
 
@@ -145,7 +148,7 @@ export default function AuctionPage() {
                 minNext={minNext}
                 current={current}
                 teams={state.teams}
-                userTeamId={user?.teamId}
+                userTeamId={access?.teamId}
                 isAdmin={isAdmin}
               />
             )}

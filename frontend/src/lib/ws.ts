@@ -3,6 +3,7 @@
 import { Client, IMessage } from "@stomp/stompjs";
 import SockJS from "sockjs-client";
 import { WS_BASE } from "./api";
+import { activeTenant, VIEWER_TOKEN_KEY } from "./championship";
 
 export type AuctionEvent = {
   type: string;
@@ -11,11 +12,15 @@ export type AuctionEvent = {
 };
 
 export function createAuctionSocket(onEvent: (evt: AuctionEvent) => void): Client {
-  return createSocket("/topic/auction", onEvent);
+  const { championshipId, auctionId } = activeTenant();
+  if (!championshipId || !auctionId) throw new Error("Select a championship before connecting to its auction");
+  return createSocket(`/topic/championship/${championshipId}/auction/${auctionId}`, onEvent);
 }
 
 export function createMatchSocket(onEvent: (evt: AuctionEvent) => void): Client {
-  return createSocket("/topic/matches", onEvent);
+  const { championshipId } = activeTenant();
+  if (!championshipId) throw new Error("Select a championship before connecting to matches");
+  return createSocket(`/topic/championship/${championshipId}/matches`, onEvent);
 }
 
 function createSocket(topic: string, onEvent: (evt: AuctionEvent) => void): Client {
@@ -25,6 +30,8 @@ function createSocket(topic: string, onEvent: (evt: AuctionEvent) => void): Clie
     heartbeatIncoming: 10000,
     heartbeatOutgoing: 10000,
     debug: () => {},
+    connectHeaders: typeof window !== "undefined" && localStorage.getItem(VIEWER_TOKEN_KEY)
+      ? { Authorization: `Bearer ${localStorage.getItem(VIEWER_TOKEN_KEY)}` } : {},
   });
   client.onConnect = () => {
     client.subscribe(topic, (msg: IMessage) => {

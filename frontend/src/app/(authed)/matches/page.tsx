@@ -3,13 +3,14 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { api, MatchDto, MatchFormatDto, PlayerDto, TeamDto, FORMAT_LABEL, FORMAT_SHORT } from "@/lib/api";
 import { createMatchSocket } from "@/lib/ws";
-import { useAuth } from "@/lib/auth";
+import { useNavigation } from "@/lib/navigation";
 import { toast } from "sonner";
 import type { Client } from "@stomp/stompjs";
 import { Calendar, Circle, Check, ChevronRight, Plus, Minus, Trash2, RefreshCw } from "lucide-react";
 
 export default function MatchesPage() {
-  const { user } = useAuth();
+  const role = useNavigation((state) => state.role);
+  const isAdmin = role === "SUPER_ADMIN" || role === "CHAMPIONSHIP_ADMIN";
   const [matches, setMatches] = useState<MatchDto[]>([]);
   const [teams, setTeams] = useState<TeamDto[]>([]);
   const [players, setPlayers] = useState<PlayerDto[]>([]);
@@ -74,7 +75,7 @@ export default function MatchesPage() {
             <RefreshCw size={14} className={loading ? "animate-spin" : ""} />
             Refresh
           </button>
-          {user?.role === "ADMIN" && (
+          {isAdmin && (
             <button className="btn btn-primary" onClick={() => setShowCreate(true)} data-testid="new-match-btn">
               <Plus size={14} /> New Match
             </button>
@@ -87,7 +88,7 @@ export default function MatchesPage() {
           <div className="label-cap">Empty</div>
           <div className="h-heading text-2xl mt-2 text-white/60">No matches scheduled yet</div>
           <p className="text-white/40 mt-2">
-            {user?.role === "ADMIN" ? "Click 'New Match' or use 'Populate demo data' on the Scoreboard to seed a round-robin." : "Fixtures will appear here once scheduled."}
+            {isAdmin ? "Click 'New Match' to schedule a fixture." : "Fixtures will appear here once scheduled."}
           </p>
         </div>
       )}
@@ -128,7 +129,7 @@ export default function MatchesPage() {
         {/* Detail */}
         {selected && (
           <div className="col-span-12 lg:col-span-8 space-y-4">
-            <MatchHeader match={selected} isAdmin={user?.role === "ADMIN"} onDelete={async () => {
+            <MatchHeader match={selected} isAdmin={isAdmin} onDelete={async () => {
               if (!confirm("Delete this match?")) return;
               await api.delete(`/admin/matches/${selected.id}`);
               toast.success("Match deleted");
@@ -142,7 +143,7 @@ export default function MatchesPage() {
                   match={selected}
                   format={f}
                   players={players}
-                  isAdmin={user?.role === "ADMIN"}
+                  isAdmin={isAdmin}
                   onChange={load}
                 />
               ))}

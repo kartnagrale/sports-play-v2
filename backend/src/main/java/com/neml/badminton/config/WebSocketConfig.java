@@ -5,10 +5,13 @@ import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBr
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
+import org.springframework.messaging.simp.config.ChannelRegistration;
 
 @Configuration
 @EnableWebSocketMessageBroker
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
+    private final StompAuthorizationInterceptor authorizationInterceptor;
+    public WebSocketConfig(StompAuthorizationInterceptor authorizationInterceptor) { this.authorizationInterceptor = authorizationInterceptor; }
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
@@ -23,5 +26,9 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
                 .withSockJS();
         registry.addEndpoint("/ws")
                 .setAllowedOriginPatterns("*");
+    }
+
+    @Override public void configureClientInboundChannel(ChannelRegistration registration) {
+        registration.interceptors(authorizationInterceptor);
     }
 }

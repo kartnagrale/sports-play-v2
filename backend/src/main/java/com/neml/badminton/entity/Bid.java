@@ -8,7 +8,7 @@ import java.time.Instant;
 import java.util.UUID;
 
 @Entity
-@Table(name = "bids")
+@Table(name = "bids", indexes = @Index(name = "idx_bid_auction", columnList = "auction_id"))
 @Getter
 @Setter
 @NoArgsConstructor
@@ -18,6 +18,10 @@ public class Bid {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "auction_id", nullable = false)
+    private Auction auction;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "player_id", nullable = false)
