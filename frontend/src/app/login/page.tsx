@@ -38,11 +38,13 @@ export default function LoginPage() {
 
   const quickFill = (role: "admin" | "owner" | "viewer") => {
     if (role === "admin") {
-      setEmail("admin@sports.local");
-      setPassword("Admin@123");
+      setEmail("admin@neml.com");
+      setPassword("");
+      toast.info("Enter the super administrator password");
     } else if (role === "owner") {
-      setEmail("cricket.admin@sports.local");
-      setPassword("Admin@123");
+      setEmail("owner-blr@neml.com");
+      setPassword("");
+      toast.info("Enter the team owner's database password");
     } else {
       router.push("/room/join");
     }
@@ -200,7 +202,7 @@ export default function LoginPage() {
               </button>
             </div>
             <p className="opacity-40 text-xs mt-3 leading-relaxed">
-              admin@sports.local · cricket.admin@sports.local · captain@sports.local / Admin@123 · viewer room CRIC-8821 / cricket123
+              Super Admin: admin@neml.com · Public viewer room: NEML-BAD1
             </p>
           </div>
         </div>

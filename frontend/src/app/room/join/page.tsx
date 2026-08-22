@@ -21,7 +21,7 @@ export default function JoinRoomPage() {
       <div className="label-cap">Read-only access</div><h1 className="h-heading text-4xl mt-2">Join a championship</h1>
       <p className="text-white/50 text-sm mt-3">Follow the auction, teams, fixtures, and live scores without an account.</p>
       <form onSubmit={submit} className="space-y-4 mt-8">
-        <label className="block"><span className="label-cap block mb-2">Room code</span><input className="input uppercase" value={roomCode} onChange={e=>setRoomCode(e.target.value)} placeholder="CRIC-8821" required /></label>
+        <label className="block"><span className="label-cap block mb-2">Room code</span><input className="input uppercase" value={roomCode} onChange={e=>setRoomCode(e.target.value)} placeholder="NEML-BAD1" required /></label>
         <label className="block"><span className="label-cap block mb-2">Passcode</span><div className="relative"><LockKeyhole className="absolute left-3 top-3 text-white/30" size={16}/><input className="input pl-10" type="password" value={passcode} onChange={e=>setPasscode(e.target.value)} placeholder="Room passcode" /></div></label>
         <button className="btn btn-primary w-full justify-center py-3" disabled={loading}><Eye size={16}/>{loading?"Joining…":"Enter viewer room"}</button>
       </form>
