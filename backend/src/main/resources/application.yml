@@ -50,17 +50,6 @@ app:
     expiration-ms: 86400000
   cors:
     allowed-origins: ${CORS_ORIGINS:*}
-  auction:
-    base-price: 2000000
-    team-purse: 1000000000
-    squad-size: 12
-    min-female: 3
-    min-male: 9
-    bid-increment: 500000
-    timer-seconds: 30
-    star-player-threshold: 50000000
-    max-star-players: 4
-
 logging:
   level:
     org.springframework.security: INFO

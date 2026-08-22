@@ -3,16 +3,12 @@
 import { useCallback, useEffect, useState } from "react";
 import { api, StandingDto } from "@/lib/api";
 import { createMatchSocket } from "@/lib/ws";
-import { toast } from "sonner";
-import { useAuth } from "@/lib/auth";
-import { Trophy, RefreshCw, AlertTriangle, Sparkles, AlertCircle, ChevronDown, Trash2 } from "lucide-react";
+import { Trophy, RefreshCw, AlertTriangle } from "lucide-react";
 
 export default function ScoreboardPage() {
-  const { user } = useAuth();
   const [rows, setRows] = useState<StandingDto[]>([]);
   const [penaltiesOn, setPenaltiesOn] = useState(true);
   const [loading, setLoading] = useState(true);
-  const [populating, setPopulating] = useState(false);
 
   const load = useCallback(async (penalties: boolean) => {
     setLoading(true);
@@ -34,30 +30,6 @@ export default function ScoreboardPage() {
     const client = createMatchSocket(() => { load(penaltiesOn); });
     return () => { client.deactivate(); };
   }, [load, penaltiesOn]);
-
-  const populate = async () => {
-    setPopulating(true);
-    try {
-      const { data } = await api.post("/admin/demo/populate?autoPlay=6");
-      toast.success(`Seeded ${data.matches} matches, auto-played ${data.autoPlayed}`);
-      await load(penaltiesOn);
-    } catch (e: any) {
-      toast.error(e?.response?.data?.message || "Populate failed");
-    } finally {
-      setPopulating(false);
-    }
-  };
-
-  const resetAll = async () => {
-    if (!confirm("Are you sure? This will permanently delete ALL players, bids, matches, and reset team purses to their initial values! Teams and Users will be preserved.")) return;
-    try {
-      await api.post("/admin/players/reset-all");
-      toast.success("All data reset successfully. Please refresh the page.");
-      await load(penaltiesOn);
-    } catch (e: any) {
-      toast.error(e?.response?.data?.message || "Reset failed");
-    }
-  };
 
   const anyPenalty = rows.some((r) => r.penalty > 0);
   const noMatches = rows.every((r) => r.played === 0);
@@ -85,16 +57,6 @@ export default function ScoreboardPage() {
           <button className="btn btn-ghost" onClick={() => load(penaltiesOn)} data-testid="refresh-standings">
             <RefreshCw size={14} /> Refresh
           </button>
-          {user?.role === "SUPER_ADMIN" && (
-            <>
-              <button className="btn btn-cyan" disabled={populating} onClick={populate} data-testid="populate-demo">
-                <Sparkles size={14} /> {populating ? "Loading…" : "Populate demo data"}
-              </button>
-              <button className="btn bg-danger/20 text-danger hover:bg-danger/30" onClick={resetAll} data-testid="reset-data">
-                <Trash2 size={14} /> Reset Data
-              </button>
-            </>
-          )}
         </div>
       </div>
 
@@ -104,9 +66,7 @@ export default function ScoreboardPage() {
           <div>
             <div className="h-heading text-lg">No completed matches yet</div>
             <div className="text-white/50 text-sm mt-1">
-              {user?.role === "SUPER_ADMIN"
-                ? "Click 'Populate demo data' above to auto-seed squads and simulate a full round-robin."
-                : "Waiting for the tournament to begin. Standings appear once matches are played."}
+              Waiting for the tournament to begin. Standings appear once matches are completed.
             </div>
           </div>
         </div>

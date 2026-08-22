@@ -10,12 +10,12 @@ import type { LucideIcon } from "lucide-react";
 import {
   LayoutDashboard, Gavel, Trophy, CalendarDays, UsersRound, UserRound,
   ChartNoAxesCombined, Medal, Sparkles, History, Bell, LogOut,
-  ShieldCheck, Menu, X, ChevronRight, Circle, Radio,
+  ShieldCheck, Menu, X, ChevronRight, Circle, Radio, Rocket, Settings2, UserCog,
 } from "lucide-react";
 
 const ICONS: Record<string, LucideIcon> = {
   LayoutDashboard, Gavel, Trophy, CalendarDays, UsersRound, UserRound,
-  ChartNoAxesCombined, Medal, Sparkles, History, Bell, ShieldCheck,
+  ChartNoAxesCombined, Medal, Sparkles, History, Bell, ShieldCheck, Rocket, Settings2, UserCog,
 };
 
 const ROLE_LABELS = {
@@ -38,7 +38,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (!hydrated || !championshipHydrated) return;
-    const isViewer = typeof window !== "undefined" && Boolean(localStorage.getItem(VIEWER_TOKEN_KEY));
+    const isViewer = typeof window !== "undefined" && Boolean(sessionStorage.getItem(VIEWER_TOKEN_KEY));
     if (!user && !isViewer) {
       router.replace("/login");
       return;

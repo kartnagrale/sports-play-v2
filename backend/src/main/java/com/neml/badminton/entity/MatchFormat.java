@@ -19,6 +19,9 @@ public class MatchFormat {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
+    @Version
+    private Long version;
+
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "match_id", nullable = false)
     private Match match;

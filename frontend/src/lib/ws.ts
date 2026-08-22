@@ -30,8 +30,8 @@ function createSocket(topic: string, onEvent: (evt: AuctionEvent) => void): Clie
     heartbeatIncoming: 10000,
     heartbeatOutgoing: 10000,
     debug: () => {},
-    connectHeaders: typeof window !== "undefined" && localStorage.getItem(VIEWER_TOKEN_KEY)
-      ? { Authorization: `Bearer ${localStorage.getItem(VIEWER_TOKEN_KEY)}` } : {},
+    connectHeaders: typeof window !== "undefined" && sessionStorage.getItem(VIEWER_TOKEN_KEY)
+      ? { Authorization: `Bearer ${sessionStorage.getItem(VIEWER_TOKEN_KEY)}` } : {},
   });
   client.onConnect = () => {
     client.subscribe(topic, (msg: IMessage) => {

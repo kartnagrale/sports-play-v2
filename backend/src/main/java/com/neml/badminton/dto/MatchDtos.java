@@ -5,6 +5,7 @@ import com.neml.badminton.entity.*;
 import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
+import jakarta.validation.constraints.*;
 
 public class MatchDtos {
 
@@ -53,11 +54,13 @@ public class MatchDtos {
         }
     }
 
-    public record CreateMatchRequest(UUID teamAId, UUID teamBId, Instant scheduledAt, String venue) {}
+    public record CreateMatchRequest(@NotNull UUID teamAId, @NotNull UUID teamBId,
+                                     @NotNull Instant scheduledAt, @Size(max=255) String venue) {}
 
-    public record AssignPlayersRequest(List<UUID> sideAPlayerIds, List<UUID> sideBPlayerIds) {}
+    public record AssignPlayersRequest(@NotNull List<UUID> sideAPlayerIds, @NotNull List<UUID> sideBPlayerIds) {}
 
-    public record ReportFormatResultRequest(Integer scoreA, Integer scoreB) {}
+    public record ReportFormatResultRequest(@NotNull @PositiveOrZero Integer scoreA,
+                                            @NotNull @PositiveOrZero Integer scoreB) {}
 
     public record StandingDto(TeamRef team, Integer played, Integer won, Integer lost,
                               Integer formatWins, Integer formatLosses, Integer formatDiff,

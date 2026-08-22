@@ -12,7 +12,7 @@ interface NavigationState {
   clear: () => void;
 }
 
-export const useNavigation = create<NavigationState>((set) => ({
+export const useNavigation = create<NavigationState>((set, get) => ({
   role: null,
   screens: [],
   loading: true,
@@ -24,10 +24,10 @@ export const useNavigation = create<NavigationState>((set) => ({
       const { data } = await api.get<NavigationResponse>("/navigation", {
         params: championshipId ? { championshipId } : undefined,
       });
-      set({ role: data.role, screens: data.screens, loading: false, loadedFor: key });
+      if (get().loadedFor === key) set({ role: data.role, screens: data.screens, loading: false, loadedFor: key });
     } catch (error) {
       console.warn("Navigation load failed:", error);
-      set({ role: null, screens: [], loading: false, loadedFor: key });
+      if (get().loadedFor === key) set({ role: null, screens: [], loading: false, loadedFor: key });
     }
   },
   clear: () => set({ role: null, screens: [], loading: true, loadedFor: null }),

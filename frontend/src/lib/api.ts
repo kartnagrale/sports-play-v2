@@ -8,7 +8,7 @@ export const WS_BASE = process.env.NEXT_PUBLIC_WS_URL || BACKEND_URL;
 
 // httpOnly cookie is set by the backend on /api/auth/login. `withCredentials: true`
 // ensures axios sends it on every subsequent cross-origin request. No token is
-// ever stored in localStorage or accessible to JS on the client — this defends
+// ever stored in persistent localStorage or accessible to JS on the client — this defends
 // against XSS token theft.
 export const api: AxiosInstance = axios.create({
   baseURL: API_BASE,
@@ -18,17 +18,28 @@ export const api: AxiosInstance = axios.create({
 
 api.interceptors.request.use((config) => {
   if (typeof window === "undefined") return config;
-  const viewerToken = localStorage.getItem("sports_viewer_token");
+  const viewerToken = sessionStorage.getItem("sports_viewer_token");
   if (viewerToken) config.headers.Authorization = `Bearer ${viewerToken}`;
-  const championshipId = localStorage.getItem("sports_active_championship");
-  const auctionId = localStorage.getItem("sports_active_auction");
-  if (!championshipId || !config.url) return config;
+  const championshipId = sessionStorage.getItem("sports_active_championship");
+  const auctionId = sessionStorage.getItem("sports_active_auction");
+  if (!config.url) return config;
   const u = config.url;
+  const requiresChampionship = /^(\/teams|\/players|\/matches|\/analytics|\/admin\/(players|matches))(\/|\?|$)/.test(u);
+  const requiresAuction = /^(\/auction\/(state|bid|history)(\/|\?|$)|\/admin\/auction(\/|\?|$))/.test(u);
+  if ((requiresChampionship || requiresAuction) && !championshipId) {
+    throw new Error("Select a championship before opening this screen");
+  }
+  if (requiresAuction && !auctionId) {
+    throw new Error("The championship admin must configure its auction before opening this screen");
+  }
+  if (!championshipId) return config;
   if (auctionId && u === "/auction/state") config.url = `/championships/${championshipId}/auctions/${auctionId}/state`;
   else if (auctionId && u === "/auction/bid") config.url = `/championships/${championshipId}/auctions/${auctionId}/bid`;
+  else if (auctionId && u === "/auction/history") config.url = `/championships/${championshipId}/auctions/${auctionId}/history`;
   else if (auctionId && u.startsWith("/admin/auction/")) config.url = `/championships/${championshipId}/auctions/${auctionId}/admin/${u.slice(15)}`;
   else if (u === "/teams" || u.startsWith("/teams/")) config.url = `/championships/${championshipId}${u}`;
   else if (u === "/players" || u.startsWith("/players/")) config.url = `/championships/${championshipId}${u}`;
+  else if (u === "/admin/players" || u.startsWith("/admin/players/")) config.url = `/championships/${championshipId}${u}`;
   else if ((config.method || "get").toLowerCase() === "get" && (u === "/matches" || u.startsWith("/matches/"))) config.url = `/championships/${championshipId}${u}`;
   else if (u === "/admin/matches" || u.startsWith("/admin/matches/")) config.url = `/championships/${championshipId}${u}`;
   else if (u === "/analytics" || u.startsWith("/analytics/")) config.url = `/championships/${championshipId}${u}`;
@@ -118,6 +129,10 @@ export interface AuctionStateDto {
   remainingPlayers: number;
   bidDeadline?: string | null;
   timerSeconds?: number | null;
+  bidIncrement: number;
+  maxSquadSize: number;
+  minMale: number;
+  minFemale: number;
 }
 
 export interface StandingDto {

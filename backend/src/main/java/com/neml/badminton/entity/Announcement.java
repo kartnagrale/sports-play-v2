@@ -18,6 +18,10 @@ public class Announcement {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "championship_id", nullable = false)
+    private Championship championship;
+
     @Column(nullable = false, length = 200)
     private String title;
 

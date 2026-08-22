@@ -16,7 +16,11 @@ public class ChampionshipController {
     private final ChampionshipService service;
     public ChampionshipController(ChampionshipService service) { this.service = service; }
 
-    @PostMapping public ChampionshipDto create(@Valid @RequestBody CreateChampionshipRequest req) { return service.create(req); }
+    @PostMapping
+    @PreAuthorize("hasRole('SUPER_ADMIN')")
+    public CreateChampionshipResponse create(@Valid @RequestBody CreateChampionshipRequest req) {
+        return service.create(req);
+    }
     @GetMapping public List<ChampionshipDto> list(@AuthenticationPrincipal User user) { return service.listFor(user); }
     @PostMapping("/join-room") public JoinRoomResponse join(@Valid @RequestBody JoinRoomRequest req) { return service.join(req); }
 
@@ -28,5 +32,23 @@ public class ChampionshipController {
     @PreAuthorize("@championshipSecurity.canManage(#championshipId, authentication)")
     public ResponseEntity<Void> assign(@PathVariable UUID championshipId, @Valid @RequestBody AssignRoleRequest req) {
         service.assign(championshipId, req); return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/{championshipId}/settings")
+    @PreAuthorize("@championshipSecurity.canManage(#championshipId, authentication)")
+    public ChampionshipSettingsDto settings(@PathVariable UUID championshipId) { return service.settings(championshipId); }
+
+    @PutMapping("/{championshipId}/settings")
+    @PreAuthorize("@championshipSecurity.canManage(#championshipId, authentication)")
+    public ChampionshipSettingsDto configure(@PathVariable UUID championshipId,
+                                              @Valid @RequestBody ConfigureChampionshipRequest req) {
+        return service.configure(championshipId, req);
+    }
+
+    @PostMapping("/{championshipId}/admin/teams")
+    @PreAuthorize("@championshipSecurity.canManage(#championshipId, authentication)")
+    public ProvisionedTeamDto createTeamCaptain(@PathVariable UUID championshipId,
+                                                @Valid @RequestBody CreateTeamCaptainRequest req) {
+        return service.createTeamCaptain(championshipId, req);
     }
 }

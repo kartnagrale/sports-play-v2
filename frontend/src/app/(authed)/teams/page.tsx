@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { api, TeamDto, PlayerDto } from "@/lib/api";
+import { api, TeamDto, PlayerDto, AuctionStateDto } from "@/lib/api";
 import { formatCr } from "@/lib/format";
 import { Users2, Wallet } from "lucide-react";
 
@@ -9,6 +9,7 @@ export default function TeamsPage() {
   const [teams, setTeams] = useState<TeamDto[]>([]);
   const [players, setPlayers] = useState<PlayerDto[]>([]);
   const [activeTeam, setActiveTeam] = useState<string | null>(null);
+  const [rules, setRules] = useState({ maxSquadSize: 12, minMale: 9, minFemale: 3 });
 
   useEffect(() => {
     (async () => {
@@ -19,6 +20,8 @@ export default function TeamsPage() {
       setTeams(t.data);
       setPlayers(p.data);
       if (t.data.length) setActiveTeam(t.data[0].id);
+      api.get<AuctionStateDto>("/auction/state")
+        .then(({ data }) => setRules(data)).catch(() => undefined);
     })();
   }, []);
 
@@ -56,7 +59,7 @@ export default function TeamsPage() {
                 </div>
                 <div>
                   <div className="h-heading">{t.name}</div>
-                  <div className="label-cap text-[10px]">{t.totalPlayers}/12 slots</div>
+                  <div className="label-cap text-[10px]">{t.totalPlayers}/{rules.maxSquadSize} slots</div>
                 </div>
                 <div className="ml-auto flex items-center justify-center flex-col px-2 py-1 rounded border border-primary/20 bg-primary/5">
                   <div className="stat-num text-lg leading-none text-primary">{t.matchPoints || 0}</div>
@@ -82,8 +85,8 @@ export default function TeamsPage() {
               <h2 className="h-heading text-3xl mt-1">{active.name}</h2>
             </div>
             <div className="grid grid-cols-3 gap-4">
-              <Stat icon={<Users2 size={14} />} label="Total" value={`${active.totalPlayers}/12`} />
-              <Stat icon={<Users2 size={14} />} label="M / F" value={`${active.maleCount}/9 · ${active.femaleCount}/3`} />
+              <Stat icon={<Users2 size={14} />} label="Total" value={`${active.totalPlayers}/${rules.maxSquadSize}`} />
+              <Stat icon={<Users2 size={14} />} label="M / F" value={`${active.maleCount}/${rules.minMale} · ${active.femaleCount}/${rules.minFemale}`} />
               <Stat icon={<Wallet size={14} />} label="Spent" value={formatCr(Number(active.purseTotal) - Number(active.purseRemaining))} />
             </div>
           </div>

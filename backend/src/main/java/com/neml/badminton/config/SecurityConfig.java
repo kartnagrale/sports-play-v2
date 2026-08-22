@@ -47,7 +47,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers("/api/auth/**", "/api/health", "/api/championships/join-room", "/ws/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/championships").hasRole("SUPER_ADMIN")
-                        .requestMatchers("/api/admin/**").hasRole("SUPER_ADMIN")
+                        .requestMatchers("/api/admin/**", "/api/auction/**", "/api/teams/**",
+                                "/api/players/**", "/api/matches/**", "/api/analytics/**").denyAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);

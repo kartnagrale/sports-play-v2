@@ -25,13 +25,13 @@ public class ChampionshipSecurity {
 
     public boolean canManage(UUID championshipId, Authentication auth) {
         if (auth == null || !(auth.getPrincipal() instanceof User user)) return false;
-        return user.getRole() == Role.SUPER_ADMIN || roles.existsByUserIdAndChampionshipIdAndRoleIn(
+        return user.getRole() != Role.SUPER_ADMIN && roles.existsByUserIdAndChampionshipIdAndRoleIn(
                 user.getId(), championshipId, List.of(ChampionshipRoleType.CHAMPIONSHIP_ADMIN));
     }
 
     public boolean canBid(UUID championshipId, UUID teamId, Authentication auth) {
         if (auth == null || !(auth.getPrincipal() instanceof User user)) return false;
-        if (user.getRole() == Role.SUPER_ADMIN) return true;
+        if (user.getRole() == Role.SUPER_ADMIN) return false;
         return roles.findByUserIdAndChampionshipId(user.getId(), championshipId)
                 .filter(r -> r.getRole() == ChampionshipRoleType.CHAMPIONSHIP_ADMIN ||
                         (r.getRole() == ChampionshipRoleType.TEAM_CAPTAIN && r.getTeam() != null && r.getTeam().getId().equals(teamId)))

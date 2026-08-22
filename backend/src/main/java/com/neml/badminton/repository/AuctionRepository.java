@@ -7,4 +7,5 @@ import java.util.*;
 public interface AuctionRepository extends JpaRepository<Auction, UUID> {
     List<Auction> findAllByChampionshipIdOrderByCreatedAtDesc(UUID championshipId);
     Optional<Auction> findByIdAndChampionshipId(UUID id, UUID championshipId);
+    boolean existsByIdAndChampionshipId(UUID id, UUID championshipId);
 }

@@ -7,10 +7,14 @@ import { formatCr } from "@/lib/format";
 import { toast } from "sonner";
 import { Plus, Pencil, Trash2 } from "lucide-react";
 import PlayerDialog from "@/components/players/PlayerDialog";
+import { useChampionship } from "@/lib/championship";
 
 export default function PlayersPage() {
   const { user } = useAuth();
-  const isAdmin = user?.role === "SUPER_ADMIN";
+  const active = useChampionship((state) => state.active);
+  const championshipRole = user?.championships.find((entry) => entry.championshipId === active?.id)?.role;
+  const isAdmin = user?.role === "SUPER_ADMIN" || championshipRole === "CHAMPIONSHIP_ADMIN";
+  const [defaultBasePrice, setDefaultBasePrice] = useState(2000000);
   const [players, setPlayers] = useState<PlayerDto[]>([]);
   const [loading, setLoading] = useState(true);
   
@@ -32,7 +36,12 @@ export default function PlayersPage() {
 
   useEffect(() => {
     loadPlayers();
-  }, []);
+    if (isAdmin && active) {
+      api.get<{ playerBasePrice: number }>(`/championships/${active.id}/settings`)
+        .then(({ data }) => setDefaultBasePrice(Number(data.playerBasePrice)))
+        .catch(() => undefined);
+    }
+  }, [active?.id, isAdmin]);
 
   const handleDelete = async (player: PlayerDto) => {
     if (!window.confirm(`Are you sure you want to delete ${player.fullName}?`)) return;
@@ -135,6 +144,7 @@ export default function PlayersPage() {
       {isDialogOpen && (
         <PlayerDialog 
           player={editingPlayer} 
+          defaultBasePrice={defaultBasePrice}
           onClose={() => setIsDialogOpen(false)} 
           onSaved={() => {
             setIsDialogOpen(false);

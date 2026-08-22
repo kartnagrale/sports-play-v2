@@ -49,13 +49,16 @@ public class DataSeeder implements CommandLineRunner {
                 new ScreenSeed("AUCTION", "Auction", "/auction", "Gavel", "Workspace", 20),
                 new ScreenSeed("SCOREBOARD", "Scoreboard", "/scoreboard", "Trophy", "Workspace", 30),
                 new ScreenSeed("MATCHES", "Matches", "/matches", "CalendarDays", "Workspace", 40),
+                new ScreenSeed("CHAMPIONSHIP_SETTINGS", "Championship Setup", "/admin/championship-settings", "Settings2", "Management", 45),
                 new ScreenSeed("TEAMS", "Teams", "/teams", "UsersRound", "Management", 50),
+                new ScreenSeed("TEAM_MANAGEMENT", "Teams & Captains", "/admin/team-management", "UserCog", "Management", 55),
                 new ScreenSeed("PLAYERS", "Players", "/players", "UserRound", "Management", 60),
                 new ScreenSeed("ANNOUNCEMENTS", "Announcements", "/announcements", "Bell", "Management", 70),
                 new ScreenSeed("ANALYSIS", "Team Analysis", "/analysis", "ChartNoAxesCombined", "Insights", 80),
                 new ScreenSeed("FORMAT_LEADERS", "Format Leaders", "/format-leaders", "Medal", "Insights", 90),
                 new ScreenSeed("TOP_PERFORMERS", "Top Performers", "/top-performers", "Sparkles", "Insights", 100),
                 new ScreenSeed("HISTORY", "Auction History", "/history", "History", "Insights", 110),
+                new ScreenSeed("CHAMPIONSHIP_LAUNCHPAD", "Launch Championship", "/admin/championship-launchpad", "Rocket", "Platform", 115),
                 new ScreenSeed("CHAMPIONSHIPS", "Championships", "/admin/championships", "ShieldCheck", "Platform", 120)
         );
         Map<String, AppScreen> persisted = new HashMap<>();
@@ -66,8 +69,8 @@ public class DataSeeder implements CommandLineRunner {
             persisted.put(seed.code(), screen);
         }
         Map<NavigationRole, Set<String>> grants = Map.of(
-                NavigationRole.SUPER_ADMIN, catalog.stream().map(ScreenSeed::code).collect(java.util.stream.Collectors.toSet()),
-                NavigationRole.CHAMPIONSHIP_ADMIN, Set.of("DASHBOARD", "AUCTION", "SCOREBOARD", "MATCHES", "TEAMS", "PLAYERS", "ANNOUNCEMENTS", "ANALYSIS", "FORMAT_LEADERS", "TOP_PERFORMERS", "HISTORY"),
+                NavigationRole.SUPER_ADMIN, Set.of("CHAMPIONSHIP_LAUNCHPAD", "CHAMPIONSHIPS"),
+                NavigationRole.CHAMPIONSHIP_ADMIN, Set.of("DASHBOARD", "AUCTION", "SCOREBOARD", "MATCHES", "CHAMPIONSHIP_SETTINGS", "TEAMS", "TEAM_MANAGEMENT", "PLAYERS", "ANNOUNCEMENTS", "ANALYSIS", "FORMAT_LEADERS", "TOP_PERFORMERS", "HISTORY"),
                 NavigationRole.TEAM_CAPTAIN, Set.of("DASHBOARD", "AUCTION", "SCOREBOARD", "MATCHES", "TEAMS", "ANALYSIS", "FORMAT_LEADERS", "TOP_PERFORMERS", "HISTORY"),
                 NavigationRole.SPECTATOR, Set.of("DASHBOARD", "AUCTION", "SCOREBOARD", "MATCHES", "TEAMS", "ANNOUNCEMENTS", "ANALYSIS", "FORMAT_LEADERS", "TOP_PERFORMERS")
         );
@@ -95,7 +98,7 @@ public class DataSeeder implements CommandLineRunner {
         settings.save(TournamentSettings.builder().championship(c).maxSquadSize(12).purseLimit(new BigDecimal("1000000000"))
                 .customRules(sport.equals("CRICKET")?"{\"tieBreaker\":\"NET_RUN_RATE\"}":"{\"tieBreaker\":\"GOAL_DIFFERENCE\"}").build());
         Auction a=auctions.save(Auction.builder().championship(c).name(name+" Main Auction").build());
-        states.save(AuctionState.builder().auction(a).status(AuctionStatus.NOT_STARTED).timerSeconds(30).build());
+        states.save(AuctionState.builder().championship(c).auction(a).status(AuctionStatus.NOT_STARTED).timerSeconds(30).build());
         roles.save(ChampionshipRole.builder().user(manager).championship(c).role(ChampionshipRoleType.CHAMPIONSHIP_ADMIN).build());
         int order=1;
         for(int i=0;i<teamNames.size();i++){

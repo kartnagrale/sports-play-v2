@@ -1,28 +1,53 @@
 "use client";
 
-import { FormEvent, useEffect, useState } from "react";
-import { api, ChampionshipDto } from "@/lib/api";
+import Link from "next/link";
+import { useEffect } from "react";
 import { useAuth } from "@/lib/auth";
 import { useChampionship } from "@/lib/championship";
-import { Plus, Radio, Shield } from "lucide-react";
-import { toast } from "sonner";
+import { ArrowRight, Radio, Rocket, Shield } from "lucide-react";
 
-export default function ChampionshipsAdminPage(){
-  const user=useAuth(s=>s.user);const {championships,load,select}=useChampionship();
-  const [open,setOpen]=useState(false);const [loading,setLoading]=useState(false);
-  const [form,setForm]=useState({name:"",sportType:"CRICKET",passcode:"",isPublic:false,maxSquadSize:12,purseLimit:1000000000});
-  useEffect(()=>{load();},[load]);
-  if(user?.role!=="SUPER_ADMIN")return <div className="p-10"><h1 className="h-heading text-3xl">Super Admin access required</h1></div>;
-  async function submit(e:FormEvent){e.preventDefault();setLoading(true);try{const {data}=await api.post<ChampionshipDto>("/championships",form);await load();select(data);setOpen(false);toast.success(`Created ${data.name} · ${data.roomCode}`);}catch(err:any){toast.error(err?.response?.data?.message||"Creation failed");}finally{setLoading(false);}}
-  return <div className="p-10"><div className="flex justify-between items-end mb-8"><div><div className="label-cap">SaaS control plane</div><h1 className="h-heading text-5xl mt-1">Championships</h1></div><button className="btn btn-primary" onClick={()=>setOpen(!open)}><Plus size={16}/>New championship</button></div>
-    {open&&<form onSubmit={submit} className="card-elev rounded-2xl p-6 grid md:grid-cols-2 gap-4 mb-8">
-      <label><span className="label-cap block mb-2">Name</span><input className="input" required value={form.name} onChange={e=>setForm({...form,name:e.target.value})}/></label>
-      <label><span className="label-cap block mb-2">Sport</span><select className="input" value={form.sportType} onChange={e=>setForm({...form,sportType:e.target.value})}><option>CRICKET</option><option>FOOTBALL</option><option>BADMINTON</option><option>BASKETBALL</option><option>VOLLEYBALL</option><option value="OTHER">OTHER</option></select></label>
-      <label><span className="label-cap block mb-2">Room passcode</span><input className="input" type="password" value={form.passcode} onChange={e=>setForm({...form,passcode:e.target.value})}/></label>
-      <label><span className="label-cap block mb-2">Squad limit</span><input className="input" type="number" min="1" value={form.maxSquadSize} onChange={e=>setForm({...form,maxSquadSize:Number(e.target.value)})}/></label>
-      <label className="flex items-center gap-3"><input type="checkbox" checked={form.isPublic} onChange={e=>setForm({...form,isPublic:e.target.checked})}/><span className="text-sm">Public room (no passcode)</span></label>
-      <button className="btn btn-primary justify-center" disabled={loading}>{loading?"Creating…":"Create and generate room"}</button>
-    </form>}
-    <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-5">{championships.map(c=><button key={c.id} onClick={()=>{select(c);window.location.href="/dashboard";}} className="card-elev rounded-2xl p-6 text-left border border-white/10 hover:border-primary/40"><div className="flex justify-between"><Shield className="text-primary"/><span className="chip"><Radio size={11}/>{c.status}</span></div><h2 className="h-heading text-2xl mt-5">{c.name}</h2><div className="text-white/50 text-sm mt-1">{c.sportType}</div><div className="label-cap mt-5">Room code</div><div className="stat-num text-xl text-primary">{c.roomCode}</div></button>)}</div>
-  </div>;
+export default function ChampionshipsAdminPage() {
+  const user = useAuth((state) => state.user);
+  const { championships, load, select } = useChampionship();
+
+  useEffect(() => { load(); }, [load]);
+
+  if (user?.role !== "SUPER_ADMIN") {
+    return <div className="p-10"><h1 className="h-heading text-3xl">Super Admin access required</h1></div>;
+  }
+
+  return (
+    <div className="min-h-screen p-6 md:p-10">
+      <div className="mx-auto max-w-7xl">
+        <div className="mb-8 flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
+          <div>
+            <div className="label-cap">Platform portfolio</div>
+            <h1 className="h-heading mt-2 text-4xl font-bold md:text-5xl">Championships</h1>
+            <p className="mt-3 max-w-2xl text-sm text-white/50">Monitor every competition and move between championship workspaces.</p>
+          </div>
+          <Link href="/admin/championship-launchpad" className="btn btn-primary justify-center py-3">
+            <Rocket size={16}/>Launch championship<ArrowRight size={15}/>
+          </Link>
+        </div>
+
+        <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+          {championships.map((championship) => (
+            <button key={championship.id} onClick={() => { select(championship); window.location.href = "/dashboard"; }}
+              className="card-elev group rounded-2xl border border-white/10 p-6 text-left transition-all duration-300 hover:-translate-y-1 hover:border-primary/40">
+              <div className="flex items-center justify-between">
+                <div className="grid h-11 w-11 place-items-center rounded-xl border border-primary/20 bg-primary/10"><Shield className="text-primary" size={20}/></div>
+                <span className="chip"><Radio size={11}/>{championship.status}</span>
+              </div>
+              <h2 className="h-heading mt-6 text-2xl">{championship.name}</h2>
+              <div className="mt-1 text-sm text-white/45">{championship.sportType}</div>
+              <div className="mt-6 flex items-end justify-between border-t border-white/10 pt-4">
+                <div><div className="label-cap">Room code</div><div className="stat-num mt-1 text-xl text-primary">{championship.roomCode}</div></div>
+                <ArrowRight className="text-white/25 transition-transform group-hover:translate-x-1 group-hover:text-primary" size={18}/>
+              </div>
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
 }

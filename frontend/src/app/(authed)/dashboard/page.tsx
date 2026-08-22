@@ -38,7 +38,8 @@ export default function DashboardPage() {
       (acc, t) => acc + (t.totalPlayers ?? 0),
       0
     ) || 0;
-  const auctionProgress = Math.round((totalSold / 48) * 100);
+  const capacity = (state?.teams.length || teams.length) * (state?.maxSquadSize || 0);
+  const auctionProgress = capacity ? Math.round((totalSold / capacity) * 100) : 0;
 
   return (
     <div className="p-10">
@@ -71,22 +72,22 @@ export default function DashboardPage() {
         />
         <Kpi
           label="Players Sold"
-          value={`${totalSold} / 48`}
+          value={`${totalSold} / ${capacity || "—"}`}
           sub={`${auctionProgress}% complete`}
           icon={<Users size={20} />}
           testid="kpi-players-sold"
         />
         <Kpi
           label="Teams"
-          value="4"
-          sub="Chennai · Bangalore · Mumbai · Delhi"
+          value={String(teams.length)}
+          sub={teams.length ? teams.map((team) => team.shortCode).join(" · ") : "Create teams to begin"}
           icon={<Trophy size={20} />}
           testid="kpi-teams"
         />
         <Kpi
           label="Total Purse Pool"
           value={formatCr(teams.reduce((a, t) => a + Number(t.purseTotal || 0), 0))}
-          sub="₹100 Cr × 4 teams"
+          sub={`${teams.length} championship team${teams.length === 1 ? "" : "s"}`}
           icon={<TrendingUp size={20} />}
           testid="kpi-total-purse"
         />
@@ -137,11 +138,11 @@ export default function DashboardPage() {
                 <div className="mt-4 grid grid-cols-2 gap-2 text-xs">
                   <div className="flex justify-between border border-white/10 rounded-md px-2 py-1.5">
                     <span className="text-white/50">Male</span>
-                    <span className="h-heading">{t.maleCount}/9</span>
+                    <span className="h-heading">{t.maleCount}/{state?.minMale ?? "—"}</span>
                   </div>
                   <div className="flex justify-between border border-white/10 rounded-md px-2 py-1.5">
                     <span className="text-white/50">Female</span>
-                    <span className="h-heading">{t.femaleCount}/3</span>
+                    <span className="h-heading">{t.femaleCount}/{state?.minFemale ?? "—"}</span>
                   </div>
                 </div>
               </div>
@@ -162,7 +163,7 @@ export default function DashboardPage() {
           </div>
           <ul className="space-y-3">
             <Announcement title="Auction goes live" body="Live auction slot opens shortly. Team owners, get ready to bid." />
-            <Announcement title="Composition rule" body="Each team must field min 3 female and 9 male players (12 total)." />
+            <Announcement title="Composition rule" body={`Each team must include at least ${state?.minFemale ?? "the configured number of"} female and ${state?.minMale ?? "the configured number of"} male players.`} />
             <Announcement title="Format" body="Every match features 5 playing formats. A player can play only 1 format per match." />
           </ul>
         </div>

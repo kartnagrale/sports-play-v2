@@ -16,9 +16,9 @@ import java.util.regex.*;
 
 @Component
 public class StompAuthorizationInterceptor implements ChannelInterceptor {
-    private static final Pattern TOPIC = Pattern.compile("^/topic/championship/([0-9a-fA-F-]{36})/(?:auction/[0-9a-fA-F-]{36}|matches)$");
-    private final JwtService jwt; private final UserRepository users; private final ChampionshipRoleRepository roles;
-    public StompAuthorizationInterceptor(JwtService jwt,UserRepository users,ChampionshipRoleRepository roles){this.jwt=jwt;this.users=users;this.roles=roles;}
+    private static final Pattern TOPIC = Pattern.compile("^/topic/championship/([0-9a-fA-F-]{36})/(?:auction/([0-9a-fA-F-]{36})|matches)$");
+    private final JwtService jwt; private final UserRepository users; private final ChampionshipRoleRepository roles; private final AuctionRepository auctions;
+    public StompAuthorizationInterceptor(JwtService jwt,UserRepository users,ChampionshipRoleRepository roles,AuctionRepository auctions){this.jwt=jwt;this.users=users;this.roles=roles;this.auctions=auctions;}
 
     @Override public Message<?> preSend(Message<?> message, MessageChannel channel){
         StompHeaderAccessor a=MessageHeaderAccessor.getAccessor(message,StompHeaderAccessor.class); if(a==null)return message;
@@ -35,7 +35,9 @@ public class StompAuthorizationInterceptor implements ChannelInterceptor {
     }
     private void authorize(StompHeaderAccessor a){
         Matcher m=TOPIC.matcher(Objects.toString(a.getDestination(),"")); if(!m.matches())throw new MessagingException("Subscription destination is not allowed");
-        UUID cid=UUID.fromString(m.group(1)); Object principal=a.getUser() instanceof UsernamePasswordAuthenticationToken t?t.getPrincipal():null;
+        UUID cid=UUID.fromString(m.group(1));
+        if(m.group(2)!=null&&!auctions.existsByIdAndChampionshipId(UUID.fromString(m.group(2)),cid))throw new MessagingException("Auction does not belong to championship");
+        Object principal=a.getUser() instanceof UsernamePasswordAuthenticationToken t?t.getPrincipal():null;
         boolean ok=principal instanceof ViewerPrincipal v&&cid.equals(v.championshipId());
         if(principal instanceof User u)ok=u.getRole()==Role.SUPER_ADMIN||roles.findByUserIdAndChampionshipId(u.getId(),cid).isPresent();
         if(!ok)throw new MessagingException("Not authorized for championship topic");

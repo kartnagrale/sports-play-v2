@@ -20,34 +20,35 @@ interface ChampionshipState {
 
 export function activeTenant() {
   if (typeof window === "undefined") return { championshipId: null, auctionId: null };
-  return { championshipId: localStorage.getItem(CHAMPIONSHIP_KEY), auctionId: localStorage.getItem(AUCTION_KEY) };
+  return { championshipId: sessionStorage.getItem(CHAMPIONSHIP_KEY), auctionId: sessionStorage.getItem(AUCTION_KEY) };
 }
 
 export const useChampionship = create<ChampionshipState>((set, get) => ({
   championships: [], active: null, hydrated: false,
   load: async () => {
-    const viewerRaw = localStorage.getItem(VIEWER_CHAMPIONSHIP_KEY);
-    if (viewerRaw && localStorage.getItem(VIEWER_TOKEN_KEY)) {
+    const viewerRaw = sessionStorage.getItem(VIEWER_CHAMPIONSHIP_KEY);
+    if (viewerRaw && sessionStorage.getItem(VIEWER_TOKEN_KEY)) {
       const viewer = JSON.parse(viewerRaw) as ChampionshipDto;
       get().select(viewer); set({ championships: [viewer], active: viewer, hydrated: true }); return;
     }
     try {
       const { data } = await api.get<ChampionshipDto[]>("/championships");
-      const saved = localStorage.getItem(CHAMPIONSHIP_KEY);
+      const saved = sessionStorage.getItem(CHAMPIONSHIP_KEY);
       const selected = data.find((c) => c.id === saved) || data[0] || null;
       if (selected) get().select(selected);
       set({ championships: data, active: selected, hydrated: true });
     } catch { set({ championships: [], active: null, hydrated: true }); }
   },
   select: (championship) => {
-    localStorage.setItem(CHAMPIONSHIP_KEY, championship.id);
-    if (championship.defaultAuctionId) localStorage.setItem(AUCTION_KEY, championship.defaultAuctionId);
+    sessionStorage.setItem(CHAMPIONSHIP_KEY, championship.id);
+    if (championship.defaultAuctionId) sessionStorage.setItem(AUCTION_KEY, championship.defaultAuctionId);
+    else sessionStorage.removeItem(AUCTION_KEY);
     set({ active: championship });
   },
   setViewer: (championship, token) => {
-    localStorage.setItem(VIEWER_TOKEN_KEY, token);
-    localStorage.setItem(VIEWER_CHAMPIONSHIP_KEY, JSON.stringify(championship));
+    sessionStorage.setItem(VIEWER_TOKEN_KEY, token);
+    sessionStorage.setItem(VIEWER_CHAMPIONSHIP_KEY, JSON.stringify(championship));
     get().select(championship); set({ championships: [championship], active: championship, hydrated: true });
   },
-  clearViewer: () => { localStorage.removeItem(VIEWER_TOKEN_KEY); localStorage.removeItem(VIEWER_CHAMPIONSHIP_KEY); },
+  clearViewer: () => { sessionStorage.removeItem(VIEWER_TOKEN_KEY); sessionStorage.removeItem(VIEWER_CHAMPIONSHIP_KEY); },
 }));

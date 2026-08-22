@@ -9,7 +9,8 @@ import java.util.List;
 import java.util.UUID;
 
 @Entity
-@Table(name = "matches", indexes = @Index(name = "idx_match_championship", columnList = "championship_id"))
+@Table(name = "matches", uniqueConstraints = @UniqueConstraint(columnNames = {"championship_id", "match_number"}),
+        indexes = @Index(name = "idx_match_championship", columnList = "championship_id"))
 @Getter
 @Setter
 @NoArgsConstructor
@@ -19,6 +20,9 @@ public class Match {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
+
+    @Version
+    private Long version;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "championship_id", nullable = false)

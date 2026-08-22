@@ -5,15 +5,16 @@ import { X } from "lucide-react";
 
 interface Props {
   player?: PlayerDto | null;
+  defaultBasePrice?: number;
   onClose: () => void;
   onSaved: () => void;
 }
 
-export default function PlayerDialog({ player, onClose, onSaved }: Props) {
+export default function PlayerDialog({ player, defaultBasePrice = 2000000, onClose, onSaved }: Props) {
   const [formData, setFormData] = useState({
     fullName: player?.fullName || "",
     gender: player?.gender || "MALE",
-    basePrice: player?.basePrice ? Number(player.basePrice) : 2000000,
+    basePrice: player?.basePrice ? Number(player.basePrice) : defaultBasePrice,
     skillLevel: player?.skillLevel || "Intermediate",
     auctionOrder: player?.auctionOrder || "",
   });

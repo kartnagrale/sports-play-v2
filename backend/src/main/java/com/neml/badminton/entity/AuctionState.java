@@ -17,6 +17,13 @@ public class AuctionState {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
+    @Version
+    private Long version;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "championship_id", nullable = false)
+    private Championship championship;
+
     @OneToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "auction_id", nullable = false, unique = true)
     private Auction auction;

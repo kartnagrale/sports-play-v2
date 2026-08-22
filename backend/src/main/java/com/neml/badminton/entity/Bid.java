@@ -8,7 +8,8 @@ import java.time.Instant;
 import java.util.UUID;
 
 @Entity
-@Table(name = "bids", indexes = @Index(name = "idx_bid_auction", columnList = "auction_id"))
+@Table(name = "bids", uniqueConstraints = @UniqueConstraint(columnNames = {"auction_id", "sequence_no"}),
+        indexes = @Index(name = "idx_bid_auction", columnList = "auction_id"))
 @Getter
 @Setter
 @NoArgsConstructor
@@ -18,6 +19,10 @@ public class Bid {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "championship_id", nullable = false)
+    private Championship championship;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "auction_id", nullable = false)
@@ -33,6 +38,9 @@ public class Bid {
 
     @Column(nullable = false, precision = 19, scale = 2)
     private BigDecimal amount;
+
+    @Column(name = "sequence_no", nullable = false)
+    private Long sequenceNo;
 
     @Column(nullable = false)
     private Instant createdAt;

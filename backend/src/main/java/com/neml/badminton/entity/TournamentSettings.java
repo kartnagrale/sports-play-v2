@@ -32,6 +32,26 @@ public class TournamentSettings {
     @Builder.Default
     private BigDecimal purseLimit = new BigDecimal("1000000000");
 
+    @Column(nullable = false)
+    @Builder.Default
+    private Integer minMale = 9;
+
+    @Column(nullable = false)
+    @Builder.Default
+    private Integer minFemale = 3;
+
+    @Column(nullable = false, precision = 19, scale = 2)
+    @Builder.Default
+    private BigDecimal playerBasePrice = new BigDecimal("2000000");
+
+    @Column(nullable = false, precision = 19, scale = 2)
+    @Builder.Default
+    private BigDecimal bidIncrement = new BigDecimal("500000");
+
+    @Column(nullable = false)
+    @Builder.Default
+    private Integer timerSeconds = 30;
+
     @Column(name = "custom_rules", columnDefinition = "text")
     @Builder.Default
     private String customRules = "{}";
