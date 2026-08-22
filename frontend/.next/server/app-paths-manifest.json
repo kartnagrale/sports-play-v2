@@ -1,0 +1,10 @@
+{
+  "/page": "app/page.js",
+  "/login/page": "app/login/page.js",
+  "/(authed)/auction/page": "app/(authed)/auction/page.js",
+  "/(authed)/dashboard/page": "app/(authed)/dashboard/page.js",
+  "/(authed)/matches/page": "app/(authed)/matches/page.js",
+  "/(authed)/scoreboard/page": "app/(authed)/scoreboard/page.js",
+  "/(authed)/teams/page": "app/(authed)/teams/page.js",
+  "/(authed)/analysis/page": "app/(authed)/analysis/page.js"
+}
