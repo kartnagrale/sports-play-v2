@@ -43,10 +43,10 @@ public class Match {
     @JoinColumn(name = "winner_team_id")
     private Team winnerTeam;
 
-    @Column(nullable = false)
+    @Column(name = "team_a_format_wins", nullable = false)
     private Integer teamAFormatWins = 0;
 
-    @Column(nullable = false)
+    @Column(name = "team_b_format_wins", nullable = false)
     private Integer teamBFormatWins = 0;
 
     @Column(nullable = false)

@@ -3,6 +3,7 @@ package com.neml.badminton.seed;
 import com.neml.badminton.entity.*;
 import com.neml.badminton.repository.*;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -10,6 +11,7 @@ import java.math.BigDecimal;
 import java.util.*;
 
 @Component
+@ConditionalOnProperty(name = "app.seed.enabled", havingValue = "true")
 public class DataSeeder implements CommandLineRunner {
     private final UserRepository users; private final ChampionshipRepository championships;
     private final ChampionshipRoleRepository roles; private final TournamentSettingsRepository settings;

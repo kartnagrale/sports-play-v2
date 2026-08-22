@@ -63,13 +63,10 @@ You will need to set up environment variables on the server. Usually, these are 
 
 **Example `.env` structure:**
 ```env
-# Database configuration
-POSTGRES_USER=postgres
-POSTGRES_PASSWORD=your_secure_password
-POSTGRES_DB=badminton_db
-
-# Backend configuration
-SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/badminton_db
+# Company-managed database configuration
+DB_URL=jdbc:postgresql://<company-host>:5432/<company-database>?currentSchema=play_neml
+DB_USER=<company-provided-user>
+DB_PASSWORD=<company-provided-password>
 JWT_SECRET=your_super_secret_jwt_key_here
 
 # Frontend configuration

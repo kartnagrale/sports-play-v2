@@ -46,10 +46,10 @@ public class MatchFormat {
     @Builder.Default
     private List<Player> sideBPlayers = new ArrayList<>();
 
-    @Column(nullable = false)
+    @Column(name = "score_a", nullable = false)
     private Integer scoreA = 0;
 
-    @Column(nullable = false)
+    @Column(name = "score_b", nullable = false)
     private Integer scoreB = 0;
 
     @ManyToOne(fetch = FetchType.LAZY)

@@ -5,27 +5,46 @@ server:
 
 spring:
   application:
-    name: universal-sports-platform
+    name: neml-badminton
+  sql:
+    init:
+      mode: never
   datasource:
-    url: ${DB_URL:jdbc:h2:mem:sports_platform;MODE=PostgreSQL;DB_CLOSE_DELAY=-1;DATABASE_TO_LOWER=TRUE}
-    username: ${DB_USER:sa}
-    password: ${DB_PASSWORD:}
+
+    url: ${DB_URL}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
     hikari:
       max-lifetime: 600000
       keepalive-time: 300000
       connection-timeout: 30000
+      # Session-only setting; this does not create or modify any schema.
+      connection-init-sql: "SET search_path TO play_neml"
   jpa:
+    generate-ddl: false
+    open-in-view: false
     hibernate:
-      ddl-auto: update
+      # Validation is read-only. All DDL is generated for manual review and
+      # execution by the company database owner.
+      ddl-auto: validate
     show-sql: false
     properties:
       hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
+        default_schema: play_neml
+        hbm2ddl:
+          create_namespaces: false
+        jdbc:
+          time_zone: UTC
   jackson:
     serialization:
       write-dates-as-timestamps: false
 
 app:
+  seed:
+    enabled: ${DATA_SEED_ENABLED:false}
   jwt:
     secret: ${JWT_SECRET:neml-badminton-super-secret-key-change-in-production-min-256-bits-required-here}
     expiration-ms: 86400000

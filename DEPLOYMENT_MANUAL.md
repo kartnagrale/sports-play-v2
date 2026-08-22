@@ -41,16 +41,7 @@ Install the database and set it up to start on boot.
 sudo apt install postgresql postgresql-contrib -y
 sudo systemctl enable --now postgresql
 ```
-*Setup the database and user inside the Postgres shell:*
-```bash
-sudo -u postgres psql
-
-# Run these commands inside the psql prompt:
-CREATE DATABASE badminton_db;
-CREATE USER badminton_user WITH ENCRYPTED PASSWORD 'your_secure_password';
-GRANT ALL PRIVILEGES ON DATABASE badminton_db TO badminton_user;
-\q
-```
+The database, login, and `play_neml` schema are company-managed. Do not create or alter databases, schemas, users, roles, or extensions. Request connection details and approved `play_neml` permissions from the company DBA.
 
 ### E. Nginx (Reverse Proxy)
 Nginx is used to route web traffic on port 80/443 to your Next.js frontend and Spring Boot backend.
@@ -74,9 +65,11 @@ cd sports-play-main
 1. **Configure application properties:**
    Ensure your backend uses the correct database credentials. You can pass them as environment variables or update `backend/src/main/resources/application.properties`:
    ```properties
-   spring.datasource.url=jdbc:postgresql://localhost:5432/badminton_db
-   spring.datasource.username=badminton_user
-   spring.datasource.password=your_secure_password
+   spring.datasource.url=jdbc:postgresql://<company-host>:5432/<company-database>?currentSchema=play_neml
+   spring.datasource.username=<company-provided-user>
+   spring.datasource.password=<company-provided-password>
+   spring.jpa.properties.hibernate.default_schema=play_neml
+   spring.jpa.properties.hibernate.hbm2ddl.create_namespaces=false
    ```
 
 2. **Build the JAR file:**
