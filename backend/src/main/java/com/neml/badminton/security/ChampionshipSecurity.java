@@ -37,4 +37,13 @@ public class ChampionshipSecurity {
                         (r.getRole() == ChampionshipRoleType.TEAM_CAPTAIN && r.getTeam() != null && r.getTeam().getId().equals(teamId)))
                 .isPresent();
     }
+
+    public boolean canConfirmSquad(UUID championshipId, UUID teamId, Authentication auth) {
+        if (auth == null || !(auth.getPrincipal() instanceof User user)) return false;
+        if (user.getRole() == Role.SUPER_ADMIN) return false;
+        return roles.findByUserIdAndChampionshipId(user.getId(), championshipId)
+                .filter(role -> role.getRole() == ChampionshipRoleType.TEAM_CAPTAIN
+                        && role.getTeam() != null && role.getTeam().getId().equals(teamId))
+                .isPresent();
+    }
 }

@@ -16,16 +16,20 @@ public class MatchService {
     private final MatchRepository matches;private final MatchFormatRepository formats;private final TeamRepository teams;
     private final PlayerRepository players;private final AuctionBroadcaster broadcaster;private final ChampionshipRepository championships;
     private final TournamentSettingsRepository settings;
+    private final SquadConfirmationService squadConfirmations;
 
     public MatchService(MatchRepository matches,MatchFormatRepository formats,TeamRepository teams,PlayerRepository players,
-            AuctionBroadcaster broadcaster,ChampionshipRepository championships,TournamentSettingsRepository settings){
+            AuctionBroadcaster broadcaster,ChampionshipRepository championships,TournamentSettingsRepository settings,
+            SquadConfirmationService squadConfirmations){
         this.matches=matches;this.formats=formats;this.teams=teams;this.players=players;this.broadcaster=broadcaster;this.championships=championships;this.settings=settings;
+        this.squadConfirmations=squadConfirmations;
     }
 
     @Transactional public List<MatchDto> listAll(UUID cid){return matches.findAllByChampionshipIdOrderByMatchNumberAsc(cid).stream().map(MatchDto::from).toList();}
     @Transactional public MatchDto get(UUID cid,UUID id){return MatchDto.from(match(cid,id));}
 
     @Transactional public MatchDto create(UUID cid,CreateMatchRequest req){
+        squadConfirmations.assertLeagueReady(cid);
         Championship championship=championships.findByIdForUpdate(cid).orElseThrow(()->notFound("Championship"));
         Team a=teams.findByIdAndChampionshipId(req.teamAId(),cid).orElseThrow(()->notFound("Team A"));
         Team b=teams.findByIdAndChampionshipId(req.teamBId(),cid).orElseThrow(()->notFound("Team B"));

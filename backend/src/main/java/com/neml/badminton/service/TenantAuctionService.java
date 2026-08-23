@@ -23,18 +23,22 @@ public class TenantAuctionService {
     private final PlayerRepository players; private final TeamRepository teams; private final BidRepository bids;
     private final TournamentSettingsRepository settings; private final AuctionBroadcaster broadcaster;
     private final TransactionTemplate transactions;
+    private final SquadConfirmationService squadConfirmations;
 
     public TenantAuctionService(AuctionRepository auctions,AuctionStateRepository states,PlayerRepository players,
             TeamRepository teams,BidRepository bids,TournamentSettingsRepository settings,
-            AuctionBroadcaster broadcaster,TransactionTemplate transactions){
+            AuctionBroadcaster broadcaster,TransactionTemplate transactions,
+            SquadConfirmationService squadConfirmations){
         this.auctions=auctions;this.states=states;this.players=players;this.teams=teams;this.bids=bids;
         this.settings=settings;this.broadcaster=broadcaster;this.transactions=transactions;
+        this.squadConfirmations=squadConfirmations;
     }
 
     @Transactional public AuctionStateDto state(UUID cid,UUID aid){Auction a=auction(cid,aid);return snapshot(cid,a,auctionState(cid,aid));}
     @Transactional public List<BidDto> history(UUID cid,UUID aid){auction(cid,aid);return bids.findTop50ByAuctionIdAndChampionshipIdOrderBySequenceNoDesc(aid,cid).stream().map(BidDto::from).toList();}
 
     @Transactional public AuctionStateDto start(UUID cid,UUID aid){
+        squadConfirmations.assertRosterMutable(cid);
         Auction a=auction(cid,aid);AuctionState s=locked(cid,aid);
         if(s.getStatus()==AuctionStatus.COMPLETED)bad("Completed auctions cannot be restarted; reset unsold players first");
         if(teams.findAllByChampionshipIdOrderByName(cid).size()<2)bad("Create at least two teams before starting the auction");
@@ -43,17 +47,20 @@ public class TenantAuctionService {
     }
     @Transactional public AuctionStateDto pause(UUID cid,UUID aid){return changeStatus(cid,aid,AuctionStatus.PAUSED);}
     @Transactional public AuctionStateDto resume(UUID cid,UUID aid){
+        squadConfirmations.assertRosterMutable(cid);
         Auction a=auction(cid,aid);AuctionState s=locked(cid,aid);if(s.getStatus()==AuctionStatus.COMPLETED)bad("Completed auctions cannot be resumed");
         if(s.getCurrentPlayer()==null)selectNext(a,s);if(s.getCurrentPlayer()==null)bad("No available players remain");
         s.setStatus(AuctionStatus.RUNNING);a.setStatus(AuctionStatus.RUNNING);deadline(s);save(a,s);return publish(cid,aid,snapshot(cid,a,s));
     }
     @Transactional public AuctionStateDto status(UUID cid,UUID aid,AuctionStatus status){if(status==null)bad("Auction status is required");return changeStatus(cid,aid,status);}
     private AuctionStateDto changeStatus(UUID cid,UUID aid,AuctionStatus status){
+        squadConfirmations.assertRosterMutable(cid);
         Auction a=auction(cid,aid);AuctionState s=locked(cid,aid);s.setStatus(status);a.setStatus(status);
         if(status==AuctionStatus.RUNNING)deadline(s);else s.setBidDeadline(null);save(a,s);return publish(cid,aid,snapshot(cid,a,s));
     }
 
     @Transactional public AuctionStateDto bid(UUID cid,UUID aid,PlaceBidRequest req){
+        squadConfirmations.assertRosterMutable(cid);
         if(req==null||req.playerId()==null||req.teamId()==null||req.amount()==null)bad("Player, team and amount are required");
         Auction a=auction(cid,aid);AuctionState s=locked(cid,aid);if(s.getStatus()!=AuctionStatus.RUNNING)bad("Auction is not running");
         Player p=players.findByIdAndChampionshipId(req.playerId(),cid).orElseThrow(()->notFound("Player"));
@@ -75,11 +82,12 @@ public class TenantAuctionService {
     }
 
     @Transactional public AuctionStateDto undo(UUID cid,UUID aid){
+        squadConfirmations.assertRosterMutable(cid);
         Auction a=auction(cid,aid);AuctionState s=locked(cid,aid);if(s.getCurrentPlayer()==null)bad("No active player");Bid b=highest(cid,aid,s.getCurrentPlayer());
         b.setActive(false);bids.save(b);deadlineIfRunning(s);states.save(s);broadcaster.broadcastEvent(cid,aid,"BID_UNDONE",Map.of("amount",b.getAmount(),"teamName",b.getTeam().getName()));
         return publish(cid,aid,snapshot(cid,a,s));
     }
-    @Transactional public AuctionStateDto sell(UUID cid,UUID aid){Auction a=auction(cid,aid);AuctionState s=locked(cid,aid);sellLocked(cid,a,s);return publish(cid,aid,snapshot(cid,a,s));}
+    @Transactional public AuctionStateDto sell(UUID cid,UUID aid){squadConfirmations.assertRosterMutable(cid);Auction a=auction(cid,aid);AuctionState s=locked(cid,aid);sellLocked(cid,a,s);return publish(cid,aid,snapshot(cid,a,s));}
     private void sellLocked(UUID cid,Auction a,AuctionState s){
         if(s.getCurrentPlayer()==null)bad("No active player");Player p=s.getCurrentPlayer();if(p.getStatus()==PlayerStatus.SOLD){advanceLocked(a,s);return;}
         Bid b=highest(cid,a.getId(),p);Team t=b.getTeam();validateCapacityAndPurse(t,p,b.getAmount(),config(cid));
@@ -87,18 +95,20 @@ public class TenantAuctionService {
         if(p.getGender()==Gender.MALE)t.setMaleCount(n(t.getMaleCount())+1);else t.setFemaleCount(n(t.getFemaleCount())+1);teams.save(t);s.setCurrentPlayer(null);states.save(s);
         broadcaster.broadcastEvent(cid,a.getId(),"PLAYER_SOLD",Map.of("player",p.getFullName(),"teamName",t.getName(),"amount",b.getAmount()));advanceLocked(a,s);
     }
-    @Transactional public AuctionStateDto unsold(UUID cid,UUID aid){Auction a=auction(cid,aid);AuctionState s=locked(cid,aid);unsoldLocked(cid,a,s);return publish(cid,aid,snapshot(cid,a,s));}
+    @Transactional public AuctionStateDto unsold(UUID cid,UUID aid){squadConfirmations.assertRosterMutable(cid);Auction a=auction(cid,aid);AuctionState s=locked(cid,aid);unsoldLocked(cid,a,s);return publish(cid,aid,snapshot(cid,a,s));}
     private void unsoldLocked(UUID cid,Auction a,AuctionState s){
         if(s.getCurrentPlayer()==null)bad("No active player");Player p=s.getCurrentPlayer();p.setStatus(PlayerStatus.UNSOLD);players.save(p);s.setCurrentPlayer(null);states.save(s);
         broadcaster.broadcastEvent(cid,a.getId(),"PLAYER_UNSOLD",Map.of("player",p.getFullName()));advanceLocked(a,s);
     }
     @Transactional public AuctionStateDto next(UUID cid,UUID aid){
+        squadConfirmations.assertRosterMutable(cid);
         Auction a=auction(cid,aid);AuctionState s=locked(cid,aid);if(s.getCurrentPlayer()!=null&&s.getCurrentPlayer().getStatus()==PlayerStatus.ON_BLOCK){s.getCurrentPlayer().setStatus(PlayerStatus.AVAILABLE);players.save(s.getCurrentPlayer());}
         s.setCurrentPlayer(null);advanceLocked(a,s);return publish(cid,aid,snapshot(cid,a,s));
     }
     private void advanceLocked(Auction a,AuctionState s){selectNext(a,s);if(s.getCurrentPlayer()==null){s.setStatus(AuctionStatus.COMPLETED);a.setStatus(AuctionStatus.COMPLETED);s.setBidDeadline(null);}else deadlineIfRunning(s);save(a,s);}
 
     @Transactional public AuctionStateDto setCurrent(UUID cid,UUID aid,UUID playerId){
+        squadConfirmations.assertRosterMutable(cid);
         if(playerId==null)bad("Player is required");Auction a=auction(cid,aid);AuctionState s=locked(cid,aid);Player p=players.findByIdAndChampionshipId(playerId,cid).orElseThrow(()->notFound("Player"));
         if(p.getAuction()==null||!p.getAuction().getId().equals(aid)||(p.getStatus()!=PlayerStatus.AVAILABLE&&p.getStatus()!=PlayerStatus.UNSOLD))bad("Player is not available in this auction");
         if(s.getCurrentPlayer()!=null&&s.getCurrentPlayer().getStatus()==PlayerStatus.ON_BLOCK){s.getCurrentPlayer().setStatus(PlayerStatus.AVAILABLE);players.save(s.getCurrentPlayer());}
@@ -106,11 +116,13 @@ public class TenantAuctionService {
         deadlineIfRunning(s);save(a,s);return publish(cid,aid,snapshot(cid,a,s));
     }
     @Transactional public AuctionStateDto resetUnsold(UUID cid,UUID aid){
+        squadConfirmations.assertRosterMutable(cid);
         Auction a=auction(cid,aid);AuctionState s=locked(cid,aid);List<Player> list=players.findAllByAuctionIdAndChampionshipIdAndStatusOrderByAuctionOrderAsc(aid,cid,PlayerStatus.UNSOLD);list.forEach(p->p.setStatus(PlayerStatus.AVAILABLE));players.saveAll(list);
         if(s.getStatus()==AuctionStatus.COMPLETED&&!list.isEmpty()){s.setStatus(AuctionStatus.NOT_STARTED);a.setStatus(AuctionStatus.NOT_STARTED);save(a,s);}
         broadcaster.broadcastEvent(cid,aid,"UNSOLD_RESET",Map.of("count",list.size()));return publish(cid,aid,snapshot(cid,a,s));
     }
     @Transactional public PlayerDto basePrice(UUID cid,UUID aid,UUID playerId,BigDecimal amount){
+        squadConfirmations.assertRosterMutable(cid);
         auction(cid,aid);locked(cid,aid);if(amount==null||amount.signum()<=0)bad("Base price must be positive");Player p=players.findByIdAndChampionshipId(playerId,cid).orElseThrow(()->notFound("Player"));
         if(p.getAuction()==null||!p.getAuction().getId().equals(aid)||p.getStatus()==PlayerStatus.SOLD)bad("Player cannot be edited in this auction");p.setBasePrice(amount);return PlayerDto.from(players.save(p));
     }

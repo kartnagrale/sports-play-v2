@@ -1,15 +1,18 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { api, MatchDto, MatchFormatDto, PlayerDto, TeamDto, FORMAT_LABEL, FORMAT_SHORT } from "@/lib/api";
+import { api, MatchDto, MatchFormatDto, PlayerDto, TeamDto, SquadSummaryDto, FORMAT_LABEL, FORMAT_SHORT } from "@/lib/api";
 import { createMatchSocket } from "@/lib/ws";
 import { useNavigation } from "@/lib/navigation";
+import { useChampionship } from "@/lib/championship";
+import Link from "next/link";
 import { toast } from "sonner";
 import type { Client } from "@stomp/stompjs";
-import { Calendar, Circle, Check, ChevronRight, Plus, Minus, Trash2, RefreshCw } from "lucide-react";
+import { Calendar, Circle, Check, ChevronRight, Plus, Minus, Trash2, RefreshCw, Lock } from "lucide-react";
 
 export default function MatchesPage() {
   const role = useNavigation((state) => state.role);
+  const active = useChampionship((state) => state.active);
   const isAdmin = role === "SUPER_ADMIN" || role === "CHAMPIONSHIP_ADMIN";
   const [matches, setMatches] = useState<MatchDto[]>([]);
   const [teams, setTeams] = useState<TeamDto[]>([]);
@@ -17,27 +20,30 @@ export default function MatchesPage() {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [showCreate, setShowCreate] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [squadsReady, setSquadsReady] = useState(false);
   const selectedIdRef = useRef<string | null>(null);
   selectedIdRef.current = selectedId;
 
   const load = useCallback(async () => {
     setLoading(true);
     try {
-      const [m, t, p] = await Promise.all([
+      const [m, t, p, squad] = await Promise.all([
         api.get<MatchDto[]>("/matches"),
         api.get<TeamDto[]>("/teams"),
         api.get<PlayerDto[]>("/players"),
+        active ? api.get<SquadSummaryDto>(`/championships/${active.id}/squad-confirmations`) : Promise.resolve({data:null}),
       ]);
       setMatches(m.data);
       setTeams(t.data);
       setPlayers(p.data);
+      setSquadsReady(Boolean(squad.data?.allSquadsLocked));
       if (!selectedIdRef.current && m.data.length) setSelectedId(m.data[0].id);
     } catch (err) {
       console.warn("matches load failed", err);
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [active]);
 
   useEffect(() => {
     load();
@@ -76,19 +82,21 @@ export default function MatchesPage() {
             Refresh
           </button>
           {isAdmin && (
-            <button className="btn btn-primary" onClick={() => setShowCreate(true)} data-testid="new-match-btn">
+            <button className="btn btn-primary" disabled={!squadsReady} onClick={() => setShowCreate(true)} data-testid="new-match-btn" title={squadsReady?"Schedule a league match":"Lock every squad in Phase 2 first"}>
               <Plus size={14} /> New Match
             </button>
           )}
         </div>
       </div>
 
+      {!squadsReady && <div className="mb-6 flex flex-col gap-3 rounded-2xl border border-warning/25 bg-warning/[.07] p-5 sm:flex-row sm:items-center sm:justify-between"><div className="flex items-start gap-3"><Lock className="mt-0.5 shrink-0 text-warning" size={18}/><div><div className="h-heading text-sm text-warning">League scheduling is locked</div><p className="mt-1 text-xs text-white/45">Every captain must confirm their roster and the championship administrator must lock all squads.</p></div></div>{isAdmin&&<Link href="/squad-confirmation" className="btn btn-ghost shrink-0 justify-center">Open Phase 2<ChevronRight size={14}/></Link>}</div>}
+
       {matches.length === 0 && (
         <div className="card-elev rounded-2xl p-16 text-center">
           <div className="label-cap">Empty</div>
           <div className="h-heading text-2xl mt-2 text-white/60">No matches scheduled yet</div>
           <p className="text-white/40 mt-2">
-            {isAdmin ? "Click 'New Match' to schedule a fixture." : "Fixtures will appear here once scheduled."}
+            {isAdmin ? (squadsReady ? "Click 'New Match' to schedule a fixture." : "Complete Squad Confirmation to unlock league fixtures.") : "Fixtures will appear here once scheduled."}
           </p>
         </div>
       )}

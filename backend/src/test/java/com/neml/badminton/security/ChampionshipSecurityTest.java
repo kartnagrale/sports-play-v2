@@ -39,7 +39,9 @@ class ChampionshipSecurityTest {
         var auth = new UsernamePasswordAuthenticationToken(user, null, List.of());
 
         assertThat(security.canBid(championshipId, teamId, auth)).isTrue();
+        assertThat(security.canConfirmSquad(championshipId, teamId, auth)).isTrue();
         assertThat(security.canBid(championshipId, UUID.randomUUID(), auth)).isFalse();
+        assertThat(security.canConfirmSquad(championshipId, UUID.randomUUID(), auth)).isFalse();
         assertThat(security.canBid(UUID.randomUUID(), teamId, auth)).isFalse();
     }
 }

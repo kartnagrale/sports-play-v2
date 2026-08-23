@@ -211,6 +211,53 @@ export interface MatchDto {
   formats: MatchFormatDto[];
 }
 
+export type SquadConfirmationStatus = "DRAFT" | "CONFIRMED" | "LOCKED";
+
+export interface SquadTeamDto {
+  teamId: string;
+  teamName: string;
+  shortCode: string;
+  primaryColor: string;
+  status: SquadConfirmationStatus;
+  rosterValid: boolean;
+  validationIssues: string[];
+  playerCount: number;
+  maleCount: number;
+  femaleCount: number;
+  requiredPlayers: number;
+  requiredMale: number;
+  requiredFemale: number;
+  confirmedBy?: { id: string; fullName: string } | null;
+  confirmedAt?: string | null;
+  lockedBy?: { id: string; fullName: string } | null;
+  lockedAt?: string | null;
+  reopenedBy?: { id: string; fullName: string } | null;
+  reopenedAt?: string | null;
+  notes?: string | null;
+  updatedAt?: string | null;
+}
+
+export interface SquadSummaryDto {
+  phaseStatus: "NOT_READY" | "READY" | "IN_PROGRESS" | "COMPLETED";
+  auctionCompleted: boolean;
+  allSquadsLocked: boolean;
+  totalTeams: number;
+  readyTeams: number;
+  confirmedTeams: number;
+  lockedTeams: number;
+  teams: SquadTeamDto[];
+}
+
+export interface SquadEventDto {
+  id: string;
+  teamId: string;
+  teamName: string;
+  action: "CONFIRMED" | "LOCKED" | "REOPENED";
+  actor: { id: string; fullName: string };
+  occurredAt: string;
+  notes?: string | null;
+}
+
 export const FORMAT_LABEL: Record<string, string> = {
   MENS_SINGLES: "Men's Singles",
   WOMENS_SINGLES: "Women's Singles",

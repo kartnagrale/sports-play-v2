@@ -5,6 +5,7 @@ import com.neml.badminton.entity.AuctionState;
 import com.neml.badminton.entity.Team;
 import com.neml.badminton.entity.Match;
 import com.neml.badminton.entity.MatchFormat;
+import com.neml.badminton.entity.SquadConfirmation;
 import com.neml.badminton.websocket.AuctionBroadcaster;
 import jakarta.persistence.Version;
 import org.junit.jupiter.api.Test;
@@ -22,7 +23,7 @@ class TenantIsolationArchitectureTest {
         List<Class<?>> tenantControllers = List.of(
                 TenantAuctionController.class, TenantDataController.class,
                 TenantMatchController.class, TenantAnalyticsController.class,
-                TenantPlayerAdminController.class);
+                TenantPlayerAdminController.class, SquadConfirmationController.class);
 
         tenantControllers.forEach(controller -> {
             String[] roots = controller.getAnnotation(RequestMapping.class).value();
@@ -36,6 +37,7 @@ class TenantIsolationArchitectureTest {
         assertThat(versioned(Team.class)).isTrue();
         assertThat(versioned(Match.class)).isTrue();
         assertThat(versioned(MatchFormat.class)).isTrue();
+        assertThat(versioned(SquadConfirmation.class)).isTrue();
     }
 
     @Test

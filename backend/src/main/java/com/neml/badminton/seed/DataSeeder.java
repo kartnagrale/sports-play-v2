@@ -48,6 +48,7 @@ public class DataSeeder implements CommandLineRunner {
                 new ScreenSeed("DASHBOARD", "Dashboard", "/dashboard", "LayoutDashboard", "Workspace", 10),
                 new ScreenSeed("AUCTION", "Auction", "/auction", "Gavel", "Workspace", 20),
                 new ScreenSeed("SCOREBOARD", "Scoreboard", "/scoreboard", "Trophy", "Workspace", 30),
+                new ScreenSeed("SQUAD_CONFIRMATION", "Squad Confirmation", "/squad-confirmation", "ClipboardCheck", "Competition", 35),
                 new ScreenSeed("MATCHES", "Matches", "/matches", "CalendarDays", "Workspace", 40),
                 new ScreenSeed("CHAMPIONSHIP_SETTINGS", "Championship Setup", "/admin/championship-settings", "Settings2", "Management", 45),
                 new ScreenSeed("TEAMS", "Teams", "/teams", "UsersRound", "Management", 50),
@@ -70,8 +71,8 @@ public class DataSeeder implements CommandLineRunner {
         }
         Map<NavigationRole, Set<String>> grants = Map.of(
                 NavigationRole.SUPER_ADMIN, Set.of("CHAMPIONSHIP_LAUNCHPAD", "CHAMPIONSHIPS"),
-                NavigationRole.CHAMPIONSHIP_ADMIN, Set.of("DASHBOARD", "AUCTION", "SCOREBOARD", "MATCHES", "CHAMPIONSHIP_SETTINGS", "TEAMS", "TEAM_MANAGEMENT", "PLAYERS", "ANNOUNCEMENTS", "ANALYSIS", "FORMAT_LEADERS", "TOP_PERFORMERS", "HISTORY"),
-                NavigationRole.TEAM_CAPTAIN, Set.of("DASHBOARD", "AUCTION", "SCOREBOARD", "MATCHES", "TEAMS", "ANALYSIS", "FORMAT_LEADERS", "TOP_PERFORMERS", "HISTORY"),
+                NavigationRole.CHAMPIONSHIP_ADMIN, Set.of("DASHBOARD", "AUCTION", "SCOREBOARD", "SQUAD_CONFIRMATION", "MATCHES", "CHAMPIONSHIP_SETTINGS", "TEAMS", "TEAM_MANAGEMENT", "PLAYERS", "ANNOUNCEMENTS", "ANALYSIS", "FORMAT_LEADERS", "TOP_PERFORMERS", "HISTORY"),
+                NavigationRole.TEAM_CAPTAIN, Set.of("DASHBOARD", "AUCTION", "SCOREBOARD", "SQUAD_CONFIRMATION", "MATCHES", "TEAMS", "ANALYSIS", "FORMAT_LEADERS", "TOP_PERFORMERS", "HISTORY"),
                 NavigationRole.SPECTATOR, Set.of("DASHBOARD", "AUCTION", "SCOREBOARD", "MATCHES", "TEAMS", "ANNOUNCEMENTS", "ANALYSIS", "FORMAT_LEADERS", "TOP_PERFORMERS")
         );
         grants.forEach((role, codes) -> codes.forEach(code -> {
