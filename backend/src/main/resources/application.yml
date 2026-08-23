@@ -43,6 +43,8 @@ spring:
       write-dates-as-timestamps: false
 
 app:
+  auth:
+    cookie-secure: ${AUTH_COOKIE_SECURE:true}
   seed:
     enabled: ${DATA_SEED_ENABLED:false}
   jwt:

@@ -8,6 +8,7 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,9 +19,12 @@ public class AuthController {
     private static final int COOKIE_MAX_AGE_SECONDS = 60 * 60 * 24; // 1 day, matches JWT expiration
 
     private final AuthService authService;
+    private final boolean secureCookie;
 
-    public AuthController(AuthService authService) {
+    public AuthController(AuthService authService,
+                          @Value("${app.auth.cookie-secure:true}") boolean secureCookie) {
         this.authService = authService;
+        this.secureCookie = secureCookie;
     }
 
     @PostMapping("/login")
@@ -44,10 +48,8 @@ public class AuthController {
     }
 
     private String buildCookie(String value, int maxAgeSeconds) {
-        // httpOnly + SameSite=Lax + Path=/. Secure is required in browsers when SameSite=None; we use Lax so it's optional.
-        return String.format(
-                "%s=%s; Max-Age=%d; Path=/; HttpOnly; SameSite=Lax; Secure",
-                JwtAuthFilter.COOKIE_NAME, value, maxAgeSeconds
-        );
+        String cookie = String.format("%s=%s; Max-Age=%d; Path=/; HttpOnly; SameSite=Lax",
+                JwtAuthFilter.COOKIE_NAME, value, maxAgeSeconds);
+        return secureCookie ? cookie + "; Secure" : cookie;
     }
 }

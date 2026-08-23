@@ -66,7 +66,10 @@ public class AnalyticsService {
             int[] s = stats.get(t.getId());
             int base = s[1] * rules.getPointsPerWin();
             List<UUID> unplayed = unplayedPlayerIds(t, playedByTeam.getOrDefault(t.getId(), Set.of()));
-            int penalty = applyPenalties ? unplayed.size() * rules.getPenaltyPerUnplayed() : 0;
+            // Participation penalties only make sense after competition has begun.
+            // A newly generated squad must start the league table at zero points.
+            int penalty = applyPenalties && !completed.isEmpty()
+                    ? unplayed.size() * rules.getPenaltyPerUnplayed() : 0;
             int total = base - penalty;
             pre.add(new StandingDto(
                     TeamRef.from(t),

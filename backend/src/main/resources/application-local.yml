@@ -1,0 +1,20 @@
+spring:
+  datasource:
+    url: ${LOCAL_DB_URL:jdbc:postgresql://localhost:5432/sports_play?currentSchema=play_neml&lock_timeout=300&idle_in_transaction_session_timeout=10000}
+    username: ${LOCAL_DB_USER:postgres}
+    password: ${LOCAL_DB_PASSWORD}
+    hikari:
+      connection-init-sql: "SET search_path TO play_neml"
+  jpa:
+    generate-ddl: false
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        default_schema: play_neml
+
+app:
+  auth:
+    cookie-secure: false
+  seed:
+    enabled: ${DATA_SEED_ENABLED:true}

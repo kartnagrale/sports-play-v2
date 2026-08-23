@@ -70,6 +70,7 @@ public class ChampionshipService {
                         req.adminMobile().trim(), temporaryPassword, true));
     }
 
+    @Transactional
     public List<ChampionshipDto> listFor(User user) {
         List<Championship> list = user.getRole() == Role.SUPER_ADMIN ? championships.findAll()
                 : roles.findAllByUserId(user.getId()).stream().map(ChampionshipRole::getChampionship).distinct().toList();
