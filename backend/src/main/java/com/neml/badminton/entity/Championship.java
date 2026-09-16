@@ -36,6 +36,11 @@ public class Championship {
     @Builder.Default
     private ChampionshipStatus status = ChampionshipStatus.DRAFT;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "lifecycle_phase", nullable = false, length = 32)
+    @Builder.Default
+    private ChampionshipPhase lifecyclePhase = ChampionshipPhase.CREATION;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "created_by")
     private User createdBy;

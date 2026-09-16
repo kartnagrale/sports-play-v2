@@ -1,5 +1,6 @@
 package com.neml.badminton.security;
 
+import com.neml.badminton.config.RequestLoggingFilter;
 import com.neml.badminton.entity.User;
 import com.neml.badminton.repository.UserRepository;
 import io.jsonwebtoken.Claims;
@@ -10,6 +11,8 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.lang.NonNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -26,6 +29,7 @@ import java.util.UUID;
 public class JwtAuthFilter extends OncePerRequestFilter {
 
     public static final String COOKIE_NAME = "neml_auth";
+    private static final Logger log = LoggerFactory.getLogger(JwtAuthFilter.class);
 
     private final JwtService jwtService;
     private final UserRepository userRepository;
@@ -66,6 +70,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                                     new SimpleGrantedAuthority("CHAMPIONSHIP_" + championshipId)));
                     auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     SecurityContextHolder.getContext().setAuthentication(auth);
+                    request.setAttribute(RequestLoggingFilter.ACTOR_ATTRIBUTE, "viewer:" + championshipId);
                     filterChain.doFilter(request, response);
                     return;
                 }
@@ -79,9 +84,12 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                     );
                     auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     SecurityContextHolder.getContext().setAuthentication(auth);
+                    request.setAttribute(RequestLoggingFilter.ACTOR_ATTRIBUTE, "user:" + user.getId());
+                } else if (userOpt.isEmpty()) {
+                    log.debug("JWT subject no longer identifies an existing user");
                 }
-            } catch (JwtException | IllegalArgumentException ignored) {
-                // Invalid token — continue unauthenticated
+            } catch (JwtException | IllegalArgumentException exception) {
+                log.debug("JWT rejected type={}", exception.getClass().getSimpleName());
             }
         }
         filterChain.doFilter(request, response);

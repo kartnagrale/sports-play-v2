@@ -37,7 +37,8 @@ public class ChampionshipDtos {
     public record AssignRoleRequest(@Email @NotBlank String email, @NotNull ChampionshipRoleType role,
                                     UUID teamId) {}
     public record ChampionshipDto(UUID id, String name, String sportType, String roomCode,
-                                  Boolean isPublic, ChampionshipStatus status, UUID defaultAuctionId) {}
+                                  Boolean isPublic, ChampionshipStatus status,
+                                  ChampionshipPhase lifecyclePhase, UUID defaultAuctionId) {}
     public record ProvisionedAdminDto(UUID userId, String fullName, String email, String mobile, String temporaryPassword,
                                       boolean messageQueued) {}
     public record CreateChampionshipResponse(ChampionshipDto championship, ProvisionedAdminDto admin) {}
@@ -45,6 +46,6 @@ public class ChampionshipDtos {
 
     public static ChampionshipDto from(Championship c, UUID auctionId) {
         return new ChampionshipDto(c.getId(), c.getName(), c.getSportType(), c.getRoomCode(),
-                c.getIsPublic(), c.getStatus(), auctionId);
+                c.getIsPublic(), c.getStatus(), c.getLifecyclePhase(), auctionId);
     }
 }

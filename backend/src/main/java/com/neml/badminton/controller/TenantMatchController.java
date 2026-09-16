@@ -7,6 +7,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import java.util.*;
 import jakarta.validation.Valid;
+import com.neml.badminton.entity.User;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 
 @RestController
 @RequestMapping("/api/championships/{championshipId}")
@@ -17,9 +19,20 @@ public class TenantMatchController {
     @PostMapping("/admin/matches/formats/{formatId}/assign") @PreAuthorize("@championshipSecurity.canManage(#championshipId, authentication)")
     public MatchDto assign(@PathVariable UUID championshipId,@PathVariable UUID formatId,@Valid @RequestBody AssignPlayersRequest req){return service.assignPlayers(championshipId,formatId,req);}
     @PostMapping("/admin/matches/formats/{formatId}/result") @PreAuthorize("@championshipSecurity.canManage(#championshipId, authentication)")
-    public MatchDto result(@PathVariable UUID championshipId,@PathVariable UUID formatId,@Valid @RequestBody ReportFormatResultRequest req){return service.reportFormatResult(championshipId,formatId,req);}
+    public MatchDto result(@PathVariable UUID championshipId,@PathVariable UUID formatId,
+            @Valid @RequestBody ReportFormatResultRequest req,@AuthenticationPrincipal User actor){
+        return service.reportFormatResult(championshipId,formatId,req,actor);
+    }
+    @PutMapping("/admin/matches/formats/{formatId}/result") @PreAuthorize("@championshipSecurity.canManage(#championshipId, authentication)")
+    public MatchDto correct(@PathVariable UUID championshipId,@PathVariable UUID formatId,
+            @Valid @RequestBody ReportFormatResultRequest req,@AuthenticationPrincipal User actor){
+        return service.correctFormatResult(championshipId,formatId,req,actor);
+    }
+    @PostMapping("/admin/matches/{id}/administrative-result") @PreAuthorize("@championshipSecurity.canManage(#championshipId, authentication)")
+    public MatchDto administrativeResult(@PathVariable UUID championshipId,@PathVariable UUID id,@Valid@RequestBody AdministrativeFixtureResultRequest req,@AuthenticationPrincipal User actor){return service.administrativeFixtureResult(championshipId,id,req,actor);}
     @PostMapping("/admin/matches/formats/{formatId}/live-score") @PreAuthorize("@championshipSecurity.canManage(#championshipId, authentication)")
     public MatchDto score(@PathVariable UUID championshipId,@PathVariable UUID formatId,@Valid @RequestBody ReportFormatResultRequest req){return service.reportLiveScore(championshipId,formatId,req);}
     @DeleteMapping("/admin/matches/{id}") @PreAuthorize("@championshipSecurity.canManage(#championshipId, authentication)")
-    public ResponseEntity<Void> delete(@PathVariable UUID championshipId,@PathVariable UUID id){service.deleteMatch(championshipId,id);return ResponseEntity.noContent().build();}
+    public ResponseEntity<Void> delete(@PathVariable UUID championshipId,@PathVariable UUID id,
+            @AuthenticationPrincipal User actor){service.deleteMatch(championshipId,id,actor);return ResponseEntity.noContent().build();}
 }

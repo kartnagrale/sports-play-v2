@@ -75,7 +75,7 @@ public class AnalyticsService {
                     TeamRef.from(t),
                     s[0], s[1], s[2],
                     s[3], s[4], s[3] - s[4],
-                    base, penalty, total,
+                    base, penalty, total,null,
                     0, unplayed
             ));
         }
@@ -98,7 +98,7 @@ public class AnalyticsService {
         for (StandingDto s : pre) {
             ranked.add(new StandingDto(s.team(), s.played(), s.won(), s.lost(),
                     s.formatWins(), s.formatLosses(), s.formatDiff(),
-                    s.basePoints(), s.penalty(), s.totalPoints(), rank++, s.unplayedPlayerIds()));
+                    s.basePoints(), s.penalty(), s.totalPoints(),s.netRunRate(), rank++, s.unplayedPlayerIds()));
         }
         return ranked;
     }
@@ -129,7 +129,8 @@ public class AnalyticsService {
     public List<FormatLeaderDto> formatLeaders(UUID championshipId) {
         List<Team> teams = teams(championshipId);
         if(teams.isEmpty()) return List.of();
-        List<Match> matches = matchRepository.findAllByChampionshipIdOrderByMatchNumberAsc(championshipId);
+        List<Match> matches = matchRepository.findAllByChampionshipIdAndStageTypeOrderByMatchNumberAsc(
+                championshipId, CompetitionStageType.LEAGUE);
         List<FormatLeaderDto> out = new ArrayList<>();
         for (FormatType ft : FormatType.values()) {
             Map<UUID, Integer> winsByTeam = new HashMap<>();
@@ -295,6 +296,7 @@ public class AnalyticsService {
     }
 
     private List<Match> completedMatches(UUID championshipId) {
-        return matchRepository.findAllByChampionshipIdAndStatusOrderByScheduledAtAsc(championshipId, MatchStatus.COMPLETED);
+        return matchRepository.findAllByChampionshipIdAndStageTypeAndStatusOrderByMatchNumberAsc(
+                championshipId, CompetitionStageType.LEAGUE, MatchStatus.COMPLETED);
     }
 }

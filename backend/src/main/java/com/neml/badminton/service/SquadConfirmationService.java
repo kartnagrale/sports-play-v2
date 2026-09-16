@@ -25,14 +25,22 @@ public class SquadConfirmationService {
     private final SquadConfirmationRepository confirmations;
     private final SquadConfirmationEventRepository events;
     private final ObjectMapper objectMapper;
+    private final CompetitionConfigurationRepository competitionConfigurations;
+    private final RosterQuotaRuleRepository quotaRules;
+    private final ConfigurationSectionService configurationSections;
+    private final AuctionConfigurationRepository auctionConfigurations;
 
     public SquadConfirmationService(ChampionshipRepository championships, TeamRepository teams,
             PlayerRepository players, TournamentSettingsRepository settings, AuctionRepository auctions,
             MatchRepository matches, SquadConfirmationRepository confirmations,
-            SquadConfirmationEventRepository events, ObjectMapper objectMapper) {
+            SquadConfirmationEventRepository events, ObjectMapper objectMapper,
+            CompetitionConfigurationRepository competitionConfigurations,RosterQuotaRuleRepository quotaRules,ConfigurationSectionService configurationSections,AuctionConfigurationRepository auctionConfigurations) {
         this.championships = championships; this.teams = teams; this.players = players;
         this.settings = settings; this.auctions = auctions; this.matches = matches;
         this.confirmations = confirmations; this.events = events; this.objectMapper = objectMapper;
+        this.competitionConfigurations=competitionConfigurations;this.quotaRules=quotaRules;
+        this.configurationSections=configurationSections;
+        this.auctionConfigurations=auctionConfigurations;
     }
 
     @Transactional
@@ -47,9 +55,9 @@ public class SquadConfirmationService {
                 .collect(Collectors.groupingBy(player -> player.getTeam().getId()));
 
         List<SquadTeamDto> result = championshipTeams.stream()
-                .map(team -> dto(team, state.get(team.getId()), validate(roster.getOrDefault(team.getId(), List.of()), rules)))
+                .map(team -> dto(team, state.get(team.getId()), validate(championshipId,roster.getOrDefault(team.getId(), List.of()), rules)))
                 .toList();
-        boolean auctionCompleted = auctions.existsByChampionshipIdAndStatus(championshipId, AuctionStatus.COMPLETED);
+        boolean auctionCompleted = !auctionEnabled(championshipId)||auctions.existsByChampionshipIdAndStatus(championshipId, AuctionStatus.COMPLETED);
         int ready = (int) result.stream().filter(SquadTeamDto::rosterValid).count();
         int confirmed = (int) result.stream().filter(item -> item.status() == SquadConfirmationStatus.CONFIRMED).count();
         int locked = (int) result.stream().filter(item -> item.status() == SquadConfirmationStatus.LOCKED).count();
@@ -61,10 +69,13 @@ public class SquadConfirmationService {
 
     @Transactional
     public SquadSummaryDto confirm(UUID championshipId, UUID teamId, User actor, SquadActionRequest request) {
-        if (!auctions.existsByChampionshipIdAndStatus(championshipId, AuctionStatus.COMPLETED)) {
+        if (auctionEnabled(championshipId)&&!auctions.existsByChampionshipIdAndStatus(championshipId, AuctionStatus.COMPLETED)) {
             conflict("Complete the auction before confirming squads");
         }
         Team team = team(championshipId, teamId);
+        Championship championship=team.getChampionship();
+        championship.setLifecyclePhase(ChampionshipPhase.SQUAD_CONFIRMATION);
+        championships.save(championship);
         RosterValidation validation = validation(championshipId, teamId);
         if (!validation.valid()) conflict(String.join("; ", validation.issues()));
         SquadConfirmation confirmation = confirmations.findForUpdate(championshipId, teamId)
@@ -77,6 +88,7 @@ public class SquadConfirmationService {
         confirmation.setLockedBy(null); confirmation.setLockedAt(null);
         confirmation.setNotes(notes(request));
         confirmation = confirmations.save(confirmation);
+        configurationSections.lock(championshipId,"TEAMS_AND_ROSTERS",actor);
         record(confirmation, SquadConfirmationAction.CONFIRMED, actor, confirmation.getNotes(), validation.players());
         return summary(championshipId);
     }
@@ -153,6 +165,13 @@ public class SquadConfirmationService {
         }
     }
 
+    public void assertTeamLocked(UUID championshipId, UUID teamId) {
+        SquadConfirmation confirmation = confirmations.findByChampionshipIdAndTeamId(championshipId, teamId)
+                .orElseThrow(() -> conflictException("The team squad is not confirmed"));
+        if (confirmation.getStatus() != SquadConfirmationStatus.LOCKED)
+            conflict("Only players from locked squads may be assigned to fixtures");
+    }
+
     @Transactional
     public void assertRosterMutable(UUID championshipId) {
         if (confirmations.existsByChampionshipIdAndStatusIn(championshipId,
@@ -162,18 +181,32 @@ public class SquadConfirmationService {
     }
 
     private RosterValidation validation(UUID championshipId, UUID teamId) {
-        return validate(players.findAllByChampionshipIdOrderByAuctionOrderAsc(championshipId).stream()
+        return validate(championshipId,players.findAllByChampionshipIdOrderByAuctionOrderAsc(championshipId).stream()
                 .filter(player -> player.getTeam() != null && player.getTeam().getId().equals(teamId)).toList(), rules(championshipId));
     }
+    private boolean auctionEnabled(UUID championshipId){return auctionConfigurations.findFirstByChampionshipIdOrderByConfigurationVersionDesc(championshipId).map(AuctionConfiguration::getEnabled).orElse(true);}
 
-    private RosterValidation validate(List<Player> roster, TournamentSettings rules) {
+    private RosterValidation validate(UUID championshipId,List<Player> roster, TournamentSettings rules) {
         List<String> issues = new ArrayList<>();
         int male = (int) roster.stream().filter(player -> player.getGender() == Gender.MALE).count();
         int female = (int) roster.stream().filter(player -> player.getGender() == Gender.FEMALE).count();
-        if (roster.size() != rules.getMaxSquadSize()) issues.add("Squad must contain exactly " + rules.getMaxSquadSize() + " players");
+        CompetitionConfiguration configuration=competitionConfigurations.findByChampionshipId(championshipId).orElse(null);
+        int minimum=configuration==null?rules.getMaxSquadSize():configuration.getMinimumRosterSize();
+        int maximum=configuration==null?rules.getMaxSquadSize():configuration.getMaximumRosterSize();
+        if (roster.size()<minimum||roster.size()>maximum) issues.add("Squad must contain between " + minimum+" and "+maximum+" players");
         if (male < rules.getMinMale()) issues.add("Squad requires at least " + rules.getMinMale() + " male players");
         if (female < rules.getMinFemale()) issues.add("Squad requires at least " + rules.getMinFemale() + " female players");
         if (roster.stream().anyMatch(player -> player.getStatus() != PlayerStatus.SOLD)) issues.add("Every squad player must have SOLD status");
+        for(RosterQuotaRule quota:quotaRules.findAllByChampionshipIdAndEnabledTrue(championshipId)){
+            if(!"SQUAD".equalsIgnoreCase(quota.getAppliesTo())) continue;
+            long count=switch(quota.getCategoryType().toUpperCase(Locale.ROOT)){
+                case "GENDER"->roster.stream().filter(p->p.getGender().name().equalsIgnoreCase(quota.getCategoryValue())).count();
+                case "SKILL_LEVEL","PLAYER_CATEGORY"->roster.stream().filter(p->p.getSkillLevel()!=null&&p.getSkillLevel().equalsIgnoreCase(quota.getCategoryValue())).count();
+                default->0;
+            };
+            if((quota.getMinimumCount()!=null&&count<quota.getMinimumCount())||(quota.getMaximumCount()!=null&&count>quota.getMaximumCount()))
+                issues.add(quota.getValidationMessage()==null||quota.getValidationMessage().isBlank()?quota.getRuleCode()+" quota is not satisfied":quota.getValidationMessage());
+        }
         return new RosterValidation(issues.isEmpty(), List.copyOf(issues), List.copyOf(roster), male, female);
     }
 

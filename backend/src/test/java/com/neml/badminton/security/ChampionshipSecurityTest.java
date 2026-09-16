@@ -40,8 +40,30 @@ class ChampionshipSecurityTest {
 
         assertThat(security.canBid(championshipId, teamId, auth)).isTrue();
         assertThat(security.canConfirmSquad(championshipId, teamId, auth)).isTrue();
+        assertThat(security.canManage(championshipId, auth)).isFalse();
         assertThat(security.canBid(championshipId, UUID.randomUUID(), auth)).isFalse();
         assertThat(security.canConfirmSquad(championshipId, UUID.randomUUID(), auth)).isFalse();
         assertThat(security.canBid(UUID.randomUUID(), teamId, auth)).isFalse();
+    }
+
+    @Test
+    void spectatorViewerIsReadOnlyAndBoundToOneChampionship() {
+        UUID championshipId=UUID.randomUUID();
+        var auth=new UsernamePasswordAuthenticationToken(new ViewerPrincipal(championshipId),null,List.of());
+        assertThat(security.canView(championshipId,auth)).isTrue();
+        assertThat(security.canView(UUID.randomUUID(),auth)).isFalse();
+        assertThat(security.canManage(championshipId,auth)).isFalse();
+        assertThat(security.canBid(championshipId,UUID.randomUUID(),auth)).isFalse();
+    }
+
+    @Test
+    void championshipAdminCanConfigureAndManageEitherPlayingXiButNotAnotherChampionship(){
+        UUID championshipId=UUID.randomUUID();User user=User.builder().id(UUID.randomUUID()).role(Role.USER).build();
+        ChampionshipRole role=ChampionshipRole.builder().user(user).role(ChampionshipRoleType.CHAMPIONSHIP_ADMIN).build();
+        when(roles.existsByUserIdAndChampionshipIdAndRoleIn(user.getId(),championshipId,List.of(ChampionshipRoleType.CHAMPIONSHIP_ADMIN))).thenReturn(true);
+        when(roles.findByUserIdAndChampionshipId(user.getId(),championshipId)).thenReturn(Optional.of(role));
+        var auth=new UsernamePasswordAuthenticationToken(user,null,List.of());
+        assertThat(security.canManage(championshipId,auth)).isTrue();assertThat(security.canBid(championshipId,UUID.randomUUID(),auth)).isTrue();
+        assertThat(security.canManage(UUID.randomUUID(),auth)).isFalse();
     }
 }

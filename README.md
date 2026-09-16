@@ -1,81 +1,196 @@
-# Universal Sports Auction & Championship Platform
+# Sports-Play Platform
 
-Multi-tenant, sport-agnostic live auctions and tournament management with championship-scoped roles and public viewer rooms.
+Sports-Play is a multi-tenant, multi-sport platform for championship provisioning, live player auctions, squad confirmation, league and playoff generation, cricket and badminton scoring, standings, and analytics.
 
-- **Frontend:** Next.js 14 (App Router, TypeScript, Tailwind) — `/app/frontend`
-- **Backend:** Spring Boot 3.2.5 (Java 17, JPA, Spring Security, WebSockets/STOMP) — `/app/backend`
-- **Database:** PostgreSQL 15, isolated in the `play_neml` schema
+- Frontend: Next.js 14, React, TypeScript, Tailwind
+- Backend: Spring Boot 3.2.5, Java 17, Spring Security, JPA, WebSockets
+- Database: PostgreSQL 15+, isolated in the `play_neml` schema
 
-## Quick Start (local machine)
+## Fastest local setup: Docker
 
-### 1. Prerequisites
+Requirements: Docker Desktop or Docker Engine with the Compose plugin.
+
+```bash
+git clone https://github.com/kartnagrale/sports-play-v2.git
+cd sports-play-v2
+git checkout feature/multi-portal
+docker compose up --build
 ```
-Java 17 · Maven 3.8+ · Node 18+ / Yarn · PostgreSQL 15
+
+Open:
+
+- Frontend: http://localhost:3000
+- Backend health: http://localhost:8001/api/health
+- PostgreSQL: localhost:5432, database `sports_play`
+
+The first database start runs `docs/sql/sports-play-complete-schema.sql`. The backend waits for PostgreSQL, validates the complete schema, and seeds local demonstration data. Database data persists in the `sports_play_postgres` Docker volume.
+
+To rebuild application images after pulling changes:
+
+```bash
+docker compose up --build
 ```
 
-### 2. Company PostgreSQL access
+To stop the stack without deleting data:
 
-The database and `play_neml` schema are company-managed and must already exist. The application never creates a database, schema, user, role, or extension. Obtain the host, database name, username, and password from the company DBA. The supplied account must be restricted to the permissions approved for `play_neml`.
+```bash
+docker compose down
+```
 
-### 3. Backend
+To deliberately reset the local database and seed it again:
+
+```bash
+docker compose down -v
+docker compose up --build
+```
+
+## Manual local setup
+
+Requirements: Java 17, Maven 3.8+, Node.js 20+, npm, and PostgreSQL 15+.
+
+### 1. Create and initialize PostgreSQL
+
+Create an empty database and execute the complete schema once:
+
+```bash
+createdb -U postgres sports_play
+psql -U postgres -d sports_play -f docs/sql/sports-play-complete-schema.sql
+```
+
+The application uses Hibernate `validate`; it never creates or alters the application schema at startup.
+
+### 2. Start the backend
+
+The `local` profile defaults to `localhost:5432/sports_play`, user `postgres`, password `password`, and enables demo seeding. Override these values when your local PostgreSQL credentials differ.
+
+PowerShell:
+
+```powershell
+cd backend
+$env:SPRING_PROFILES_ACTIVE = "local"
+$env:LOCAL_DB_URL = "jdbc:postgresql://localhost:5432/sports_play?currentSchema=play_neml"
+$env:LOCAL_DB_USER = "postgres"
+$env:LOCAL_DB_PASSWORD = "your-local-password"
+$env:JWT_SECRET = "local-development-secret-at-least-32-characters"
+mvn spring-boot:run
+```
+
+Bash:
+
 ```bash
 cd backend
-export DB_URL='jdbc:postgresql://<company-host>:5432/<company-database>?currentSchema=play_neml'
-export DB_USER='<company-provided-user>'
-export DB_PASSWORD='<company-provided-password>'
-export JWT_SECRET="change-me-256-bit-secret-value-goes-here-please-make-me-very-long"
-mvn package
-java -jar target/sports-platform-0.0.1-SNAPSHOT.jar
-# Backend up on :8001
-# Data auto-seeded on first boot
+export SPRING_PROFILES_ACTIVE=local
+export LOCAL_DB_URL='jdbc:postgresql://localhost:5432/sports_play?currentSchema=play_neml'
+export LOCAL_DB_USER=postgres
+export LOCAL_DB_PASSWORD='your-local-password'
+export JWT_SECRET='local-development-secret-at-least-32-characters'
+mvn spring-boot:run
 ```
 
-In IntelliJ IDEA, add the same values under **Run → Edit Configurations → Environment variables**. These variables are mandatory. Hibernate's configured default schema and every connection's search path remain fixed to `play_neml`.
+The backend listens on http://localhost:8001.
 
-Verify isolation after startup:
+### 3. Start the frontend
 
-```sql
-SELECT table_schema, table_name
-FROM information_schema.tables
-WHERE table_schema = 'play_neml'
-ORDER BY table_name;
+In a second terminal:
 
-SHOW search_path;
-SELECT current_schema();
-```
-
-### 4. Frontend
 ```bash
 cd frontend
-cp .env.local.example .env.local  # points to http://localhost:8001
-yarn install
-yarn dev
-# Frontend on http://localhost:3000
+cp .env.local.example .env.local
+npm ci
+npm run dev
 ```
 
-## Seeded Credentials
+On Windows Command Prompt, use `copy .env.local.example .env.local`. The frontend listens on http://localhost:3000.
+
+## Local demonstration access
+
+These accounts exist only when `DATA_SEED_ENABLED=true` (the default in the local profile and Docker Compose).
 
 | Role | Email | Password |
-|------|-------|----------|
+|---|---|---|
 | Super Admin | `admin@sports.local` | `Admin@123` |
 | Cricket Admin | `cricket.admin@sports.local` | `Admin@123` |
 | Football Admin | `football.admin@sports.local` | `Admin@123` |
 | Team Captain | `captain@sports.local` | `Admin@123` |
 
-Viewer rooms: `CRIC-8821 / cricket123` and `FOOT-9922 / football123`. Each demo championship has four teams and 24 players.
+Viewer rooms:
 
-## Core API
+- `CRIC-8821` / `cricket123`
+- `FOOT-9922` / `football123`
 
-| Method | Path | Notes |
-|--------|------|-------|
-| POST | `/api/auth/login` | `{email,password}` → `{token,user}` |
-| GET | `/api/auth/me` | requires Bearer JWT |
-| POST | `/api/championships/join-room` | `{roomCode,passcode}` → scoped viewer JWT |
-| GET | `/api/navigation?championshipId={id}` | database-driven screens for the effective role |
-| GET | `/api/championships/{id}/{teams\|players\|matches}` | tenant-scoped reads |
-| GET | `/api/championships/{id}/auctions/{auctionId}/state` | tenant-scoped auction state |
-| POST | `/api/championships/{id}/auctions/{auctionId}/bid` | role- and team-scoped bidding |
-| POST | `/api/championships/{id}/auctions/{auctionId}/admin/{action}` | championship admin controls |
-| WS | `/ws`, topic `/topic/championship/{id}/auction/{auctionId}` | isolated live auction events |
+Never enable demonstration seeding in production.
 
-Navigation is stored in `app_screens` and `role_screen_mappings`. Update a screen's metadata or a mapping's `visible` flag in the database to change the menu without changing frontend code. Seed defaults are only inserted when a row does not already exist, so database customizations survive application restarts.
+## Verification
+
+Backend tests:
+
+```bash
+cd backend
+mvn test
+```
+
+Frontend production build:
+
+```bash
+cd frontend
+npm ci
+npm run build
+```
+
+Docker configuration validation:
+
+```bash
+docker compose config
+```
+
+## Production configuration
+
+The default backend profile has no embedded database credentials or JWT secret. Supply all secrets through the deployment environment:
+
+```text
+DB_URL=jdbc:postgresql://host:5432/database?currentSchema=play_neml
+DB_USER=application_user
+DB_PASSWORD=strong-secret
+JWT_SECRET=long-random-secret-at-least-32-characters
+CORS_ORIGINS=https://your-frontend.example
+AUTH_COOKIE_SECURE=true
+DATA_SEED_ENABLED=false
+LOG_PATH=/var/log/sports-play
+```
+
+Initialize a new production database with `docs/sql/sports-play-complete-schema.sql`, or apply the dated scripts under `docs/sql/` in order when upgrading an existing installation. Database ownership and privileges remain the operator's responsibility.
+
+Frontend build-time variables:
+
+```text
+NEXT_PUBLIC_BACKEND_URL=https://api.example.com
+NEXT_PUBLIC_WS_URL=https://api.example.com
+```
+
+## Repository layout
+
+```text
+backend/                 Spring Boot API and tests
+frontend/                Next.js application
+docs/sql/                Fresh schema and incremental SQL migrations
+docs/architecture/       Architecture assets and complete user guide
+docker-compose.yml       Reproducible local stack
+```
+
+## Documentation
+
+- `docs/RUNBOOK.md` - operational presentation flow and database rollout notes
+- `docs/LOCAL_POSTGRESQL.md` - local PostgreSQL details
+- `docs/architecture/Sports-Play-Platform-Complete-User-Guide.pdf` - screen-by-screen user guide
+- `DEPLOYMENT.md` - Docker deployment notes
+
+## Core API areas
+
+- Authentication and viewer-room access: `/api/auth`, `/api/championships/join-room`
+- Championship navigation and lifecycle: `/api/navigation`, `/api/championships/{id}`
+- Teams, players, auction, and squads: `/api/championships/{id}/...`
+- Competition configuration, fixtures, playoffs, and audit: `/api/championships/{id}/competition/...`
+- Cricket scoring: `/api/championships/{id}/cricket/...`
+- Real-time events: `/ws` with championship-scoped topics
+
+All tenant data and live topics are championship-scoped.

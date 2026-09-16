@@ -1,227 +1,51 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
-import { api, TeamDto, AuctionStateDto } from "@/lib/api";
-import { formatCr } from "@/lib/format";
-import { useAuth } from "@/lib/auth";
+import {useCallback,useEffect,useState} from "react";
 import Link from "next/link";
-import { Gavel, Users, Trophy, TrendingUp, ArrowRight } from "lucide-react";
+import {api,DashboardCapabilitiesDto,MatchDto,StandingDto} from "@/lib/api";
+import {useAuth} from "@/lib/auth";
+import {useChampionship} from "@/lib/championship";
+import {AlertTriangle,ArrowRight,CalendarDays,CheckCircle2,Loader2,Trophy,Users} from "lucide-react";
 
-export default function DashboardPage() {
-  const { user } = useAuth();
-  const [teams, setTeams] = useState<TeamDto[]>([]);
-  const [state, setState] = useState<AuctionStateDto | null>(null);
-  const [loading, setLoading] = useState(true);
+export default function DashboardPage(){
+  const {user}=useAuth();const active=useChampionship(state=>state.active);
+  const [data,setData]=useState<DashboardCapabilitiesDto|null>(null);
+  const [loading,setLoading]=useState(true);
+  const load=useCallback(async()=>{if(!active)return;setLoading(true);try{
+    const response=await api.get<DashboardCapabilitiesDto>(`/championships/${active.id}/dashboard`);setData(response.data);
+  }catch(error){console.warn("dashboard capabilities load failed",error);}finally{setLoading(false);}},[active]);
+  useEffect(()=>{load();},[load]);
+  if(loading)return <div className="grid min-h-[60vh] place-items-center"><Loader2 className="animate-spin text-primary" size={30}/></div>;
+  if(!data)return <div className="p-10"><div className="card-elev rounded-2xl p-10 text-center text-white/45">Dashboard capabilities are unavailable for this championship.</div></div>;
+  const phaseProgress=Math.max(0,["CREATION","CONFIGURATION","TEAM_PROVISIONING","PLAYER_REGISTRATION","AUCTION","SQUAD_CONFIRMATION","LEAGUE_STAGE","PLAYOFFS","FINAL","COMPLETED","ARCHIVED"].indexOf(data.currentPhase));
+  return <div className="p-5 sm:p-10">
+    <div className="mb-8 flex flex-wrap items-end justify-between gap-4"><div><div className="label-cap">{active?.name} · {data.sportCode}</div>
+      <h1 className="h-heading mt-1 text-4xl font-bold sm:text-5xl">Welcome, {user?.fullName?.split(" ")[0]||"Guest"}</h1>
+      <p className="mt-2 text-sm text-white/50">Championship health, lifecycle progress and sport-specific performance.</p></div>
+      {data.permittedActions.length>0&&<Link href="/competition" className="btn btn-primary">Competition control <ArrowRight size={14}/></Link>}</div>
 
-  const load = useCallback(async () => {
-    setLoading(true);
-    try {
-      const [t, s] = await Promise.all([
-        api.get("/teams"),
-        api.get("/auction/state"),
-      ]);
-      setTeams(t.data);
-      setState(s.data);
-    } catch (err) {
-      console.warn("dashboard load failed", err);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+    {data.champion&&<div className="mb-8 rounded-3xl border border-primary/30 bg-primary/[.08] p-7 text-center"><Trophy className="mx-auto text-primary"/><div className="label-cap mt-2">Champion</div><div className="h-heading mt-1 text-3xl text-primary">{data.champion.name}</div><div className="mt-1 text-xs text-white/45">Runner-up · {data.runnerUp?.name}</div></div>}
 
-  useEffect(() => {
-    load();
-  }, [load]);
-
-  const totalSold =
-    state?.teams.reduce(
-      (acc, t) => acc + (t.totalPlayers ?? 0),
-      0
-    ) || 0;
-  const capacity = (state?.teams.length || teams.length) * (state?.maxSquadSize || 0);
-  const auctionProgress = capacity ? Math.round((totalSold / capacity) * 100) : 0;
-
-  return (
-    <div className="p-10">
-      <div className="flex items-end justify-between mb-8">
-        <div>
-          <div className="label-cap">Overview</div>
-          <h1 className="h-heading text-5xl font-bold mt-1" data-testid="dashboard-heading">
-            Welcome, {user?.fullName?.split(" ")[0] || "Guest"}
-          </h1>
-          <p className="text-white/50 mt-2 max-w-xl">
-            Live tournament status, quick stats and shortcuts across the PlayNeml platform.
-          </p>
-        </div>
-        {state?.status === "RUNNING" && (
-          <Link href="/auction" className="btn btn-primary" data-testid="jump-to-auction">
-            <span className="w-2 h-2 rounded-full bg-danger animate-pulse" />
-            Live Auction <ArrowRight size={14} />
-          </Link>
-        )}
-      </div>
-
-      {/* KPI Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
-        <Kpi
-          label="Auction Status"
-          value={state?.status?.replaceAll("_", " ") || "—"}
-          accent={state?.status === "RUNNING" ? "primary" : state?.status === "COMPLETED" ? "cyan" : "default"}
-          icon={<Gavel size={20} />}
-          testid="kpi-auction-status"
-        />
-        <Kpi
-          label="Players Sold"
-          value={`${totalSold} / ${capacity || "—"}`}
-          sub={`${auctionProgress}% complete`}
-          icon={<Users size={20} />}
-          testid="kpi-players-sold"
-        />
-        <Kpi
-          label="Teams"
-          value={String(teams.length)}
-          sub={teams.length ? teams.map((team) => team.shortCode).join(" · ") : "Create teams to begin"}
-          icon={<Trophy size={20} />}
-          testid="kpi-teams"
-        />
-        <Kpi
-          label="Total Purse Pool"
-          value={formatCr(teams.reduce((a, t) => a + Number(t.purseTotal || 0), 0))}
-          sub={`${teams.length} championship team${teams.length === 1 ? "" : "s"}`}
-          icon={<TrendingUp size={20} />}
-          testid="kpi-total-purse"
-        />
-      </div>
-
-      {/* Team purse cards */}
-      <div className="mb-10">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="h-heading text-2xl font-semibold">Team Purse Status</h2>
-          <Link href="/teams" className="btn btn-ghost text-xs" data-testid="view-all-teams">
-            View all teams <ArrowRight size={13} />
-          </Link>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          {teams.map((t) => {
-            const spent = Number(t.purseTotal) - Number(t.purseRemaining);
-            const pct = (spent / Number(t.purseTotal)) * 100;
-            return (
-              <div key={t.id} className="card-elev rounded-2xl p-5" data-testid={`team-card-${t.shortCode}`}>
-                <div className="flex items-center gap-3">
-                  <div
-                    className="w-11 h-11 rounded-xl flex items-center justify-center h-heading font-bold text-lg"
-                    style={{ background: t.primaryColor + "22", color: t.primaryColor, border: `1px solid ${t.primaryColor}55` }}
-                  >
-                    {t.shortCode}
-                  </div>
-                  <div className="min-w-0">
-                    <div className="h-heading text-sm font-medium truncate">{t.name}</div>
-                    <div className="label-cap text-[10px]">Owner slot #{t.shortCode}</div>
-                  </div>
-                  <div className="ml-auto flex items-center justify-center flex-col px-2 py-1 rounded border border-primary/20 bg-primary/5">
-                    <div className="stat-num text-lg leading-none text-primary">{t.matchPoints || 0}</div>
-                    <div className="label-cap text-[8px] mt-0.5">PTS</div>
-                  </div>
-                </div>
-                <div className="mt-4">
-                  <div className="flex items-baseline justify-between">
-                    <div className="stat-num text-2xl">{formatCr(Number(t.purseRemaining))}</div>
-                    <div className="label-cap text-[10px]">/ {formatCr(Number(t.purseTotal))}</div>
-                  </div>
-                  <div className="h-1.5 mt-2 bg-white/5 rounded-full overflow-hidden">
-                    <div
-                      className="h-full rounded-full"
-                      style={{ width: `${pct}%`, background: t.primaryColor }}
-                    />
-                  </div>
-                </div>
-                <div className="mt-4 grid grid-cols-2 gap-2 text-xs">
-                  <div className="flex justify-between border border-white/10 rounded-md px-2 py-1.5">
-                    <span className="text-white/50">Male</span>
-                    <span className="h-heading">{t.maleCount}/{state?.minMale ?? "—"}</span>
-                  </div>
-                  <div className="flex justify-between border border-white/10 rounded-md px-2 py-1.5">
-                    <span className="text-white/50">Female</span>
-                    <span className="h-heading">{t.femaleCount}/{state?.minFemale ?? "—"}</span>
-                  </div>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* Announcements + Schedule stubs */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2 card-elev rounded-2xl p-6">
-          <div className="flex items-center justify-between mb-4">
-            <div>
-              <div className="label-cap">Announcements</div>
-              <h3 className="h-heading text-xl mt-1">Latest Updates</h3>
-            </div>
-            <span className="chip chip-primary">Season 1</span>
-          </div>
-          <ul className="space-y-3">
-            <Announcement title="Auction goes live" body="Live auction slot opens shortly. Team owners, get ready to bid." />
-            <Announcement title="Composition rule" body={`Each team must include at least ${state?.minFemale ?? "the configured number of"} female and ${state?.minMale ?? "the configured number of"} male players.`} />
-            <Announcement title="Format" body="Every match features 5 playing formats. A player can play only 1 format per match." />
-          </ul>
-        </div>
-        <div className="card-elev rounded-2xl p-6">
-          <div className="label-cap">Coming up</div>
-          <h3 className="h-heading text-xl mt-1 mb-4">Tournament Schedule</h3>
-          <div className="space-y-3">
-            <ScheduleItem when="Phase 1" what="Live Player Auction" state="Active" />
-            <ScheduleItem when="Phase 2" what="Squad Confirmation" state="Pending" />
-            <ScheduleItem when="Phase 3" what="League Matches" state="Pending" />
-            <ScheduleItem when="Phase 4" what="Playoffs & Final" state="Pending" />
-          </div>
-        </div>
-      </div>
+    <div className="mb-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <Kpi icon={<CheckCircle2/>} label="Current phase" value={label(data.currentPhase)} sub={`${Math.round(phaseProgress/10*100)}% lifecycle progress`}/>
+      <Kpi icon={<Users/>} label="Teams & players" value={`${data.teamCount} · ${data.playerCount}`} sub="Championship-isolated records"/>
+      <Kpi icon={<CheckCircle2/>} label="Squads locked" value={`${data.lockedSquads} / ${data.totalSquads}`} sub={data.lockedSquads===data.totalSquads&&data.totalSquads>0?"League gate satisfied":"Phase 2 gate"}/>
+      <Kpi icon={<Trophy/>} label="Current leader" value={data.standings[0]?.team.shortCode||"—"} sub={data.standings[0]?.team.name||"League not started"}/>
     </div>
-  );
-}
 
-function Kpi({ label, value, sub, icon, accent, testid }: any) {
-  const accentClass =
-    accent === "primary"
-      ? "text-primary"
-      : accent === "cyan"
-      ? "text-secondary"
-      : "text-white";
-  return (
-    <div className="card-elev rounded-2xl p-6" data-testid={testid}>
-      <div className="flex items-start justify-between">
-        <div className="label-cap">{label}</div>
-        <div className="text-white/40">{icon}</div>
-      </div>
-      <div className={`stat-num text-3xl mt-3 ${accentClass}`}>{value}</div>
-      {sub && <div className="text-white/40 text-xs mt-1">{sub}</div>}
+    {data.blockersForNextPhase.length>0&&<div className="mb-8 flex items-start gap-3 rounded-2xl border border-warning/25 bg-warning/[.07] p-5"><AlertTriangle className="mt-0.5 shrink-0 text-warning" size={18}/><div><div className="h-heading text-warning">Required before the next phase</div><div className="mt-2 flex flex-wrap gap-2">{data.blockersForNextPhase.map(item=><span className="chip" key={item}>{item}</span>)}</div></div></div>}
+
+    <div className="grid gap-6 xl:grid-cols-2">
+      <section className="card-elev rounded-2xl p-6"><div className="flex items-center justify-between"><div><div className="label-cap">Schedule</div><h2 className="h-heading mt-1 text-2xl">Upcoming fixtures</h2></div><CalendarDays className="text-white/30"/></div>
+        <FixtureList fixtures={data.upcomingFixtures} empty="No upcoming fixtures are scheduled."/></section>
+      <section className="card-elev rounded-2xl p-6"><div className="label-cap">Latest</div><h2 className="h-heading mt-1 text-2xl">Recently completed</h2>
+        <FixtureList fixtures={data.recentFixtures} empty="Completed results will appear here."/></section>
     </div>
-  );
-}
 
-function Announcement({ title, body }: { title: string; body: string }) {
-  return (
-    <li className="flex gap-3 py-2 border-b border-white/5 last:border-b-0">
-      <div className="w-1 h-auto rounded bg-primary/60 flex-shrink-0" />
-      <div>
-        <div className="h-heading text-sm">{title}</div>
-        <div className="text-white/50 text-xs mt-0.5">{body}</div>
-      </div>
-    </li>
-  );
+    {data.supportedWidgets.includes("TEAM_MATCH_STANDINGS")&&<section className="mt-8 card-elev overflow-hidden rounded-2xl"><div className="flex items-center justify-between p-6"><div><div className="label-cap">Badminton</div><h2 className="h-heading mt-1 text-2xl">Team match standings</h2></div><Link href="/scoreboard" className="btn btn-ghost">Full table <ArrowRight size={13}/></Link></div><Standings rows={data.standings.slice(0,4)}/></section>}
+  </div>;
 }
-
-function ScheduleItem({ when, what, state }: { when: string; what: string; state: string }) {
-  const s = state === "Active" ? "chip-live" : "";
-  return (
-    <div className="flex items-center justify-between py-2 border-b border-white/5 last:border-b-0">
-      <div>
-        <div className="label-cap text-[10px]">{when}</div>
-        <div className="text-sm">{what}</div>
-      </div>
-      <span className={`chip ${s}`}>{state}</span>
-    </div>
-  );
-}
+function Kpi({icon,label:caption,value,sub}:{icon:React.ReactNode;label:string;value:string;sub:string}){return <div className="card-elev rounded-2xl p-5"><div className="flex items-center justify-between text-white/35"><span className="label-cap">{caption}</span>{icon}</div><div className="stat-num mt-3 text-2xl">{value}</div><div className="mt-1 text-xs text-white/40">{sub}</div></div>}
+function FixtureList({fixtures,empty}:{fixtures:MatchDto[];empty:string}){return <div className="mt-4 divide-y divide-white/5">{fixtures.length?fixtures.map(f=><div className="flex items-center justify-between gap-4 py-3" key={f.id}><div><div className="label-cap">{label(f.stageType)} · Match {f.matchNumber}</div><div className="h-heading mt-1">{f.teamA.shortCode} <span className="text-white/25">vs</span> {f.teamB.shortCode}</div></div><div className="text-right text-xs text-white/40">{new Date(f.scheduledAt).toLocaleDateString()}<div className="mt-1">{f.venue}</div></div></div>):<p className="py-6 text-sm text-white/40">{empty}</p>}</div>}
+function Standings({rows}:{rows:StandingDto[]}){return <div className="divide-y divide-white/5 border-t border-white/5">{rows.map(row=><div className="grid grid-cols-[3rem_1fr_auto] items-center gap-3 px-6 py-4" key={row.team.id}><span className="stat-num text-xl text-primary">{row.rank}</span><span className="h-heading">{row.team.name}</span><span className="stat-num">{row.totalPoints} pts</span></div>)}</div>}
+function label(value:string){return value.replaceAll("_"," ").toLowerCase().replace(/\b\w/g,c=>c.toUpperCase())}

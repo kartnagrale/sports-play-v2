@@ -10,7 +10,7 @@ import java.util.UUID;
 @Table(name = "players", indexes = {
         @Index(name = "idx_player_championship", columnList = "championship_id"),
         @Index(name = "idx_player_auction", columnList = "auction_id")
-})
+}, uniqueConstraints = @UniqueConstraint(name = "uq_players_id_championship", columnNames = {"id", "championship_id"}))
 @Getter
 @Setter
 @NoArgsConstructor

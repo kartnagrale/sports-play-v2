@@ -1,0 +1,12 @@
+package com.neml.badminton.service;
+import com.neml.badminton.entity.*;import com.neml.badminton.repository.ConfigurationSectionStateRepository;import jakarta.transaction.Transactional;import org.springframework.stereotype.Service;import java.time.Instant;import java.util.*;
+@Service
+public class ConfigurationSectionService{
+ public static final List<String> CODES=List.of("BASICS","BRANDING","TEAMS_AND_ROSTERS","AUCTION","SPORT_RULES","COMPETITION_FORMAT","SCHEDULING","QUALIFICATION_AND_PLAYOFFS","PERMISSIONS_AND_VISIBILITY","REVIEW_AND_LAUNCH");
+ private final ConfigurationSectionStateRepository states;public ConfigurationSectionService(ConfigurationSectionStateRepository states){this.states=states;}
+ @Transactional public void initialize(Championship c){for(String code:CODES)if(states.findByChampionshipIdAndSectionCode(c.getId(),code).isEmpty())states.save(ConfigurationSectionState.builder().championship(c).sectionCode(code).build());}
+ @Transactional public void markValid(UUID cid,String code,User actor,List<String> messages){ConfigurationSectionState s=required(cid,code);s.setStatus(messages.isEmpty()?ConfigurationStatus.VALID:ConfigurationStatus.DRAFT);s.setConfigurationVersion(s.getConfigurationVersion()+1);s.setValidationMessages(toJson(messages));s.setLastChangedBy(actor);states.save(s);}
+ @Transactional public void lock(UUID cid,String code,User actor){ConfigurationSectionState s=required(cid,code);if(s.getStatus()!=ConfigurationStatus.LOCKED){s.setStatus(ConfigurationStatus.LOCKED);s.setConfigurationVersion(s.getConfigurationVersion()+1);s.setLockedAt(Instant.now());s.setLastChangedBy(actor);states.save(s);}}
+ @Transactional public void reopenEditable(UUID cid,User actor){for(ConfigurationSectionState s:states.findAllByChampionshipIdOrderBySectionCode(cid))if(s.getStatus()!=ConfigurationStatus.LOCKED){s.setStatus(ConfigurationStatus.DRAFT);s.setConfigurationVersion(s.getConfigurationVersion()+1);s.setLastChangedBy(actor);states.save(s);}}
+ public List<ConfigurationSectionState> all(UUID cid){return states.findAllByChampionshipIdOrderBySectionCode(cid);}private ConfigurationSectionState required(UUID cid,String code){return states.findForUpdate(cid,code).orElseThrow(()->new IllegalStateException("Configuration section not initialized: "+code));}private String toJson(List<String> m){return "[\""+String.join("\",\"",m.stream().map(x->x.replace("\"","'")).toList())+"\"]";}
+}

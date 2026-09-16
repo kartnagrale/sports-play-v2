@@ -14,11 +14,13 @@ import {
 import BidPanel from "@/components/auction/BidPanel";
 import CoinTossDialog from "@/components/auction/CoinTossDialog";
 import BasePriceDialog from "@/components/auction/BasePriceDialog";
+import AuctionUnavailable from "@/components/auction/AuctionUnavailable";
 
 export default function AuctionPage() {
   const { user } = useAuth();
-  const { active } = useChampionship();
+  const { active, hydrated } = useChampionship();
   const [state, setState] = useState<AuctionStateDto | null>(null);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [flash, setFlash] = useState(false);
   const [availablePlayers, setAvailablePlayers] = useState<PlayerDto[]>([]);
   const [coinTossOpen, setCoinTossOpen] = useState(false);
@@ -38,13 +40,15 @@ export default function AuctionPage() {
 
   // Fetch state + available player list. Stable identity so effects can depend on it.
   const load = useCallback(async () => {
+    if (!active?.defaultAuctionId) return;
+    setLoadError(null);
     const [s, p] = await Promise.all([
       api.get<AuctionStateDto>("/auction/state"),
       api.get<PlayerDto[]>("/players"),
     ]);
     setState(s.data);
     setAvailablePlayers(p.data.filter((x) => x.status === "AVAILABLE" || x.status === "UNSOLD"));
-  }, []);
+  }, [active?.defaultAuctionId]);
 
   const handleEvent = useCallback((evt: { type: string; data: any }) => {
     if (evt.type === "STATE") {
@@ -77,13 +81,27 @@ export default function AuctionPage() {
   }, []);
 
   useEffect(() => {
-    load().catch((err) => console.warn("initial load failed", err));
-    const client = createAuctionSocket(handleEvent);
-    clientRef.current = client;
+    if (!active?.defaultAuctionId) {
+      setState(null);
+      return;
+    }
+    load().catch((err) => {
+      console.warn("initial auction load failed", err);
+      setLoadError(err?.response?.data?.message || err?.message || "Unable to load the auction");
+    });
+    let client: Client | null = null;
+    try {
+      client = createAuctionSocket(handleEvent);
+      clientRef.current = client;
+    } catch (error: any) {
+      console.warn("auction socket setup failed", error);
+      setLoadError(error?.message || "Unable to connect to the live auction");
+    }
     return () => {
-      client.deactivate();
+      client?.deactivate();
+      clientRef.current = null;
     };
-  }, [load, handleEvent]);
+  }, [active?.defaultAuctionId, load, handleEvent]);
 
   const doAdminAction = async (path: string, body?: any) => {
     try {
@@ -110,6 +128,23 @@ export default function AuctionPage() {
     if (isOwner && access?.teamId === teamId) return true;
     return false;
   };
+
+  if (hydrated && active && !active.defaultAuctionId) {
+    return <AuctionUnavailable />;
+  }
+
+  if (loadError) {
+    return (
+      <div className="grid min-h-[75vh] place-items-center p-8 text-center">
+        <div className="card-elev max-w-lg rounded-3xl p-9">
+          <div className="label-cap text-danger">Auction unavailable</div>
+          <h1 className="h-heading mt-2 text-3xl">Unable to load auction</h1>
+          <p className="mt-3 text-sm text-white/50">{loadError}</p>
+          <button className="btn btn-primary mt-6" onClick={() => load()}>Try again</button>
+        </div>
+      </div>
+    );
+  }
 
   if (!state) {
     return <div className="p-10 text-white/40 h-heading uppercase tracking-widest">Loading auction...</div>;

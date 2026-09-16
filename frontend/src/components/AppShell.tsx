@@ -11,12 +11,13 @@ import {
   LayoutDashboard, Gavel, Trophy, CalendarDays, UsersRound, UserRound,
   ChartNoAxesCombined, Medal, Sparkles, History, Bell, LogOut,
   ShieldCheck, Menu, X, ChevronRight, Circle, Radio, Rocket, Settings2, UserCog,
-  ClipboardCheck,
+  ClipboardCheck, GitBranch,
 } from "lucide-react";
 
 const ICONS: Record<string, LucideIcon> = {
   LayoutDashboard, Gavel, Trophy, CalendarDays, UsersRound, UserRound,
   ChartNoAxesCombined, Medal, Sparkles, History, Bell, ShieldCheck, Rocket, Settings2, UserCog, ClipboardCheck,
+  Brackets: GitBranch,
 };
 
 const ROLE_LABELS = {

@@ -3,12 +3,35 @@
 import { useEffect, useState } from "react";
 import { api, BidDto } from "@/lib/api";
 import { formatCr } from "@/lib/format";
+import { useChampionship } from "@/lib/championship";
+import AuctionUnavailable from "@/components/auction/AuctionUnavailable";
 
 export default function AuctionHistoryPage() {
+  const { active, hydrated } = useChampionship();
   const [bids, setBids] = useState<BidDto[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
   useEffect(() => {
-    api.get<BidDto[]>("/auction/history").then((r) => setBids(r.data));
-  }, []);
+    if (!active?.defaultAuctionId) {
+      setLoading(false);
+      return;
+    }
+    setLoading(true);
+    setError(null);
+    api.get<BidDto[]>("/auction/history")
+      .then((response) => setBids(response.data))
+      .catch((requestError) => {
+        console.warn("auction history load failed", requestError);
+        setError(requestError?.response?.data?.message || requestError?.message || "Unable to load auction history");
+      })
+      .finally(() => setLoading(false));
+  }, [active?.defaultAuctionId]);
+
+  if (hydrated && active && !active.defaultAuctionId) return <AuctionUnavailable />;
+  if (loading) return <div className="p-10 text-white/40 h-heading uppercase tracking-widest">Loading auction history...</div>;
+  if (error) return <div className="grid min-h-[75vh] place-items-center p-8 text-center"><div className="card-elev max-w-lg rounded-3xl p-9"><div className="label-cap text-danger">History unavailable</div><h1 className="h-heading mt-2 text-3xl">Unable to load auction history</h1><p className="mt-3 text-sm text-white/50">{error}</p></div></div>;
+
   return (
     <div className="p-10">
       <div className="mb-8">

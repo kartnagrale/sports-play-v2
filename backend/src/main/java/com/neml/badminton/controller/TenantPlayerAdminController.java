@@ -51,6 +51,7 @@ public class TenantPlayerAdminController {
                 .gender(req.gender()).basePrice(req.basePrice()==null?config.getPlayerBasePrice():req.basePrice())
                 .skillLevel(req.skillLevel()).status(PlayerStatus.AVAILABLE)
                 .auctionOrder(req.auctionOrder()==null?next:req.auctionOrder()).build();
+        championship.setLifecyclePhase(ChampionshipPhase.PLAYER_REGISTRATION);championships.save(championship);
         return PlayerDto.from(players.save(player));
     }
 

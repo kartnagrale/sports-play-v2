@@ -1,0 +1,55 @@
+services:
+  db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_DB: sports_play
+      POSTGRES_USER: sports_play
+      POSTGRES_PASSWORD: sports_play_local
+    ports:
+      - "5432:5432"
+    volumes:
+      - sports_play_postgres:/var/lib/postgresql/data
+      - ./docs/sql/sports-play-complete-schema.sql:/docker-entrypoint-initdb.d/001-schema.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U sports_play -d sports_play"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  backend:
+    build:
+      context: ./backend
+    environment:
+      SPRING_PROFILES_ACTIVE: local
+      LOCAL_DB_URL: jdbc:postgresql://db:5432/sports_play?currentSchema=play_neml&lock_timeout=300&idle_in_transaction_session_timeout=10000
+      LOCAL_DB_USER: sports_play
+      LOCAL_DB_PASSWORD: sports_play_local
+      JWT_SECRET: local-docker-secret-change-before-any-shared-deployment-1234567890
+      DATA_SEED_ENABLED: "true"
+      CORS_ORIGINS: http://localhost:3000
+      LOG_PATH: /app/logs
+    ports:
+      - "8001:8001"
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "--silent", "http://localhost:8001/api/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        NEXT_PUBLIC_BACKEND_URL: http://localhost:8001
+        NEXT_PUBLIC_WS_URL: http://localhost:8001
+    ports:
+      - "3000:3000"
+    depends_on:
+      backend:
+        condition: service_healthy
+
+volumes:
+  sports_play_postgres:

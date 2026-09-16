@@ -22,12 +22,22 @@ class SquadConfirmationServiceTest {
     private final MatchRepository matches = mock(MatchRepository.class);
     private final SquadConfirmationRepository confirmations = mock(SquadConfirmationRepository.class);
     private final SquadConfirmationEventRepository events = mock(SquadConfirmationEventRepository.class);
+    private final CompetitionConfigurationRepository competitionConfigurations=mock(CompetitionConfigurationRepository.class);
+    private final RosterQuotaRuleRepository quotaRules=mock(RosterQuotaRuleRepository.class);
+    private final AuctionConfigurationRepository auctionConfigurations=mock(AuctionConfigurationRepository.class);
+    private final ConfigurationSectionService configurationSections = new ConfigurationSectionService(
+            mock(ConfigurationSectionStateRepository.class)) {
+        @Override public void lock(UUID championshipId, String sectionCode, User actor) {
+            // Section persistence is covered independently; this unit test exercises squad behavior.
+        }
+    };
     private SquadConfirmationService service;
 
     @BeforeEach
     void setUp() {
         service = new SquadConfirmationService(championships, teams, players, settings, auctions,
-                matches, confirmations, events, new ObjectMapper());
+                matches, confirmations, events, new ObjectMapper(),competitionConfigurations,quotaRules,configurationSections,auctionConfigurations);
+        when(quotaRules.findAllByChampionshipIdAndEnabledTrue(any())).thenReturn(List.of());
     }
 
     @Test

@@ -1,0 +1,3 @@
+package com.neml.badminton.repository;
+import com.neml.badminton.entity.BadmintonConfiguration;import org.springframework.data.jpa.repository.*;import org.springframework.data.repository.query.Param;import jakarta.persistence.LockModeType;import java.util.*;
+public interface BadmintonConfigurationRepository extends JpaRepository<BadmintonConfiguration,UUID>{Optional<BadmintonConfiguration> findFirstByChampionshipIdOrderByConfigurationVersionDesc(UUID cid);@Lock(LockModeType.PESSIMISTIC_WRITE)@Query("select c from BadmintonConfiguration c where c.championship.id=:cid and c.configurationVersion=(select max(x.configurationVersion) from BadmintonConfiguration x where x.championship.id=:cid)")Optional<BadmintonConfiguration> findLatestForUpdate(@Param("cid")UUID cid);}

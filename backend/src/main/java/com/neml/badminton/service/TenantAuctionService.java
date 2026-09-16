@@ -24,14 +24,18 @@ public class TenantAuctionService {
     private final TournamentSettingsRepository settings; private final AuctionBroadcaster broadcaster;
     private final TransactionTemplate transactions;
     private final SquadConfirmationService squadConfirmations;
+    private final ChampionshipRepository championships;
+    private final ConfigurationSectionService configurationSections;
 
     public TenantAuctionService(AuctionRepository auctions,AuctionStateRepository states,PlayerRepository players,
             TeamRepository teams,BidRepository bids,TournamentSettingsRepository settings,
             AuctionBroadcaster broadcaster,TransactionTemplate transactions,
-            SquadConfirmationService squadConfirmations){
+            SquadConfirmationService squadConfirmations, ChampionshipRepository championships,ConfigurationSectionService configurationSections){
         this.auctions=auctions;this.states=states;this.players=players;this.teams=teams;this.bids=bids;
         this.settings=settings;this.broadcaster=broadcaster;this.transactions=transactions;
         this.squadConfirmations=squadConfirmations;
+        this.championships=championships;
+        this.configurationSections=configurationSections;
     }
 
     @Transactional public AuctionStateDto state(UUID cid,UUID aid){Auction a=auction(cid,aid);return snapshot(cid,a,auctionState(cid,aid));}
@@ -39,6 +43,9 @@ public class TenantAuctionService {
 
     @Transactional public AuctionStateDto start(UUID cid,UUID aid){
         squadConfirmations.assertRosterMutable(cid);
+        Championship championship=championships.findByIdForUpdate(cid).orElseThrow(()->notFound("Championship"));
+        configurationSections.lock(cid,"AUCTION",null);
+        championship.setLifecyclePhase(ChampionshipPhase.AUCTION);championships.save(championship);
         Auction a=auction(cid,aid);AuctionState s=locked(cid,aid);
         if(s.getStatus()==AuctionStatus.COMPLETED)bad("Completed auctions cannot be restarted; reset unsold players first");
         if(teams.findAllByChampionshipIdOrderByName(cid).size()<2)bad("Create at least two teams before starting the auction");
@@ -105,7 +112,7 @@ public class TenantAuctionService {
         Auction a=auction(cid,aid);AuctionState s=locked(cid,aid);if(s.getCurrentPlayer()!=null&&s.getCurrentPlayer().getStatus()==PlayerStatus.ON_BLOCK){s.getCurrentPlayer().setStatus(PlayerStatus.AVAILABLE);players.save(s.getCurrentPlayer());}
         s.setCurrentPlayer(null);advanceLocked(a,s);return publish(cid,aid,snapshot(cid,a,s));
     }
-    private void advanceLocked(Auction a,AuctionState s){selectNext(a,s);if(s.getCurrentPlayer()==null){s.setStatus(AuctionStatus.COMPLETED);a.setStatus(AuctionStatus.COMPLETED);s.setBidDeadline(null);}else deadlineIfRunning(s);save(a,s);}
+    private void advanceLocked(Auction a,AuctionState s){selectNext(a,s);if(s.getCurrentPlayer()==null){s.setStatus(AuctionStatus.COMPLETED);a.setStatus(AuctionStatus.COMPLETED);s.setBidDeadline(null);Championship c=a.getChampionship();c.setLifecyclePhase(ChampionshipPhase.SQUAD_CONFIRMATION);championships.save(c);}else deadlineIfRunning(s);save(a,s);}
 
     @Transactional public AuctionStateDto setCurrent(UUID cid,UUID aid,UUID playerId){
         squadConfirmations.assertRosterMutable(cid);

@@ -9,12 +9,15 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.http.HttpStatus;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
 
 @Service
 public class AuthService {
+    private static final Logger log = LoggerFactory.getLogger(AuthService.class);
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
@@ -30,9 +33,13 @@ public class AuthService {
     }
 
     public AuthDtos.AuthResponse login(AuthDtos.LoginRequest req) {
-        User user = userRepository.findByEmail(req.email().toLowerCase().trim())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid credentials"));
+        User user = userRepository.findByEmail(req.email().toLowerCase().trim()).orElse(null);
+        if (user == null) {
+            log.warn("Authentication failed: account not found");
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid credentials");
+        }
         if (!passwordEncoder.matches(req.password(), user.getPasswordHash())) {
+            log.warn("Authentication failed userId={}", user.getId());
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid credentials");
         }
         Map<String, Object> claims = new HashMap<>();
@@ -45,6 +52,7 @@ public class AuthService {
                 user.getFullName(),
                 user.getRole(), accesses(user)
         );
+        log.info("Authentication succeeded userId={} role={}", user.getId(), user.getRole());
         return new AuthDtos.AuthResponse(token, info);
     }
 

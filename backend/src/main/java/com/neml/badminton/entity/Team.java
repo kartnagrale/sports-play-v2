@@ -10,6 +10,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "teams", uniqueConstraints = {
+        @UniqueConstraint(name = "uq_teams_id_championship", columnNames = {"id", "championship_id"}),
         @UniqueConstraint(columnNames = {"championship_id", "name"}),
         @UniqueConstraint(columnNames = {"championship_id", "short_code"})},
         indexes = @Index(name = "idx_team_championship", columnList = "championship_id"))
