@@ -2,6 +2,7 @@ package com.neml.badminton.seed;
 
 import com.neml.badminton.entity.*;
 import com.neml.badminton.repository.*;
+import com.neml.badminton.service.ChampionshipService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -18,13 +19,14 @@ public class DataSeeder implements CommandLineRunner {
     private final AuctionRepository auctions; private final AuctionStateRepository states;
     private final TeamRepository teams; private final PlayerRepository players; private final PasswordEncoder encoder;
     private final AppScreenRepository screens; private final RoleScreenMappingRepository screenMappings;
+    private final ChampionshipService championshipService;
 
     public DataSeeder(UserRepository users,ChampionshipRepository championships,ChampionshipRoleRepository roles,
             TournamentSettingsRepository settings,AuctionRepository auctions,AuctionStateRepository states,
             TeamRepository teams,PlayerRepository players,PasswordEncoder encoder, AppScreenRepository screens,
-            RoleScreenMappingRepository screenMappings){this.users=users;this.championships=championships;
+            RoleScreenMappingRepository screenMappings, ChampionshipService championshipService){this.users=users;this.championships=championships;
         this.roles=roles;this.settings=settings;this.auctions=auctions;this.states=states;this.teams=teams;this.players=players;this.encoder=encoder;
-        this.screens=screens;this.screenMappings=screenMappings;}
+        this.screens=screens;this.screenMappings=screenMappings;this.championshipService=championshipService;}
 
     @Override @Transactional public void run(String... args){
         User admin=users.findByEmail("admin@sports.local").orElseGet(()->users.save(User.builder().email("admin@sports.local")
@@ -36,7 +38,12 @@ public class DataSeeder implements CommandLineRunner {
         User captain=users.findByEmail("captain@sports.local").orElseGet(()->users.save(User.builder().email("captain@sports.local")
                 .passwordHash(encoder.encode("Admin@123")).fullName("Mumbai Team Captain").role(Role.USER).build()));
         seedNavigation();
-        if(championships.count()>0){ensureCaptainAccess(captain);return;}
+        if(championships.count()>0){
+            for (String code : List.of("CRIC-8821", "FOOT-9922")) {
+                championships.findByRoomCodeIgnoreCase(code).ifPresent(championshipService::initializeConfigurations);
+            }
+            ensureCaptainAccess(captain);return;
+        }
         seedChampionship(admin,cricketAdmin,captain,"Premier Cricket League","CRICKET","CRIC-8821","cricket123",
                 List.of("Mumbai Strikers","Delhi Capitals","Chennai Kings","Bengaluru Blasters"));
         seedChampionship(admin,footballAdmin,null,"Corporate Football Cup","FOOTBALL","FOOT-9922","football123",
@@ -96,6 +103,7 @@ public class DataSeeder implements CommandLineRunner {
     private void seedChampionship(User owner,User manager,User captain,String name,String sport,String code,String passcode,List<String> teamNames){
         Championship c=championships.save(Championship.builder().name(name).sportType(sport).roomCode(code)
                 .passcodeHash(encoder.encode(passcode)).isPublic(false).status(ChampionshipStatus.ACTIVE).createdBy(owner).build());
+        championshipService.initializeConfigurations(c);
         settings.save(TournamentSettings.builder().championship(c).maxSquadSize(12).purseLimit(new BigDecimal("1000000000"))
                 .customRules(sport.equals("CRICKET")?"{\"tieBreaker\":\"NET_RUN_RATE\"}":"{\"tieBreaker\":\"GOAL_DIFFERENCE\"}").build());
         Auction a=auctions.save(Auction.builder().championship(c).name(name+" Main Auction").build());

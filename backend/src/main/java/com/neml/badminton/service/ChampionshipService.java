@@ -81,15 +81,7 @@ public class ChampionshipService {
                 .bidIncrement(new BigDecimal("500000")).timerSeconds(30).customRules("{}").build());
         roles.save(ChampionshipRole.builder().user(admin).championship(c)
                 .role(ChampionshipRoleType.CHAMPIONSHIP_ADMIN).build());
-        createCompetitionConfiguration(c);
-        configurationSections.initialize(c);
-        brandingConfigurations.save(ChampionshipBrandingConfiguration.builder().championship(c).configurationVersion(1).displayName(c.getName()).shortName(c.getName().length()>32?c.getName().substring(0,32):c.getName()).publicVisibility(c.getIsPublic()).build());
-        auctionConfigurations.save(AuctionConfiguration.builder().championship(c).configurationVersion(1).teamBudget(new BigDecimal("1000000000")).minimumBid(new BigDecimal("2000000")).bidIncrement(new BigDecimal("500000")).minimumRosterSize("CRICKET".equals(SportEngineRegistry.normalize(c.getSportType()))?14:8).maximumRosterSize("CRICKET".equals(SportEngineRegistry.normalize(c.getSportType()))?18:12).build());
-        if ("CRICKET".equals(SportEngineRegistry.normalize(c.getSportType()))) {
-            cricketConfigurations.save(CricketConfiguration.builder().championship(c).configurationVersion(1).build());
-        } else if("BADMINTON".equals(SportEngineRegistry.normalize(c.getSportType()))){
-            createBadmintonConfiguration(c);
-        }
+        initializeConfigurations(c);
         messageTracker.queueChampionshipAdmin(admin, req.adminMobile().trim(), temporaryPassword, c, code);
         return new CreateChampionshipResponse(ChampionshipDtos.from(c, null),
                 new ProvisionedAdminDto(admin.getId(), admin.getFullName(), admin.getEmail(),
@@ -225,6 +217,38 @@ public class ChampionshipService {
     private UUID defaultAuction(UUID championshipId) {
         return auctions.findAllByChampionshipIdOrderByCreatedAtDesc(championshipId).stream().findFirst().map(Auction::getId).orElse(null);
     }
+
+    /** Initializes missing records for new championships and local demo seeds without replacing saved settings. */
+    @Transactional
+    public void initializeConfigurations(Championship championship) {
+        UUID id = championship.getId();
+        String sport = SportEngineRegistry.normalize(championship.getSportType());
+        if (competitionConfigurations.findByChampionshipId(id).isEmpty()) {
+            createCompetitionConfiguration(championship);
+        }
+        configurationSections.initialize(championship);
+        if (brandingConfigurations.findFirstByChampionshipIdOrderByConfigurationVersionDesc(id).isEmpty()) {
+            brandingConfigurations.save(ChampionshipBrandingConfiguration.builder().championship(championship)
+                    .configurationVersion(1).displayName(championship.getName())
+                    .shortName(championship.getName().substring(0, Math.min(32, championship.getName().length())))
+                    .publicVisibility(championship.getIsPublic()).build());
+        }
+        if (auctionConfigurations.findFirstByChampionshipIdOrderByConfigurationVersionDesc(id).isEmpty()) {
+            auctionConfigurations.save(AuctionConfiguration.builder().championship(championship)
+                    .configurationVersion(1).teamBudget(new BigDecimal("1000000000"))
+                    .minimumBid(new BigDecimal("2000000")).bidIncrement(new BigDecimal("500000"))
+                    .minimumRosterSize("CRICKET".equals(sport) ? 14 : 8)
+                    .maximumRosterSize("CRICKET".equals(sport) ? 18 : 12).build());
+        }
+        if ("CRICKET".equals(sport)
+                && cricketConfigurations.findFirstByChampionshipIdOrderByConfigurationVersionDesc(id).isEmpty()) {
+            cricketConfigurations.save(CricketConfiguration.builder().championship(championship).configurationVersion(1).build());
+        } else if ("BADMINTON".equals(sport)
+                && badmintonConfigurations.findFirstByChampionshipIdOrderByConfigurationVersionDesc(id).isEmpty()) {
+            createBadmintonConfiguration(championship);
+        }
+    }
+
     private void createCompetitionConfiguration(Championship championship) {
         SportCompetitionEngine.CompetitionDefaults defaults = sportEngines.supports(championship.getSportType())
                 ? sportEngines.require(championship.getSportType()).defaultConfiguration()
