@@ -6,6 +6,7 @@ import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
+import jakarta.validation.constraints.*;
 
 public class Dtos {
 
@@ -47,15 +48,18 @@ public class Dtos {
     public record AuctionStateDto(AuctionStatus status, PlayerDto currentPlayer,
                                   BidDto highestBid, List<BidDto> bidHistory,
                                   List<TeamDto> teams, Integer remainingPlayers,
-                                  java.time.Instant bidDeadline, Integer timerSeconds) {}
+                                  java.time.Instant bidDeadline, Integer timerSeconds,
+                                  BigDecimal bidIncrement, Integer maxSquadSize,
+                                  Integer minMale, Integer minFemale) {}
 
-    public record PlaceBidRequest(UUID playerId, UUID teamId, BigDecimal amount) {}
+    public record PlaceBidRequest(@NotNull UUID playerId, @NotNull UUID teamId,
+                                  @NotNull @DecimalMin(value = "0.01") BigDecimal amount) {}
 
     public record SellRequest(UUID playerId, UUID teamId, BigDecimal amount) {}
 
-    public record NextPlayerRequest(UUID playerId) {}
+    public record NextPlayerRequest(@NotNull UUID playerId) {}
 
-    public record SetStatusRequest(AuctionStatus status) {}
+    public record SetStatusRequest(@NotNull AuctionStatus status) {}
 
-    public record UpdateBasePriceRequest(BigDecimal basePrice) {}
+    public record UpdateBasePriceRequest(@NotNull @DecimalMin(value = "0.01") BigDecimal basePrice) {}
 }

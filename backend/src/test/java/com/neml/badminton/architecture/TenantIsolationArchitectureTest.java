@@ -1,0 +1,79 @@
+package com.neml.badminton.architecture;
+
+import com.neml.badminton.controller.*;
+import com.neml.badminton.entity.AuctionState;
+import com.neml.badminton.entity.Team;
+import com.neml.badminton.entity.Match;
+import com.neml.badminton.entity.MatchFormat;
+import com.neml.badminton.entity.SquadConfirmation;
+import com.neml.badminton.entity.CompetitionConfiguration;
+import com.neml.badminton.entity.CompetitionStage;
+import com.neml.badminton.entity.CompetitionQualification;
+import com.neml.badminton.entity.*;
+import com.neml.badminton.websocket.AuctionBroadcaster;
+import jakarta.persistence.Version;
+import org.junit.jupiter.api.Test;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import java.util.Arrays;
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+class TenantIsolationArchitectureTest {
+
+    @Test
+    void championshipResourcesOnlyExposeChampionshipQualifiedControllers() {
+        List<Class<?>> tenantControllers = List.of(
+                TenantAuctionController.class, TenantDataController.class,
+                TenantMatchController.class, TenantAnalyticsController.class,
+                TenantPlayerAdminController.class, SquadConfirmationController.class,
+                CompetitionController.class,CricketController.class,SportConfigurationController.class,AdministrativeConfigurationController.class);
+
+        tenantControllers.forEach(controller -> {
+            String[] roots = controller.getAnnotation(RequestMapping.class).value();
+            assertThat(roots).allMatch(path -> path.contains("/{championshipId}"));
+        });
+    }
+
+    @Test
+    void mutableAuctionAggregatesUseOptimisticVersions() {
+        assertThat(versioned(AuctionState.class)).isTrue();
+        assertThat(versioned(Team.class)).isTrue();
+        assertThat(versioned(Match.class)).isTrue();
+        assertThat(versioned(MatchFormat.class)).isTrue();
+        assertThat(versioned(SquadConfirmation.class)).isTrue();
+        assertThat(versioned(CompetitionConfiguration.class)).isTrue();
+        assertThat(versioned(CompetitionStage.class)).isTrue();
+        assertThat(versioned(CricketMatchState.class)).isTrue();
+        assertThat(versioned(CricketInnings.class)).isTrue();
+        assertThat(versioned(CricketConfiguration.class)).isTrue();
+        assertThat(versioned(BadmintonConfiguration.class)).isTrue();
+        assertThat(versioned(ChampionshipBrandingConfiguration.class)).isTrue();
+        assertThat(versioned(AuctionConfiguration.class)).isTrue();
+        assertThat(versioned(RosterQuotaRule.class)).isTrue();
+    }
+
+    @Test
+    void broadcastsHaveNoGlobalDestinationOverloads() {
+        assertThat(Arrays.stream(AuctionBroadcaster.class.getDeclaredMethods())
+                .filter(method -> method.getName().startsWith("broadcast"))
+                .allMatch(method -> method.getParameterTypes()[0].equals(java.util.UUID.class))).isTrue();
+    }
+
+    @Test
+    void everyNewCompetitionRecordCarriesChampionshipOwnership() {
+        assertThat(List.of(CompetitionConfiguration.class, CompetitionStage.class,
+                CompetitionQualification.class, CompetitionAuditEvent.class, MatchFormat.class,
+                CricketConfiguration.class,BadmintonConfiguration.class,RosterQuotaRule.class,
+                CricketMatchState.class,CricketPlayingMember.class,CricketInnings.class,CricketDelivery.class,
+                ChampionshipBrandingConfiguration.class,AuctionConfiguration.class))
+                .allSatisfy(type -> assertThat(Arrays.stream(type.getDeclaredFields())
+                        .anyMatch(field -> field.getName().equals("championship"))).isTrue());
+    }
+
+    private boolean versioned(Class<?> type) {
+        return Arrays.stream(type.getDeclaredFields()).anyMatch(field -> field.isAnnotationPresent(Version.class));
+    }
+
+}

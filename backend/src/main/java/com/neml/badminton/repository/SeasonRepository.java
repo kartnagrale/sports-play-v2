@@ -8,6 +8,6 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface SeasonRepository extends JpaRepository<Season, UUID> {
-    Optional<Season> findFirstByActiveTrueOrderByStartDateDesc();
-    List<Season> findAllByOrderByStartDateDesc();
+    Optional<Season> findFirstByChampionshipIdAndActiveTrueOrderByStartDateDesc(UUID championshipId);
+    List<Season> findAllByChampionshipIdOrderByStartDateDesc(UUID championshipId);
 }

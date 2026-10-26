@@ -1,0 +1,3 @@
+package com.neml.badminton.repository;
+import com.neml.badminton.entity.ConfigurationSectionState;import org.springframework.data.jpa.repository.*;import org.springframework.data.repository.query.Param;import java.util.*;
+public interface ConfigurationSectionStateRepository extends JpaRepository<ConfigurationSectionState,UUID>{List<ConfigurationSectionState> findAllByChampionshipIdOrderBySectionCode(UUID cid);Optional<ConfigurationSectionState> findByChampionshipIdAndSectionCode(UUID cid,String code);@Lock(jakarta.persistence.LockModeType.PESSIMISTIC_WRITE)@Query("select s from ConfigurationSectionState s where s.championship.id=:cid and s.sectionCode=:code")Optional<ConfigurationSectionState> findForUpdate(@Param("cid")UUID cid,@Param("code")String code);}

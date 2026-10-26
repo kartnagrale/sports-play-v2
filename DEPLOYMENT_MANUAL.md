@@ -41,16 +41,7 @@ Install the database and set it up to start on boot.
 sudo apt install postgresql postgresql-contrib -y
 sudo systemctl enable --now postgresql
 ```
-*Setup the database and user inside the Postgres shell:*
-```bash
-sudo -u postgres psql
-
-# Run these commands inside the psql prompt:
-CREATE DATABASE badminton_db;
-CREATE USER badminton_user WITH ENCRYPTED PASSWORD 'your_secure_password';
-GRANT ALL PRIVILEGES ON DATABASE badminton_db TO badminton_user;
-\q
-```
+For a new installation, create an empty database and run `docs/sql/sports-play-complete-schema.sql` once as the database owner. For an existing company database, request connection details and approved `play_neml` permissions from the DBA and apply only the reviewed dated migrations.
 
 ### E. Nginx (Reverse Proxy)
 Nginx is used to route web traffic on port 80/443 to your Next.js frontend and Spring Boot backend.
@@ -71,19 +62,14 @@ cd sports-play-main
 ```
 
 ### Step 2: Deploy Backend (Spring Boot)
-1. **Configure application properties:**
-   Ensure your backend uses the correct database credentials. You can pass them as environment variables or update `backend/src/main/resources/application.properties`:
-   ```properties
-   spring.datasource.url=jdbc:postgresql://localhost:5432/badminton_db
-   spring.datasource.username=badminton_user
-   spring.datasource.password=your_secure_password
-   ```
+1. **Configure environment variables:**
+   Supply `DB_URL`, `DB_USER`, `DB_PASSWORD`, `JWT_SECRET`, `CORS_ORIGINS`, `AUTH_COOKIE_SECURE=true`, and `DATA_SEED_ENABLED=false`. Do not edit or commit production secrets in application YAML.
 
 2. **Build the JAR file:**
    Navigate into the backend folder and build the executable JAR (assuming Maven is used):
    ```bash
    cd backend
-   ./mvnw clean package -DskipTests
+   mvn clean package -DskipTests
    ```
 
 3. **Run the Backend (using systemd):**
@@ -94,14 +80,15 @@ cd sports-play-main
    *Paste the following (adjust the path to match your actual server path):*
    ```ini
    [Unit]
-   Description=Badminton Spring Boot App
+   Description=Sports-Play Spring Boot App
    After=syslog.target
    After=network.target
 
    [Service]
    User=root
    Type=simple
-   ExecStart=/usr/bin/java -jar /root/sports-play-main/backend/target/badminton-0.0.1-SNAPSHOT.jar
+   EnvironmentFile=/etc/sports-play/backend.env
+   ExecStart=/usr/bin/java -jar /root/sports-play-main/backend/target/sports-platform-0.0.1-SNAPSHOT.jar
    Restart=always
    StandardOutput=syslog
    StandardError=syslog
@@ -125,12 +112,13 @@ cd sports-play-main
    ```
    *Add the backend URL:*
    ```env
-   NEXT_PUBLIC_API_URL=http://your_domain_or_ip/api
+   NEXT_PUBLIC_BACKEND_URL=https://your_domain_or_ip
+   NEXT_PUBLIC_WS_URL=https://your_domain_or_ip
    ```
 
 2. **Install dependencies and build:**
    ```bash
-   npm install
+   npm ci
    npm run build
    ```
 
@@ -163,14 +151,22 @@ server {
         proxy_cache_bypass $http_upgrade;
     }
 
-    # Route API requests to Spring Boot backend (running on port 8080)
+    # Route API requests to Spring Boot backend (running on port 8001)
     location /api/ {
-        proxy_pass http://localhost:8080/;
+        proxy_pass http://localhost:8001;
         proxy_http_version 1.1;
         proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection 'upgrade';
         proxy_set_header Host $host;
         proxy_cache_bypass $http_upgrade;
+    }
+
+    location /ws {
+        proxy_pass http://localhost:8001;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_set_header Host $host;
     }
 }
 ```

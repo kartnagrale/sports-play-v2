@@ -28,15 +28,8 @@ public class User {
     private String fullName;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(name = "global_role", nullable = false)
     private Role role;
-
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "team_id")
-    private Team team;
-
-    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
-    private Player player;
 
     @Column(nullable = false)
     private Instant createdAt;

@@ -3,7 +3,6 @@ package com.neml.badminton.service;
 import com.neml.badminton.dto.MatchDtos.*;
 import com.neml.badminton.entity.*;
 import com.neml.badminton.repository.*;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.http.HttpStatus;
@@ -14,26 +13,24 @@ import java.util.stream.Collectors;
 @Service
 public class AnalyticsService {
 
-    private static final int POINTS_WIN = 3;
-    private static final int PENALTY_PER_UNPLAYED = 2;
-
     private final MatchRepository matchRepository;
     private final TeamRepository teamRepository;
     private final PlayerRepository playerRepository;
-
-    @Value("${app.auction.squad-size}")
-    private int squadSize;
+    private final TournamentSettingsRepository settingsRepository;
 
     public AnalyticsService(MatchRepository matchRepository, TeamRepository teamRepository,
-                            PlayerRepository playerRepository) {
+                            PlayerRepository playerRepository, TournamentSettingsRepository settingsRepository) {
         this.matchRepository = matchRepository;
         this.teamRepository = teamRepository;
         this.playerRepository = playerRepository;
+        this.settingsRepository = settingsRepository;
     }
 
-    public List<StandingDto> standings(boolean applyPenalties) {
-        List<Team> teams = teamRepository.findAll();
-        List<Match> completed = matchRepository.findAllByStatusOrderByScheduledAtAsc(MatchStatus.COMPLETED);
+    public List<StandingDto> standings(UUID championshipId, boolean applyPenalties) {
+        List<Team> teams = teams(championshipId);
+        List<Match> completed = completedMatches(championshipId);
+        TournamentSettings rules=settingsRepository.findByChampionshipId(championshipId)
+                .orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND,"Tournament settings not found"));
 
         Map<UUID, int[]> stats = new HashMap<>(); // [played, won, lost, formatWins, formatLosses]
         for (Team t : teams) stats.put(t.getId(), new int[]{0, 0, 0, 0, 0});
@@ -67,15 +64,18 @@ public class AnalyticsService {
         List<StandingDto> pre = new ArrayList<>();
         for (Team t : teams) {
             int[] s = stats.get(t.getId());
-            int base = s[1] * POINTS_WIN;
+            int base = s[1] * rules.getPointsPerWin();
             List<UUID> unplayed = unplayedPlayerIds(t, playedByTeam.getOrDefault(t.getId(), Set.of()));
-            int penalty = applyPenalties ? unplayed.size() * PENALTY_PER_UNPLAYED : 0;
+            // Participation penalties only make sense after competition has begun.
+            // A newly generated squad must start the league table at zero points.
+            int penalty = applyPenalties && !completed.isEmpty()
+                    ? unplayed.size() * rules.getPenaltyPerUnplayed() : 0;
             int total = base - penalty;
             pre.add(new StandingDto(
                     TeamRef.from(t),
                     s[0], s[1], s[2],
                     s[3], s[4], s[3] - s[4],
-                    base, penalty, total,
+                    base, penalty, total,null,
                     0, unplayed
             ));
         }
@@ -98,7 +98,7 @@ public class AnalyticsService {
         for (StandingDto s : pre) {
             ranked.add(new StandingDto(s.team(), s.played(), s.won(), s.lost(),
                     s.formatWins(), s.formatLosses(), s.formatDiff(),
-                    s.basePoints(), s.penalty(), s.totalPoints(), rank++, s.unplayedPlayerIds()));
+                    s.basePoints(), s.penalty(), s.totalPoints(),s.netRunRate(), rank++, s.unplayedPlayerIds()));
         }
         return ranked;
     }
@@ -119,16 +119,18 @@ public class AnalyticsService {
     }
 
     private List<UUID> unplayedPlayerIds(Team team, Set<UUID> played) {
-        return playerRepository.findAll().stream()
+        return playerRepository.findAllByChampionshipIdOrderByAuctionOrderAsc(team.getChampionship().getId()).stream()
                 .filter(p -> p.getTeam() != null && p.getTeam().getId().equals(team.getId()))
                 .filter(p -> !played.contains(p.getId()))
                 .map(Player::getId)
                 .toList();
     }
 
-    public List<FormatLeaderDto> formatLeaders() {
-        List<Team> teams = teamRepository.findAll();
-        List<Match> matches = matchRepository.findAll();
+    public List<FormatLeaderDto> formatLeaders(UUID championshipId) {
+        List<Team> teams = teams(championshipId);
+        if(teams.isEmpty()) return List.of();
+        List<Match> matches = matchRepository.findAllByChampionshipIdAndStageTypeOrderByMatchNumberAsc(
+                championshipId, CompetitionStageType.LEAGUE);
         List<FormatLeaderDto> out = new ArrayList<>();
         for (FormatType ft : FormatType.values()) {
             Map<UUID, Integer> winsByTeam = new HashMap<>();
@@ -150,10 +152,11 @@ public class AnalyticsService {
         return out;
     }
 
-    public TeamAnalysisDto teamAnalysis(UUID teamId) {
-        Team team = teamRepository.findById(teamId)
+    public TeamAnalysisDto teamAnalysis(UUID championshipId, UUID teamId) {
+        Team team = teamRepository.findByIdAndChampionshipId(teamId, championshipId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Team not found"));
-        List<Match> completed = matchRepository.findAllByStatusOrderByScheduledAtAsc(MatchStatus.COMPLETED);
+        List<Match> completed = completedMatches(championshipId);
+        List<Player> championshipPlayers = playerRepository.findAllByChampionshipIdOrderByAuctionOrderAsc(championshipId);
 
         int played = 0, won = 0, lost = 0;
         Map<FormatType, int[]> fmt = new EnumMap<>(FormatType.class);
@@ -196,10 +199,10 @@ public class AnalyticsService {
             if (diff < worstDiff) { worstDiff = diff; weakest = ft; }
         }
 
-        long squad = playerRepository.findAll().stream()
+        long squad = championshipPlayers.stream()
                 .filter(p -> p.getTeam() != null && p.getTeam().getId().equals(teamId)).count();
         double participationPct = squad == 0 ? 0.0 : (played_players.size() * 100.0 / squad);
-        List<UUID> unplayed = playerRepository.findAll().stream()
+        List<UUID> unplayed = championshipPlayers.stream()
                 .filter(p -> p.getTeam() != null && p.getTeam().getId().equals(teamId))
                 .map(Player::getId)
                 .filter(id -> !played_players.contains(id))
@@ -213,7 +216,7 @@ public class AnalyticsService {
 
         List<TeamAnalysisDto.HeadToHead> h2hList = new ArrayList<>();
         for (Map.Entry<UUID, int[]> e : h2h.entrySet()) {
-            Team opp = teamRepository.findById(e.getKey()).orElse(null);
+            Team opp = teamRepository.findByIdAndChampionshipId(e.getKey(),championshipId).orElse(null);
             if (opp == null) continue;
             int[] a = e.getValue();
             h2hList.add(new TeamAnalysisDto.HeadToHead(TeamRef.from(opp), a[0], a[1], a[2]));
@@ -227,8 +230,8 @@ public class AnalyticsService {
         );
     }
 
-    public List<TopPerformerDto> topPerformers(int limit) {
-        List<Match> completed = matchRepository.findAllByStatusOrderByScheduledAtAsc(MatchStatus.COMPLETED);
+    public List<TopPerformerDto> topPerformers(UUID championshipId, int limit) {
+        List<Match> completed = completedMatches(championshipId);
 
         // playerId -> stats
         Map<UUID, int[]> stats = new HashMap<>(); // [played, won, lost, currentStreak, longestStreak, totalPtsWon, totalMargin, marginCount]
@@ -286,5 +289,14 @@ public class AnalyticsService {
             s[2]++;
             s[3] = 0;
         }
+    }
+
+    private List<Team> teams(UUID championshipId) {
+        return teamRepository.findAllByChampionshipIdOrderByName(championshipId);
+    }
+
+    private List<Match> completedMatches(UUID championshipId) {
+        return matchRepository.findAllByChampionshipIdAndStageTypeAndStatusOrderByMatchNumberAsc(
+                championshipId, CompetitionStageType.LEAGUE, MatchStatus.COMPLETED);
     }
 }

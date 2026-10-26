@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { api, AuctionStateDto, PlayerDto } from "@/lib/api";
 import { createAuctionSocket } from "@/lib/ws";
 import { useAuth } from "@/lib/auth";
+import { useChampionship } from "@/lib/championship";
 import { formatCr } from "@/lib/format";
 import { toast } from "sonner";
 import type { Client } from "@stomp/stompjs";
@@ -13,12 +14,13 @@ import {
 import BidPanel from "@/components/auction/BidPanel";
 import CoinTossDialog from "@/components/auction/CoinTossDialog";
 import BasePriceDialog from "@/components/auction/BasePriceDialog";
-
-const BID_INCREMENT = 500_000;
+import AuctionUnavailable from "@/components/auction/AuctionUnavailable";
 
 export default function AuctionPage() {
   const { user } = useAuth();
+  const { active, hydrated } = useChampionship();
   const [state, setState] = useState<AuctionStateDto | null>(null);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [flash, setFlash] = useState(false);
   const [availablePlayers, setAvailablePlayers] = useState<PlayerDto[]>([]);
   const [coinTossOpen, setCoinTossOpen] = useState(false);
@@ -26,8 +28,9 @@ export default function AuctionPage() {
   const [soldCelebration, setSoldCelebration] = useState<{ playerName: string; teamName: string; price: number } | null>(null);
   const [now, setNow] = useState(() => Date.now());
   const clientRef = useRef<Client | null>(null);
-  const isAdmin = user?.role === "ADMIN";
-  const isOwner = user?.role === "TEAM_OWNER";
+  const access = user?.championships?.find((c) => c.championshipId === active?.id);
+  const isAdmin = user?.role === "SUPER_ADMIN" || access?.role === "CHAMPIONSHIP_ADMIN";
+  const isOwner = access?.role === "TEAM_CAPTAIN";
 
   // Countdown ticker
   useEffect(() => {
@@ -37,13 +40,15 @@ export default function AuctionPage() {
 
   // Fetch state + available player list. Stable identity so effects can depend on it.
   const load = useCallback(async () => {
+    if (!active?.defaultAuctionId) return;
+    setLoadError(null);
     const [s, p] = await Promise.all([
       api.get<AuctionStateDto>("/auction/state"),
       api.get<PlayerDto[]>("/players"),
     ]);
     setState(s.data);
     setAvailablePlayers(p.data.filter((x) => x.status === "AVAILABLE" || x.status === "UNSOLD"));
-  }, []);
+  }, [active?.defaultAuctionId]);
 
   const handleEvent = useCallback((evt: { type: string; data: any }) => {
     if (evt.type === "STATE") {
@@ -76,13 +81,27 @@ export default function AuctionPage() {
   }, []);
 
   useEffect(() => {
-    load().catch((err) => console.warn("initial load failed", err));
-    const client = createAuctionSocket(handleEvent);
-    clientRef.current = client;
+    if (!active?.defaultAuctionId) {
+      setState(null);
+      return;
+    }
+    load().catch((err) => {
+      console.warn("initial auction load failed", err);
+      setLoadError(err?.response?.data?.message || err?.message || "Unable to load the auction");
+    });
+    let client: Client | null = null;
+    try {
+      client = createAuctionSocket(handleEvent);
+      clientRef.current = client;
+    } catch (error: any) {
+      console.warn("auction socket setup failed", error);
+      setLoadError(error?.message || "Unable to connect to the live auction");
+    }
     return () => {
-      client.deactivate();
+      client?.deactivate();
+      clientRef.current = null;
     };
-  }, [load, handleEvent]);
+  }, [active?.defaultAuctionId, load, handleEvent]);
 
   const doAdminAction = async (path: string, body?: any) => {
     try {
@@ -95,7 +114,7 @@ export default function AuctionPage() {
   const handleQuickBid = async (teamId: string) => {
     if (state?.status !== "RUNNING" || !state.currentPlayer) return;
     const h = state.highestBid;
-    const m = h ? Number(h.amount) + BID_INCREMENT : Number(state.currentPlayer.basePrice || 0);
+    const m = h ? Number(h.amount) + Number(state.bidIncrement) : Number(state.currentPlayer.basePrice || 0);
     try {
       await api.post("/auction/bid", { playerId: state.currentPlayer.id, teamId, amount: m });
     } catch (e: any) {
@@ -106,9 +125,26 @@ export default function AuctionPage() {
   const canQuickBid = (teamId: string) => {
     if (state?.status !== "RUNNING" || !state.currentPlayer) return false;
     if (isAdmin) return true;
-    if (isOwner && user?.teamId === teamId) return true;
+    if (isOwner && access?.teamId === teamId) return true;
     return false;
   };
+
+  if (hydrated && active && !active.defaultAuctionId) {
+    return <AuctionUnavailable />;
+  }
+
+  if (loadError) {
+    return (
+      <div className="grid min-h-[75vh] place-items-center p-8 text-center">
+        <div className="card-elev max-w-lg rounded-3xl p-9">
+          <div className="label-cap text-danger">Auction unavailable</div>
+          <h1 className="h-heading mt-2 text-3xl">Unable to load auction</h1>
+          <p className="mt-3 text-sm text-white/50">{loadError}</p>
+          <button className="btn btn-primary mt-6" onClick={() => load()}>Try again</button>
+        </div>
+      </div>
+    );
+  }
 
   if (!state) {
     return <div className="p-10 text-white/40 h-heading uppercase tracking-widest">Loading auction...</div>;
@@ -116,7 +152,7 @@ export default function AuctionPage() {
 
   const current = state.currentPlayer;
   const highest = state.highestBid;
-  const minNext = highest ? Number(highest.amount) + BID_INCREMENT : Number(current?.basePrice || 0);
+  const minNext = highest ? Number(highest.amount) + Number(state.bidIncrement) : Number(current?.basePrice || 0);
   const secondsLeft = state.bidDeadline
     ? Math.max(0, Math.floor((new Date(state.bidDeadline).getTime() - now) / 1000))
     : null;
@@ -145,7 +181,7 @@ export default function AuctionPage() {
                 minNext={minNext}
                 current={current}
                 teams={state.teams}
-                userTeamId={user?.teamId}
+                userTeamId={access?.teamId}
                 isAdmin={isAdmin}
               />
             )}
@@ -172,6 +208,9 @@ export default function AuctionPage() {
                     team={t}
                     leadingTeamId={highest?.teamId}
                     onQuickBid={canQuickBid(t.id) ? handleQuickBid : undefined}
+                    maxSquadSize={state.maxSquadSize}
+                    minMale={state.minMale}
+                    minFemale={state.minFemale}
                   />
                 ))}
               </div>
@@ -390,22 +429,6 @@ function AdminControlPanel({
         </div>
         <div className="flex items-center gap-2">
           <button
-            className="chip cursor-pointer bg-danger/10 border-danger/20 text-danger hover:bg-danger/20 transition-colors"
-            onClick={async () => {
-              if (window.confirm("Are you sure you want to COMPLETELY RESET the auction? This deletes all bids and resets all purses!")) {
-                try {
-                  await import("@/lib/api").then(m => m.api.post("/admin/players/reset-all"));
-                  alert("Auction reset successfully! Reloading...");
-                  window.location.reload();
-                } catch (e: any) {
-                  alert(e?.response?.data?.message || "Reset failed");
-                }
-              }
-            }}
-          >
-            Reset All Data
-          </button>
-          <button
             className="chip cursor-pointer hover:border-danger hover:text-danger transition-colors"
             onClick={() => {
               if (window.confirm("Are you sure you want to force reset the auction to NOT_STARTED?")) {
@@ -515,7 +538,7 @@ function BidHistoryList({ bids }: { bids: AuctionStateDto["bidHistory"] }) {
   );
 }
 
-function TeamPurseCard({ team, leadingTeamId, onQuickBid }: { team: AuctionStateDto["teams"][number]; leadingTeamId?: string; onQuickBid?: (teamId: string) => void }) {
+function TeamPurseCard({ team, leadingTeamId, onQuickBid, maxSquadSize, minMale, minFemale }: { team: AuctionStateDto["teams"][number]; leadingTeamId?: string; onQuickBid?: (teamId: string) => void; maxSquadSize: number; minMale: number; minFemale: number }) {
   const spent = Number(team.purseTotal) - Number(team.purseRemaining);
   const pct = (spent / Number(team.purseTotal)) * 100;
   const isLeading = leadingTeamId === team.id;
@@ -534,7 +557,7 @@ function TeamPurseCard({ team, leadingTeamId, onQuickBid }: { team: AuctionState
         </div>
         <div className="min-w-0 flex-1">
           <div className="text-sm font-medium truncate">{team.name}</div>
-          <div className="label-cap text-[10px]">Slots {team.totalPlayers}/12</div>
+          <div className="label-cap text-[10px]">Slots {team.totalPlayers}/{maxSquadSize}</div>
         </div>
         {isLeading && <span className="chip chip-primary">Leading</span>}
       </div>
@@ -549,11 +572,11 @@ function TeamPurseCard({ team, leadingTeamId, onQuickBid }: { team: AuctionState
         <div className="grid grid-cols-2 gap-2 mt-3 text-[11px]">
           <div className="flex justify-between border border-white/10 rounded px-2 py-1">
             <span className="text-white/50">M</span>
-            <span className="h-heading">{team.maleCount}/9</span>
+            <span className="h-heading">{team.maleCount}/{minMale}</span>
           </div>
           <div className="flex justify-between border border-white/10 rounded px-2 py-1">
             <span className="text-white/50">F</span>
-            <span className="h-heading">{team.femaleCount}/3</span>
+            <span className="h-heading">{team.femaleCount}/{minFemale}</span>
           </div>
         </div>
       </div>

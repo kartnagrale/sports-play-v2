@@ -1,42 +1,50 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { api, MatchDto, MatchFormatDto, PlayerDto, TeamDto, FORMAT_LABEL, FORMAT_SHORT } from "@/lib/api";
+import { api, MatchDto, MatchFormatDto, PlayerDto, TeamDto, SquadSummaryDto } from "@/lib/api";
+import {CricketMatchPanel} from "@/components/CricketMatchPanel";
 import { createMatchSocket } from "@/lib/ws";
-import { useAuth } from "@/lib/auth";
+import { useNavigation } from "@/lib/navigation";
+import { useChampionship } from "@/lib/championship";
+import Link from "next/link";
 import { toast } from "sonner";
 import type { Client } from "@stomp/stompjs";
-import { Calendar, Circle, Check, ChevronRight, Plus, Minus, Trash2, RefreshCw } from "lucide-react";
+import { Calendar, Circle, Check, ChevronRight, Plus, Minus, Trash2, RefreshCw, Lock } from "lucide-react";
 
 export default function MatchesPage() {
-  const { user } = useAuth();
+  const role = useNavigation((state) => state.role);
+  const active = useChampionship((state) => state.active);
+  const isAdmin = role === "CHAMPIONSHIP_ADMIN";
   const [matches, setMatches] = useState<MatchDto[]>([]);
   const [teams, setTeams] = useState<TeamDto[]>([]);
   const [players, setPlayers] = useState<PlayerDto[]>([]);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [showCreate, setShowCreate] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [squadsReady, setSquadsReady] = useState(false);
   const selectedIdRef = useRef<string | null>(null);
   selectedIdRef.current = selectedId;
 
   const load = useCallback(async () => {
     setLoading(true);
     try {
-      const [m, t, p] = await Promise.all([
+      const [m, t, p, squad] = await Promise.all([
         api.get<MatchDto[]>("/matches"),
         api.get<TeamDto[]>("/teams"),
         api.get<PlayerDto[]>("/players"),
+        active ? api.get<SquadSummaryDto>(`/championships/${active.id}/squad-confirmations`) : Promise.resolve({data:null}),
       ]);
       setMatches(m.data);
       setTeams(t.data);
       setPlayers(p.data);
+      setSquadsReady(Boolean(squad.data?.allSquadsLocked));
       if (!selectedIdRef.current && m.data.length) setSelectedId(m.data[0].id);
     } catch (err) {
       console.warn("matches load failed", err);
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [active]);
 
   useEffect(() => {
     load();
@@ -67,27 +75,29 @@ export default function MatchesPage() {
         <div>
           <div className="label-cap">Fixtures</div>
           <h1 className="h-heading text-5xl font-bold mt-1" data-testid="matches-heading">Matches</h1>
-          <p className="text-white/50 mt-2 max-w-xl">Round-robin fixtures with 5 playing formats per match.</p>
+          <p className="text-white/50 mt-2 max-w-xl">League and playoff fixtures with backend-validated sport formats.</p>
         </div>
         <div className="flex items-center gap-3">
           <button className="btn btn-ghost" onClick={() => load()} data-testid="refresh-matches-btn" title="Refresh matches">
             <RefreshCw size={14} className={loading ? "animate-spin" : ""} />
             Refresh
           </button>
-          {user?.role === "ADMIN" && (
-            <button className="btn btn-primary" onClick={() => setShowCreate(true)} data-testid="new-match-btn">
+          {isAdmin && (
+            <button className="btn btn-primary" disabled={!squadsReady} onClick={() => setShowCreate(true)} data-testid="new-match-btn" title={squadsReady?"Schedule a league match":"Lock every squad in Phase 2 first"}>
               <Plus size={14} /> New Match
             </button>
           )}
         </div>
       </div>
 
+      {!squadsReady && <div className="mb-6 flex flex-col gap-3 rounded-2xl border border-warning/25 bg-warning/[.07] p-5 sm:flex-row sm:items-center sm:justify-between"><div className="flex items-start gap-3"><Lock className="mt-0.5 shrink-0 text-warning" size={18}/><div><div className="h-heading text-sm text-warning">League scheduling is locked</div><p className="mt-1 text-xs text-white/45">Every captain must confirm their roster and the championship administrator must lock all squads.</p></div></div>{isAdmin&&<Link href="/squad-confirmation" className="btn btn-ghost shrink-0 justify-center">Open Phase 2<ChevronRight size={14}/></Link>}</div>}
+
       {matches.length === 0 && (
         <div className="card-elev rounded-2xl p-16 text-center">
           <div className="label-cap">Empty</div>
           <div className="h-heading text-2xl mt-2 text-white/60">No matches scheduled yet</div>
           <p className="text-white/40 mt-2">
-            {user?.role === "ADMIN" ? "Click 'New Match' or use 'Populate demo data' on the Scoreboard to seed a round-robin." : "Fixtures will appear here once scheduled."}
+            {isAdmin ? (squadsReady ? "Click 'New Match' to schedule a fixture." : "Complete Squad Confirmation to unlock league fixtures.") : "Fixtures will appear here once scheduled."}
           </p>
         </div>
       )}
@@ -128,25 +138,25 @@ export default function MatchesPage() {
         {/* Detail */}
         {selected && (
           <div className="col-span-12 lg:col-span-8 space-y-4">
-            <MatchHeader match={selected} isAdmin={user?.role === "ADMIN"} onDelete={async () => {
+            <MatchHeader match={selected} isAdmin={isAdmin} onDelete={async () => {
               if (!confirm("Delete this match?")) return;
               await api.delete(`/admin/matches/${selected.id}`);
               toast.success("Match deleted");
               setSelectedId(null);
               await load();
             }} />
-            <div className="space-y-3">
+            {active?.sportType.toLowerCase()==="cricket"?<CricketMatchPanel championshipId={active.id} match={selected} players={players} canManage={isAdmin}/>:<div className="space-y-3">
               {selected.formats.map((f) => (
                 <FormatCard
                   key={f.id}
                   match={selected}
                   format={f}
                   players={players}
-                  isAdmin={user?.role === "ADMIN"}
+                  isAdmin={isAdmin}
                   onChange={load}
                 />
               ))}
-            </div>
+            </div>}
           </div>
         )}
       </div>
@@ -218,33 +228,24 @@ function FormatCard({ match, format, players, isAdmin, onChange }: {
   const [sB, setSB] = useState(format.scoreB);
   const [submitting, setSubmitting] = useState(false);
 
-  // Auto-submit when someone reaches 11 points AND leads by at least 2
-  useEffect(() => {
-    const isWin = (sA >= 11 || sB >= 11) && Math.abs(sA - sB) >= 2;
-    if (isWin) {
-      const timer = setTimeout(() => {
-        submitScore();
-      }, 500);
-      return () => clearTimeout(timer);
-    }
-  }, [sA, sB]);
-
   const handleScoreChange = (newSA: number, newSB: number) => {
     setSA(newSA);
     setSB(newSB);
     // Fire and forget live score update to backend so all viewers see it instantly
-    api.post(`/admin/matches/formats/${format.id}/live-score`, { scoreA: newSA, scoreB: newSB }).catch(console.error);
+    if (!format.completed) {
+      api.post(`/admin/matches/formats/${format.id}/live-score`, { scoreA: newSA, scoreB: newSB }).catch(console.error);
+    }
   };
 
   const teamAPlayers = players.filter((p) => p.teamId === match.teamA.id);
   const teamBPlayers = players.filter((p) => p.teamId === match.teamB.id);
 
-  const need = format.formatType === "MENS_SINGLES" || format.formatType === "WOMENS_SINGLES" ? 1 : 2;
+  const need = format.playersPerSide;
   const filter = (t: string) =>
     (t === "A" ? teamAPlayers : teamBPlayers).filter((p) => {
-      if (format.formatType === "MENS_SINGLES" || format.formatType === "MENS_DOUBLES" || format.formatType === "MENS_DOUBLES_TWO") return p.gender === "MALE";
-      if (format.formatType === "WOMENS_SINGLES") return p.gender === "FEMALE";
-      return true; // mixed
+      if (format.genderRule === "MALE") return p.gender === "MALE";
+      if (format.genderRule === "FEMALE") return p.gender === "FEMALE";
+      return true;
     });
 
   const submitAssign = async () => {
@@ -261,8 +262,9 @@ function FormatCard({ match, format, players, isAdmin, onChange }: {
     if (submitting) return;
     setSubmitting(true);
     try {
-      await api.post(`/admin/matches/formats/${format.id}/result`, { scoreA: sA, scoreB: sB });
-      toast.success("Result recorded");
+      if (format.completed) await api.put(`/admin/matches/formats/${format.id}/result`, { scoreA: sA, scoreB: sB });
+      else await api.post(`/admin/matches/formats/${format.id}/result`, { scoreA: sA, scoreB: sB });
+      toast.success(format.completed ? "Result correction recorded" : "Result recorded");
       setScore(false);
       await onChange();
     } catch (e: any) {
@@ -277,8 +279,8 @@ function FormatCard({ match, format, players, isAdmin, onChange }: {
       <div className="flex items-start justify-between mb-3">
         <div>
           <div className="flex items-center gap-2">
-            <span className="chip chip-primary">{FORMAT_SHORT[format.formatType]}</span>
-            <span className="h-heading text-lg">{FORMAT_LABEL[format.formatType]}</span>
+            <span className="chip chip-primary">{format.shortLabel}</span>
+            <span className="h-heading text-lg">{format.label}</span>
           </div>
           <div className="label-cap text-[10px] mt-1">Format #{format.formatOrder}</div>
         </div>
@@ -312,7 +314,7 @@ function FormatCard({ match, format, players, isAdmin, onChange }: {
       </div>
       {isAdmin && (
         <div className="flex gap-2 mt-3">
-          {!format.completed && (
+          {!format.completed ? (
             <>
               <button className="btn btn-ghost text-xs" onClick={() => setAssign(!assign)} data-testid={`assign-${format.formatOrder}`}>
                 {format.sideAPlayers.length ? "Change players" : "Assign players"}
@@ -323,7 +325,7 @@ function FormatCard({ match, format, players, isAdmin, onChange }: {
                 </button>
               )}
             </>
-          )}
+          ) : <button className="btn btn-ghost text-xs" onClick={() => setScore(!score)} data-testid={`correct-${format.formatOrder}`}>Correct result</button>}
         </div>
       )}
       {assign && (
@@ -383,6 +385,9 @@ function FormatCard({ match, format, players, isAdmin, onChange }: {
               </div>
             </div>
           </div>
+          <button className="btn btn-primary mx-auto justify-center" disabled={submitting||sA===sB} onClick={submitScore}>
+            {submitting ? "Saving…" : format.completed ? "Confirm audited correction" : "Confirm final result"}
+          </button>
         </div>
       )}
     </div>

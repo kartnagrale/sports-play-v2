@@ -21,12 +21,15 @@ node_modules/
 
 # Next.js
 /.next/
+/frontend/.next/
+/frontend/.next-local/
 /out/
 next-env.d.ts
 *.tsbuildinfo
 
 # Production builds
 /build
+backend/target/
 dist/
 dist
 
@@ -76,6 +79,13 @@ agenthub/agents/youtube/db
 # Build caches
 .cache/
 
+# Generated local artifacts
+/tmp/
+/output/
+/tools/build_sports_play_guide.py
+/tools/capture_platform_guide.mjs
+/frontend/build_sports_play_writeup.py
+
 memory/test_credentials.md
 
 # Mobile development
@@ -85,6 +95,7 @@ frontend/node_modules/@next/swc-linux-arm64-gnu/next-swc.linux-arm64-gnu.node
 .env
 .env.*
 *.env
+!frontend/.env.local.example
 credentials.json
 *.key
 .credentials

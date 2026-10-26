@@ -36,19 +36,6 @@ export default function LoginPage() {
     }
   };
 
-  const quickFill = (role: "admin" | "owner" | "viewer") => {
-    if (role === "admin") {
-      setEmail("admin@neml.com");
-      setPassword("Admin@123");
-    } else if (role === "owner") {
-      setEmail("owner-mum@neml.com");
-      setPassword("Owner@123");
-    } else {
-      setEmail("viewer@neml.com");
-      setPassword("Viewer@123");
-    }
-  };
-
   return (
     <>
       {showSplash && <SplashScreen onComplete={() => setShowSplash(false)} />}
@@ -68,10 +55,8 @@ export default function LoginPage() {
         <div
           className="absolute inset-0 opacity-30"
           style={{
-            backgroundImage:
-              "url(https://images.unsplash.com/photo-1599158150601-1417ebbaafdd?crop=entropy&cs=srgb&fm=jpg&q=85&w=1600)",
-            backgroundSize: "cover",
-            backgroundPosition: "center",
+            backgroundImage: "radial-gradient(circle at 20% 25%, color-mix(in srgb, var(--color-primary) 22%, transparent), transparent 32%), radial-gradient(circle at 76% 68%, color-mix(in srgb, var(--color-secondary) 16%, transparent), transparent 30%), linear-gradient(135deg, transparent 0 48%, rgba(255,255,255,.04) 49% 51%, transparent 52% 100%)",
+            backgroundSize: "auto, auto, 72px 72px",
           }}
         />
         <div
@@ -110,16 +95,16 @@ export default function LoginPage() {
         </div>
         <div className="relative z-10 grid grid-cols-3 gap-6 pt-8 border-t border-[rgba(128,128,128,0.2)]">
           <div>
-            <div className="label-cap">Teams</div>
-            <div className="stat-num text-3xl mt-1">04</div>
+            <div className="label-cap">Data boundary</div>
+            <div className="stat-num text-2xl mt-1">Isolated</div>
           </div>
           <div>
-            <div className="label-cap">Players</div>
-            <div className="stat-num text-3xl mt-1">48</div>
+            <div className="label-cap">Auction</div>
+            <div className="stat-num text-2xl mt-1">Real-time</div>
           </div>
           <div>
-            <div className="label-cap">Purse / Team</div>
-            <div className="stat-num text-3xl mt-1 text-primary">₹100 Cr</div>
+            <div className="label-cap">Platform</div>
+            <div className="stat-num text-2xl mt-1 text-primary">Multi-sport</div>
           </div>
         </div>
       </div>
@@ -131,7 +116,7 @@ export default function LoginPage() {
             <div className="label-cap">Sign in</div>
             <h1 className="h-heading text-4xl font-bold mt-2">Access Control</h1>
             <p className="opacity-50 mt-2 text-sm">
-              Enter your credentials. Roles: Admin, Team Owner, or Viewer.
+              Sign in as platform staff, or join a room for read-only viewer access.
             </p>
           </div>
 
@@ -173,35 +158,19 @@ export default function LoginPage() {
           </form>
 
           <div className="mt-8 border-t border-[rgba(128,128,128,0.2)] pt-6">
-            <div className="label-cap mb-3">Quick sign-in (demo)</div>
-            <div className="grid grid-cols-3 gap-2">
-              <button
-                data-testid="quick-admin"
-                type="button"
-                onClick={() => quickFill("admin")}
-                className="btn btn-ghost justify-center text-[10px]"
-              >
-                Admin
-              </button>
-              <button
-                data-testid="quick-owner"
-                type="button"
-                onClick={() => quickFill("owner")}
-                className="btn btn-ghost justify-center text-[10px]"
-              >
-                Team Owner
-              </button>
+            <div className="label-cap mb-3">Spectator access</div>
+            <div>
               <button
                 data-testid="quick-viewer"
                 type="button"
-                onClick={() => quickFill("viewer")}
-                className="btn btn-ghost justify-center text-[10px]"
+                onClick={() => router.push("/room/join")}
+                className="btn btn-ghost w-full justify-center text-xs"
               >
-                Viewer
+                Join a championship room
               </button>
             </div>
             <p className="opacity-40 text-xs mt-3 leading-relaxed">
-              admin@neml.com / Admin@123 · owner-mum@neml.com / Owner@123 · viewer@neml.com / Viewer@123
+              Staff use their issued credentials. Spectators can enter a public room code without a staff account.
             </p>
           </div>
         </div>

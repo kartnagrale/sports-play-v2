@@ -7,5 +7,5 @@ import java.util.List;
 import java.util.UUID;
 
 public interface AnnouncementRepository extends JpaRepository<Announcement, UUID> {
-    List<Announcement> findAllByOrderByCreatedAtDesc();
+    List<Announcement> findAllByChampionshipIdOrderByCreatedAtDesc(UUID championshipId);
 }

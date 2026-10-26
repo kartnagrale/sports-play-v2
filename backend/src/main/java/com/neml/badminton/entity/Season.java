@@ -7,7 +7,7 @@ import java.time.Instant;
 import java.util.UUID;
 
 @Entity
-@Table(name = "seasons")
+@Table(name = "seasons", uniqueConstraints = @UniqueConstraint(columnNames = {"championship_id", "name"}))
 @Getter
 @Setter
 @NoArgsConstructor
@@ -18,7 +18,11 @@ public class Season {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(nullable = false, unique = true)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "championship_id", nullable = false)
+    private Championship championship;
+
+    @Column(nullable = false)
     private String name;
 
     @Column(nullable = false)
