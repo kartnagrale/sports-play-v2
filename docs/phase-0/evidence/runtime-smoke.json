@@ -1,0 +1,253 @@
+{
+  "at": "2026-10-27T03:55:01.416Z",
+  "scope": "Disposable PostgreSQL; selected REST authorization/provisioning and STOMP SEND probe; not historical 50-check suite",
+  "results": [
+    {
+      "name": "public health",
+      "expected": [
+        200
+      ],
+      "status": 200,
+      "pass": true
+    },
+    {
+      "name": "anonymous me",
+      "expected": [
+        401
+      ],
+      "status": 401,
+      "pass": true
+    },
+    {
+      "name": "anonymous tenant list",
+      "expected": [
+        401,
+        403
+      ],
+      "status": 403,
+      "pass": true
+    },
+    {
+      "name": "bootstrap super admin login",
+      "expected": [
+        200
+      ],
+      "status": 200,
+      "pass": true
+    },
+    {
+      "name": "super admin navigation",
+      "expected": [
+        200
+      ],
+      "status": 200,
+      "pass": true
+    },
+    {
+      "name": "provision BADMINTON",
+      "expected": [
+        200
+      ],
+      "status": 200,
+      "pass": true
+    },
+    {
+      "name": "BADMINTON admin login",
+      "expected": [
+        200
+      ],
+      "status": 200,
+      "pass": true
+    },
+    {
+      "name": "BADMINTON configuration initialized",
+      "expected": [
+        200
+      ],
+      "status": 200,
+      "pass": true
+    },
+    {
+      "name": "BADMINTON dashboard",
+      "expected": [
+        200
+      ],
+      "status": 200,
+      "pass": true
+    },
+    {
+      "name": "BADMINTON admin settings",
+      "expected": [
+        200
+      ],
+      "status": 200,
+      "pass": true
+    },
+    {
+      "name": "BADMINTON create player",
+      "expected": [
+        200
+      ],
+      "status": 200,
+      "pass": true
+    },
+    {
+      "name": "BADMINTON players",
+      "expected": [
+        200
+      ],
+      "status": 200,
+      "pass": true
+    },
+    {
+      "name": "BADMINTON super admin write denied",
+      "expected": [
+        403
+      ],
+      "status": 403,
+      "pass": true
+    },
+    {
+      "name": "BADMINTON viewer join",
+      "expected": [
+        200
+      ],
+      "status": 200,
+      "pass": true
+    },
+    {
+      "name": "BADMINTON viewer read",
+      "expected": [
+        200
+      ],
+      "status": 200,
+      "pass": true
+    },
+    {
+      "name": "BADMINTON viewer write denied",
+      "expected": [
+        403
+      ],
+      "status": 403,
+      "pass": true
+    },
+    {
+      "name": "provision CRICKET",
+      "expected": [
+        200
+      ],
+      "status": 200,
+      "pass": true
+    },
+    {
+      "name": "CRICKET admin login",
+      "expected": [
+        200
+      ],
+      "status": 200,
+      "pass": true
+    },
+    {
+      "name": "CRICKET configuration initialized",
+      "expected": [
+        200
+      ],
+      "status": 200,
+      "pass": true
+    },
+    {
+      "name": "CRICKET dashboard",
+      "expected": [
+        200
+      ],
+      "status": 200,
+      "pass": true
+    },
+    {
+      "name": "CRICKET admin settings",
+      "expected": [
+        200
+      ],
+      "status": 200,
+      "pass": true
+    },
+    {
+      "name": "CRICKET create player",
+      "expected": [
+        200
+      ],
+      "status": 200,
+      "pass": true
+    },
+    {
+      "name": "CRICKET players",
+      "expected": [
+        200
+      ],
+      "status": 200,
+      "pass": true
+    },
+    {
+      "name": "CRICKET super admin write denied",
+      "expected": [
+        403
+      ],
+      "status": 403,
+      "pass": true
+    },
+    {
+      "name": "CRICKET viewer join",
+      "expected": [
+        200
+      ],
+      "status": 200,
+      "pass": true
+    },
+    {
+      "name": "CRICKET viewer read",
+      "expected": [
+        200
+      ],
+      "status": 200,
+      "pass": true
+    },
+    {
+      "name": "CRICKET viewer write denied",
+      "expected": [
+        403
+      ],
+      "status": 403,
+      "pass": true
+    },
+    {
+      "name": "cross tenant admin read denied",
+      "expected": [
+        403
+      ],
+      "status": 403,
+      "pass": true
+    },
+    {
+      "name": "cross tenant viewer read denied",
+      "expected": [
+        403
+      ],
+      "status": 403,
+      "pass": true
+    },
+    {
+      "name": "viewer global championship list handled",
+      "expected": [
+        200,
+        403
+      ],
+      "status": 500,
+      "pass": false
+    },
+    {
+      "name": "anonymous STOMP SEND blocked",
+      "pass": false,
+      "observation": "Authenticated viewer received anonymous forged event on championship topic"
+    }
+  ]
+}

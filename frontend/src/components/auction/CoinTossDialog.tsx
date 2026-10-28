@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Dialog } from "@/components/ui/Dialog";
 import { TeamDto } from "@/lib/api";
 
 interface Props {
@@ -15,10 +16,7 @@ export default function CoinTossDialog({ teams, onClose, onToss }: Props) {
     setSelected((s) => (s.includes(id) ? s.filter((x) => x !== id) : [...s, id]));
   };
   return (
-    <div className="fixed inset-0 z-50 grid place-items-center bg-black/70 backdrop-blur-sm" onClick={onClose}>
-      <div className="card-elev rounded-2xl p-8 w-full max-w-md" onClick={(e) => e.stopPropagation()}>
-        <div className="label-cap">Coin toss</div>
-        <h3 className="h-heading text-2xl mt-1 mb-4">Break the tie</h3>
+    <Dialog title="Break the tie" description="Coin toss" onClose={onClose}>
         <p className="text-white/50 text-sm mb-4">Pick 2 or more tied teams. Winner is chosen randomly.</p>
         <div className="space-y-2">
           {teams.map((t) => (
@@ -45,7 +43,6 @@ export default function CoinTossDialog({ teams, onClose, onToss }: Props) {
             Flip Coin
           </button>
         </div>
-      </div>
-    </div>
+    </Dialog>
   );
 }

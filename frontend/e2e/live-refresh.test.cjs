@@ -1,0 +1,6 @@
+const {test}=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),Module=require('node:module'),ts=require('typescript');
+const file=require('node:path').resolve(__dirname,'../src/lib/live-refresh.ts');const compiled=new Module(file);compiled._compile(ts.transpileModule(fs.readFileSync(file,'utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022}}).outputText,file);const {createRefreshQueue}=compiled.exports;
+const delay=ms=>new Promise(r=>setTimeout(r,ms));
+test('100 update events collapse into one authoritative refresh',async()=>{let reads=0;const q=createRefreshQueue(()=>reads++,5);for(let i=0;i<100;i++)q.request();await delay(25);assert.equal(reads,1);q.dispose();});
+test('events during a running read retain one trailing refresh',async()=>{let reads=0,finish;const q=createRefreshQueue(()=>{reads++;if(reads===1)return new Promise(r=>finish=r);},5);q.request();await delay(15);for(let i=0;i<40;i++)q.request();assert.equal(reads,1);finish();await delay(25);assert.equal(reads,2);q.dispose();});
+test('unmount or tenant switch cancels pending and trailing work',async()=>{let reads=0;const q=createRefreshQueue(()=>reads++,5);q.request();q.dispose();q.request();await delay(20);assert.equal(reads,0);});

@@ -1,0 +1,45 @@
+
+Running 6 tests using 1 worker
+
+(node:9056) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 1 e2e\phase6.spec.ts:51:5 › Approved results, actual wizard PDF, download, history, revoke and reissue (6.2s)
+  ok 2 e2e\phase6.spec.ts:63:5 › Winner, runner-up and individual participation APIs enforce eligibility and tenant permissions (594ms)
+  ok 3 e2e\phase6.spec.ts:75:5 › Responsive themes, keyboard dialog navigation and private PDF access (2.4s)
+  ok 4 e2e\phase6.spec.ts:81:5 › Bulk team participation issues unique PDFs and public verification tracks revocation (5.4s)
+  ok 5 e2e\phase6.spec.ts:109:5 › All four portals expose authorized analytics with responsive accessible meters (15.8s)
+  x  6 e2e\phase6.spec.ts:119:5 › Match reconnect reconciles a missed score and tenant switches replace the subscription (11.4s)
+
+
+  1) e2e\phase6.spec.ts:119:5 › Match reconnect reconciles a missed score and tenant switches replace the subscription
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator:  getByText('Isolated Phase 6 Cup').first()
+    Expected: visible
+    Received: hidden
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toBeVisible" getByText('Isolated Phase 6 Cup').first() with timeout 5000ms
+      - waiting for getByText('Isolated Phase 6 Cup').first()
+        13 × locator resolved to <option value="625276f6-665a-4ff6-ae81-26073df912b2">Isolated Phase 6 Cup · CRICKET</option>
+           - unexpected value "hidden"
+
+
+      125 |  await expect.poll(()=>routes.length).toBeGreaterThan(connections);await expect(page.getByText("Live updates",{exact:true})).toBeVisible();await expect.poll(()=>matchReads).toBeGreaterThan(initialReads);await expect(page.getByText(`${final.teamA.name} take the title`,{exact:true})).toBeVisible();fs.writeFileSync(`${evidence}/scoring-reconnect.json`,JSON.stringify({recoveryFromCorrectionStartMs:performance.now()-start,dashboardReads:matchReads-initialReads,reconnected:true},null,2));
+      126 |  const foreign=await request.newContext();try{await command(foreign,"/auth/activate",{token:foreignSetup.split("=")[1],password:foreignAccount.password},204);await command(foreign,"/auth/login",foreignAccount);await command(foreign,`/championships/${otherCid}/roles`,{email:account.email,role:"CHAMPIONSHIP_ADMIN"},204);}finally{await foreign.dispose();}
+    > 127 |  await page.reload();await expect(page.getByText("Live updates",{exact:true})).toBeVisible();await page.getByLabel("Active championship",{exact:true}).selectOption(otherCid);await expect.poll(()=>topics.some(t=>t.includes(`/championship/${otherCid}/matches`))).toBe(true);await expect(page.getByText("Isolated Phase 6 Cup",{exact:false}).first()).toBeVisible();await page.screenshot({path:`${evidence}/tenant-subscription-switch.png`});
+          |                                                                                                                                                                                                                                                                                                                                                            ^
+      128 |  }finally{await context.close();}
+      129 | });
+      130 |
+        at C:\Users\karti\.codex\worktrees\play-neml-upgrade\sports-play-main\frontend\e2e\phase6.spec.ts:127:348
+
+    Error Context: test-results\phase6-Match-reconnect-rec-8fa0f-es-replace-the-subscription\error-context.md
+
+    Error Context: test-results\phase6-Match-reconnect-rec-8fa0f-es-replace-the-subscription\error-context.md
+
+  1 failed
+    e2e\phase6.spec.ts:119:5 › Match reconnect reconciles a missed score and tenant switches replace the subscription
+  5 passed (46.3s)

@@ -1,0 +1,47 @@
+
+> neml-badminton-frontend@0.1.0 build
+> next build --webpack
+
+▲ Next.js 16.4.3 (webpack)
+✓ Running next.config.js took 73ms
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 8.7s
+  Running TypeScript ...
+  Finished TypeScript in 5.6s ...
+  Collecting page data using 7 workers ...
+  Generating static pages using 7 workers (0/23) ...
+  Generating static pages using 7 workers (5/23) 
+  Generating static pages using 7 workers (11/23) 
+  Generating static pages using 7 workers (17/23) 
+✓ Generating static pages using 7 workers (23/23) in 4.0s
+  Finalizing page optimization ...
+  Collecting build traces ...
+
+Route (app)
+┌ ○ /
+├ ○ /_not-found
+├ ○ /activate
+├ ○ /admin/championship-launchpad
+├ ○ /admin/championship-settings
+├ ○ /admin/championships
+├ ○ /admin/team-management
+├ ○ /analysis
+├ ○ /announcements
+├ ○ /auction
+├ ○ /competition
+├ ○ /dashboard
+├ ○ /format-leaders
+├ ○ /history
+├ ○ /login
+├ ○ /matches
+├ ○ /players
+├ ○ /room/join
+├ ○ /scoreboard
+├ ○ /squad-confirmation
+├ ○ /teams
+└ ○ /top-performers
+
+
+○  (Static)  prerendered as static content
+

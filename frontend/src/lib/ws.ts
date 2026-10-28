@@ -11,19 +11,19 @@ export type AuctionEvent = {
   data: any;
 };
 
-export function createAuctionSocket(onEvent: (evt: AuctionEvent) => void): Client {
+export function createAuctionSocket(onEvent: (evt: AuctionEvent) => void, onConnection?: (connected: boolean) => void): Client {
   const { championshipId, auctionId } = activeTenant();
   if (!championshipId || !auctionId) throw new Error("Select a championship before connecting to its auction");
-  return createSocket(`/topic/championship/${championshipId}/auction/${auctionId}`, onEvent);
+  return createSocket(`/topic/championship/${championshipId}/auction/${auctionId}`, onEvent, onConnection);
 }
 
-export function createMatchSocket(onEvent: (evt: AuctionEvent) => void): Client {
-  const { championshipId } = activeTenant();
+export function createMatchSocket(onEvent: (evt: AuctionEvent) => void, onConnection?: (connected: boolean) => void, scopedChampionshipId?: string): Client {
+  const championshipId = scopedChampionshipId || activeTenant().championshipId;
   if (!championshipId) throw new Error("Select a championship before connecting to matches");
-  return createSocket(`/topic/championship/${championshipId}/matches`, onEvent);
+  return createSocket(`/topic/championship/${championshipId}/matches`, onEvent,onConnection);
 }
 
-function createSocket(topic: string, onEvent: (evt: AuctionEvent) => void): Client {
+function createSocket(topic: string, onEvent: (evt: AuctionEvent) => void, onConnection?: (connected: boolean) => void): Client {
   const client = new Client({
     webSocketFactory: () => new SockJS(`${WS_BASE}/ws`) as any,
     reconnectDelay: 3000,
@@ -42,7 +42,11 @@ function createSocket(topic: string, onEvent: (evt: AuctionEvent) => void): Clie
         console.warn("bad ws msg", e);
       }
     });
+    onConnection?.(true);
   };
+  client.onWebSocketClose = () => onConnection?.(false);
+  client.onWebSocketError = () => onConnection?.(false);
+  client.onStompError = () => onConnection?.(false);
   client.activate();
   return client;
 }

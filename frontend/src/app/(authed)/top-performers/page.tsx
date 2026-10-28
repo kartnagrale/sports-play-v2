@@ -1,5 +1,6 @@
 "use client";
 
+import { PlayerIdentity } from "@/components/players/PlayerAvatar";
 import { useEffect, useState } from "react";
 import { api, TopPerformerDto } from "@/lib/api";
 import { Sparkles, Flame } from "lucide-react";
@@ -15,7 +16,7 @@ export default function TopPerformersPage() {
   const mostMatches = [...rows].sort((a, b) => b.matchesPlayed - a.matchesPlayed).slice(0, 5);
 
   return (
-    <div className="p-10">
+    <div className="portal-page">
       <div className="mb-8">
         <div className="label-cap">Player rankings</div>
         <h1 className="h-heading text-5xl font-bold mt-1" data-testid="top-performers-heading">Top Performers</h1>
@@ -34,18 +35,18 @@ export default function TopPerformersPage() {
                 <div className="h-heading text-xl">Most Wins</div>
               </div>
             </div>
-            <table className="w-full text-sm" data-testid="mvp-table">
+            <div className="table-scroll" role="region" aria-label="Championship records" tabIndex={0}><table className="w-full text-sm data-table" data-testid="mvp-table">
               <thead>
                 <tr className="text-left label-cap text-[10px] bg-white/5">
-                  <th className="py-3 pl-6 pr-4 w-14">#</th>
-                  <th className="py-3 pr-4">Player</th>
-                  <th className="py-3 pr-4">Team</th>
-                  <th className="py-3 pr-4 text-center">Played</th>
-                  <th className="py-3 pr-4 text-center">Wins</th>
-                  <th className="py-3 pr-4 text-center">Losses</th>
-                  <th className="py-3 pr-4 text-center">Win %</th>
-                  <th className="py-3 pr-4 text-center">Streak</th>
-                  <th className="py-3 pr-6 text-right">Avg Margin</th>
+                  <th scope="col" className="py-3 pl-6 pr-4 w-14">#</th>
+                  <th scope="col" className="py-3 pr-4">Player</th>
+                  <th scope="col" className="py-3 pr-4">Team</th>
+                  <th scope="col" className="py-3 pr-4 text-center">Played</th>
+                  <th scope="col" className="py-3 pr-4 text-center">Wins</th>
+                  <th scope="col" className="py-3 pr-4 text-center">Losses</th>
+                  <th scope="col" className="py-3 pr-4 text-center">Win %</th>
+                  <th scope="col" className="py-3 pr-4 text-center">Streak</th>
+                  <th scope="col" className="py-3 pr-6 text-right">Avg Margin</th>
                 </tr>
               </thead>
               <tbody>
@@ -53,7 +54,7 @@ export default function TopPerformersPage() {
                   <tr key={r.player.id} className="border-t border-white/5 hover:bg-white/5">
                     <td className="py-3 pl-6 pr-4"><span className={`h-heading text-xl ${i < 3 ? "text-primary" : "text-white/60"}`}>{i + 1}</span></td>
                     <td className="py-3 pr-4">
-                      <div className="h-heading">{r.player.fullName}</div>
+                      <PlayerIdentity name={r.player.fullName} imageUrl={r.player.photoUrl} />
                       <div className="label-cap text-[9px] text-white/40">{r.player.gender}</div>
                     </td>
                     <td className="py-3 pr-4">
@@ -71,7 +72,7 @@ export default function TopPerformersPage() {
                   </tr>
                 ))}
               </tbody>
-            </table>
+            </table></div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -95,7 +96,7 @@ function MiniList({ title, rows, valueLabel, value }: { title: string; rows: Top
           <div key={r.player.id} className="flex items-center justify-between text-sm border-b border-white/5 py-1.5">
             <div className="flex items-center gap-2 min-w-0">
               <span className="w-5 label-cap text-white/40 text-[10px]">#{i + 1}</span>
-              <span className="truncate">{r.player.fullName}</span>
+              <PlayerIdentity name={r.player.fullName} imageUrl={r.player.photoUrl} />
               <span className="chip text-[9px]" style={{ borderColor: r.team.primaryColor + "55", color: r.team.primaryColor }}>{r.team.shortCode}</span>
             </div>
             <div className="h-heading text-primary">{value(r)}</div>

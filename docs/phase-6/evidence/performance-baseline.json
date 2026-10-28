@@ -1,0 +1,66 @@
+{
+  "mode": "baseline",
+  "environment": {
+    "java": "17",
+    "heapMiB": 512,
+    "postgres": "15",
+    "transport": "native WebSocket STOMP",
+    "host": "Windows local Docker Desktop",
+    "players": 500,
+    "teams": 2,
+    "viewerConnections": 12,
+    "reconnects": 1,
+    "readConcurrency": 4,
+    "bidBurstConcurrency": 8,
+    "bidBursts": 4,
+    "warmups": 3
+  },
+  "latency": {
+    "state": {
+      "count": 40,
+      "p50Ms": 53.68,
+      "p95Ms": 74.71,
+      "maxMs": 74.94
+    },
+    "dashboard": {
+      "count": 12,
+      "p50Ms": 120.82,
+      "p95Ms": 131.18,
+      "maxMs": 131.18
+    },
+    "bids": {
+      "count": 32,
+      "p50Ms": 141.37,
+      "p95Ms": 193.57,
+      "maxMs": 198.4
+    },
+    "deliveryFromRequestStart": {
+      "count": 48,
+      "p50Ms": 127.09,
+      "p95Ms": 148.49,
+      "maxMs": 152.43
+    }
+  },
+  "databaseContention": {
+    "sampleIntervalMs": 200,
+    "samples": 5,
+    "maxObservedLockWaiters": 7,
+    "maxObservedActive": 9
+  },
+  "unexpectedErrors": 0,
+  "expectedBidRejections": 28,
+  "correctness": {
+    "exactlyOneEqualBidAccepted": true,
+    "monotonicAcceptedRevisions": true,
+    "allViewersReceivedRevisions": true,
+    "purseDeductedOnce": true,
+    "reconnectSnapshotRecovered": true
+  },
+  "connect": {
+    "count": 13,
+    "p50Ms": 32.17,
+    "p95Ms": 36.53,
+    "maxMs": 36.53
+  },
+  "measuredAt": "2026-10-28T15:48:09.164Z"
+}

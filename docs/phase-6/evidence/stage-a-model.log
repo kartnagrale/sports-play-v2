@@ -1,0 +1,100 @@
+TAP version 13
+# Subtest: initial order is stable; no-bid teams have no fabricated rank
+ok 1 - initial order is stable; no-bid teams have no fabricated rank
+  ---
+  duration_ms: 63.6808
+  type: 'test'
+  ...
+# Subtest: a lower team overtakes both previous bidders
+ok 2 - a lower team overtakes both previous bidders
+  ---
+  duration_ms: 0.3908
+  type: 'test'
+  ...
+# Subtest: equal amounts have deterministic name/id order
+ok 3 - equal amounts have deterministic name/id order
+  ---
+  duration_ms: 0.3827
+  type: 'test'
+  ...
+# Subtest: inactive, previous-player bids excluded, highest valid bid per team selected
+ok 4 - inactive, previous-player bids excluded, highest valid bid per team selected
+  ---
+  duration_ms: 0.2929
+  type: 'test'
+  ...
+# Subtest: new-player context resets ranks
+ok 5 - new-player context resets ranks
+  ---
+  duration_ms: 0.7794
+  type: 'test'
+  ...
+# Subtest: rapid state revisions cannot roll backwards
+ok 6 - rapid state revisions cannot roll backwards
+  ---
+  duration_ms: 0.3263
+  type: 'test'
+  ...
+# Subtest: confirmed live sale triggers once before the next snapshot
+ok 7 - confirmed live sale triggers once before the next snapshot
+  ---
+  duration_ms: 0.3458
+  type: 'test'
+  ...
+# Subtest: sale arriving after the HTTP/state response is recognized once
+ok 8 - sale arriving after the HTTP/state response is recognized once
+  ---
+  duration_ms: 0.1729
+  type: 'test'
+  ...
+# Subtest: initial load and reconnection do not replay historical sales
+ok 9 - initial load and reconnection do not replay historical sales
+  ---
+  duration_ms: 0.5702
+  type: 'test'
+  ...
+# Subtest: late previous-player event after new bids is ignored
+ok 10 - late previous-player event after new bids is ignored
+  ---
+  duration_ms: 0.5645
+  type: 'test'
+  ...
+# Subtest: rejected/pending actions without a confirmed event do not create a celebration
+ok 11 - rejected/pending actions without a confirmed event do not create a celebration
+  ---
+  duration_ms: 0.2901
+  type: 'test'
+  ...
+# Subtest: undo is authoritative even when the new amount is lower
+ok 12 - undo is authoritative even when the new amount is lower
+  ---
+  duration_ms: 0.2762
+  type: 'test'
+  ...
+# Subtest: 100 update events collapse into one authoritative refresh
+ok 13 - 100 update events collapse into one authoritative refresh
+  ---
+  duration_ms: 30.0105
+  type: 'test'
+  ...
+# Subtest: events during a running read retain one trailing refresh
+ok 14 - events during a running read retain one trailing refresh
+  ---
+  duration_ms: 50.8035
+  type: 'test'
+  ...
+# Subtest: unmount or tenant switch cancels pending and trailing work
+ok 15 - unmount or tenant switch cancels pending and trailing work
+  ---
+  duration_ms: 32.5226
+  type: 'test'
+  ...
+1..15
+# tests 15
+# suites 0
+# pass 15
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1145.1241

@@ -1,585 +1,73 @@
 "use client";
-
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
+import Link from "next/link";
 import { api, AuctionStateDto, PlayerDto } from "@/lib/api";
-import { createAuctionSocket } from "@/lib/ws";
 import { useAuth } from "@/lib/auth";
 import { useChampionship } from "@/lib/championship";
+import { useLiveAuction } from "@/lib/use-live-auction";
 import { formatCr } from "@/lib/format";
-import { toast } from "sonner";
-import type { Client } from "@stomp/stompjs";
-import {
-  Play, Pause, Undo2, Hammer, XCircle, Shuffle, SkipForward, ListChecks, Timer, Pencil, RotateCcw
-} from "lucide-react";
+import { humanize, PortalLoading } from "@/components/portal/Portal";
+import { Button, Card, EmptyState, ErrorState, IconButton, PageHeader, Select, StatusBadge } from "@/components/ui";
+import { UpdatedValue } from "@/components/ui/Motion";
+import { PlayerAvatar, PlayerIdentity } from "@/components/players/PlayerAvatar";
+import { BiddingLeaderboard } from "@/components/auction/BiddingLeaderboard";
+import { SaleCelebration } from "@/components/auction/SaleCelebration";
 import BidPanel from "@/components/auction/BidPanel";
-import CoinTossDialog from "@/components/auction/CoinTossDialog";
 import BasePriceDialog from "@/components/auction/BasePriceDialog";
+import CoinTossDialog from "@/components/auction/CoinTossDialog";
 import AuctionUnavailable from "@/components/auction/AuctionUnavailable";
-
+import { Pencil, Radio, RefreshCw, ShieldCheck, Timer } from "lucide-react";
 export default function AuctionPage() {
-  const { user } = useAuth();
-  const { active, hydrated } = useChampionship();
-  const [state, setState] = useState<AuctionStateDto | null>(null);
-  const [loadError, setLoadError] = useState<string | null>(null);
-  const [flash, setFlash] = useState(false);
-  const [availablePlayers, setAvailablePlayers] = useState<PlayerDto[]>([]);
-  const [coinTossOpen, setCoinTossOpen] = useState(false);
-  const [editBasePriceFor, setEditBasePriceFor] = useState<PlayerDto | null>(null);
-  const [soldCelebration, setSoldCelebration] = useState<{ playerName: string; teamName: string; price: number } | null>(null);
-  const [now, setNow] = useState(() => Date.now());
-  const clientRef = useRef<Client | null>(null);
-  const access = user?.championships?.find((c) => c.championshipId === active?.id);
-  const isAdmin = user?.role === "SUPER_ADMIN" || access?.role === "CHAMPIONSHIP_ADMIN";
-  const isOwner = access?.role === "TEAM_CAPTAIN";
-
-  // Countdown ticker
-  useEffect(() => {
-    const t = setInterval(() => setNow(Date.now()), 1000);
-    return () => clearInterval(t);
-  }, []);
-
-  // Fetch state + available player list. Stable identity so effects can depend on it.
-  const load = useCallback(async () => {
-    if (!active?.defaultAuctionId) return;
-    setLoadError(null);
-    const [s, p] = await Promise.all([
-      api.get<AuctionStateDto>("/auction/state"),
-      api.get<PlayerDto[]>("/players"),
-    ]);
-    setState(s.data);
-    setAvailablePlayers(p.data.filter((x) => x.status === "AVAILABLE" || x.status === "UNSOLD"));
-  }, [active?.defaultAuctionId]);
-
-  const handleEvent = useCallback((evt: { type: string; data: any }) => {
-    if (evt.type === "STATE") {
-      setState(evt.data);
-      api
-        .get<PlayerDto[]>("/players")
-        .then((r) =>
-          setAvailablePlayers(r.data.filter((x) => x.status === "AVAILABLE" || x.status === "UNSOLD"))
-        )
-        .catch((err) => console.warn("failed to reload players", err));
-    } else if (evt.type === "BID_PLACED") {
-      setFlash(true);
-      setTimeout(() => setFlash(false), 900);
-      toast.success(`${evt.data.teamName} bid ${formatCr(evt.data.amount)}`);
-    } else if (evt.type === "PLAYER_SOLD") {
-      toast.success(`${evt.data.player} → ${evt.data.teamName} @ ${formatCr(evt.data.amount)}`);
-      setSoldCelebration({
-        playerName: evt.data.player,
-        teamName: evt.data.teamName,
-        price: evt.data.amount,
-      });
-      setTimeout(() => setSoldCelebration(null), 4000);
-    } else if (evt.type === "PLAYER_UNSOLD") {
-      toast(`${evt.data.player} unsold`);
-    } else if (evt.type === "BID_UNDONE") {
-      toast(`Undone: ${evt.data.teamName} ${formatCr(evt.data.amount)}`);
-    } else if (evt.type === "COIN_TOSS") {
-      toast.success(`Coin toss winner: ${evt.data.winnerTeamName}`, { duration: 5000 });
-    }
-  }, []);
-
-  useEffect(() => {
-    if (!active?.defaultAuctionId) {
-      setState(null);
-      return;
-    }
-    load().catch((err) => {
-      console.warn("initial auction load failed", err);
-      setLoadError(err?.response?.data?.message || err?.message || "Unable to load the auction");
-    });
-    let client: Client | null = null;
-    try {
-      client = createAuctionSocket(handleEvent);
-      clientRef.current = client;
-    } catch (error: any) {
-      console.warn("auction socket setup failed", error);
-      setLoadError(error?.message || "Unable to connect to the live auction");
-    }
-    return () => {
-      client?.deactivate();
-      clientRef.current = null;
-    };
-  }, [active?.defaultAuctionId, load, handleEvent]);
-
-  const doAdminAction = async (path: string, body?: any) => {
-    try {
-      await api.post(`/admin/auction/${path}`, body);
-    } catch (e: any) {
-      toast.error(e?.response?.data?.message || e?.response?.data || "Action failed");
-    }
-  };
-
-  const handleQuickBid = async (teamId: string) => {
-    if (state?.status !== "RUNNING" || !state.currentPlayer) return;
-    const h = state.highestBid;
-    const m = h ? Number(h.amount) + Number(state.bidIncrement) : Number(state.currentPlayer.basePrice || 0);
-    try {
-      await api.post("/auction/bid", { playerId: state.currentPlayer.id, teamId, amount: m });
-    } catch (e: any) {
-      toast.error(e?.response?.data?.message || e?.response?.data || "Bid failed");
-    }
-  };
-
-  const canQuickBid = (teamId: string) => {
-    if (state?.status !== "RUNNING" || !state.currentPlayer) return false;
-    if (isAdmin) return true;
-    if (isOwner && access?.teamId === teamId) return true;
-    return false;
-  };
-
-  if (hydrated && active && !active.defaultAuctionId) {
-    return <AuctionUnavailable />;
+  const active=useChampionship(s=>s.active); const user=useAuth(s=>s.user);
+  const access=user?.championships.find(c=>c.championshipId===active?.id);
+  // Super Admin observes tenant auctions; only the assigned championship admin manages them.
+  const admin=user?.role!=="SUPER_ADMIN" && access?.role==="CHAMPIONSHIP_ADMIN";
+  const captain=access?.role==="TEAM_CAPTAIN" && !!access.teamId;
+  const live=useLiveAuction(active?.id,active?.defaultAuctionId);
+  const {state,connection}=live;
+  const [busy,setBusy]=useState(""); const [error,setError]=useState(""); const [edit,setEdit]=useState<PlayerDto|null>(null); const [toss,setToss]=useState(false); const [pick,setPick]=useState("");
+  const [announcement,setAnnouncement]=useState("");
+  useEffect(()=>{ const timer=window.setTimeout(()=>setAnnouncement(state?.highestBid ? `${state.highestBid.teamName} leads at ${formatCr(Number(state.highestBid.amount))}` : ""),800);return ()=>window.clearTimeout(timer); },[state?.highestBid]);
+  const dismissSale=live.dismissSale;
+  if(active && !active.defaultAuctionId)return <AuctionUnavailable/>;
+  if(!state)return live.error ? <ErrorState title="Unable to load auction" description={live.error} onRetry={live.refresh}/> : <PortalLoading/>;
+  const current=state.currentPlayer; const highest=state.highestBid; const enabled=connection==="live" && !busy;
+  const minNext=highest ? Number(highest.amount)+Number(state.bidIncrement) : Number(current?.basePrice || 0);
+  const base=`/championships/${active.id}/auctions/${active.defaultAuctionId}`;
+  async function action(path:string,body?:unknown) {
+    if(!enabled)return; setBusy(path);setError("");
+    try { const {data}=await api.post<AuctionStateDto>(`${base}/admin/${path}`,body); live.commit(data); }
+    catch(failure:any){setError(failure?.response?.data?.message || "Action was not accepted. Refresh and try again.");}
+    finally{setBusy("");}
   }
-
-  if (loadError) {
-    return (
-      <div className="grid min-h-[75vh] place-items-center p-8 text-center">
-        <div className="card-elev max-w-lg rounded-3xl p-9">
-          <div className="label-cap text-danger">Auction unavailable</div>
-          <h1 className="h-heading mt-2 text-3xl">Unable to load auction</h1>
-          <p className="mt-3 text-sm text-white/50">{loadError}</p>
-          <button className="btn btn-primary mt-6" onClick={() => load()}>Try again</button>
-        </div>
-      </div>
-    );
+  async function bid(teamId:string,amount:number) {
+    if(!enabled)return;setBusy("bid");setError("");
+    try{const {data}=await api.post<AuctionStateDto>(base+"/bid",{playerId:current.id,teamId,amount});live.commit(data);}
+    catch(failure:any){setError(failure?.response?.data?.message || "Bid was not accepted. Check the latest minimum and try again.");}
+    finally{setBusy("");}
   }
-
-  if (!state) {
-    return <div className="p-10 text-white/40 h-heading uppercase tracking-widest">Loading auction...</div>;
-  }
-
-  const current = state.currentPlayer;
-  const highest = state.highestBid;
-  const minNext = highest ? Number(highest.amount) + Number(state.bidIncrement) : Number(current?.basePrice || 0);
-  const secondsLeft = state.bidDeadline
-    ? Math.max(0, Math.floor((new Date(state.bidDeadline).getTime() - now) / 1000))
-    : null;
-  const timerLow = secondsLeft !== null && secondsLeft <= 10;
-
-  return (
-    <div className="min-h-screen">
-      <div className="p-10">
-        <AuctionHeader status={state.status} secondsLeft={secondsLeft} timerLow={timerLow} remaining={state.remainingPlayers} showTimer={!!current} />
-
-        <div className="grid grid-cols-12 gap-6">
-          <section className="col-span-12 lg:col-span-8 space-y-6">
-            <LivePlayerCard
-              status={state.status}
-              current={current}
-              highest={highest}
-              secondsLeft={secondsLeft}
-              timerLow={timerLow}
-              flash={flash}
-              isAdmin={isAdmin}
-              onEditBasePrice={setEditBasePriceFor}
-            />
-
-            {current && state.status === "RUNNING" && (isAdmin || isOwner) && (
-              <BidPanel
-                minNext={minNext}
-                current={current}
-                teams={state.teams}
-                userTeamId={access?.teamId}
-                isAdmin={isAdmin}
-              />
-            )}
-
-            {isAdmin && (
-              <AdminControlPanel
-                status={state.status}
-                availablePlayers={availablePlayers}
-                onAction={doAdminAction}
-                onOpenCoinToss={() => setCoinTossOpen(true)}
-              />
-            )}
-
-            <BidHistoryList bids={state.bidHistory} />
-          </section>
-
-          <aside className="col-span-12 lg:col-span-4 space-y-4">
-            <div>
-              <div className="label-cap mb-2">Teams · Purse</div>
-              <div className="space-y-3">
-                {state.teams.map((t) => (
-                  <TeamPurseCard
-                    key={t.id}
-                    team={t}
-                    leadingTeamId={highest?.teamId}
-                    onQuickBid={canQuickBid(t.id) ? handleQuickBid : undefined}
-                    maxSquadSize={state.maxSquadSize}
-                    minMale={state.minMale}
-                    minFemale={state.minFemale}
-                  />
-                ))}
-              </div>
-            </div>
-          </aside>
-        </div>
-      </div>
-
-      {coinTossOpen && (
-        <CoinTossDialog
-          teams={state.teams}
-          onClose={() => setCoinTossOpen(false)}
-          onToss={async (ids) => {
-            try {
-              await api.post("/admin/auction/coin-toss", { teamIds: ids });
-              setCoinTossOpen(false);
-            } catch (e: any) {
-              toast.error(e?.response?.data?.message || "Failed");
-            }
-          }}
-        />
-      )}
-
-      {editBasePriceFor && (
-        <BasePriceDialog
-          player={editBasePriceFor}
-          onClose={() => setEditBasePriceFor(null)}
-          onSaved={() => setEditBasePriceFor(null)}
-        />
-      )}
-
-      {soldCelebration && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none">
-          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300" />
-          <div className="relative z-10 bg-black/80 border border-primary/50 rounded-3xl p-10 md:p-14 shadow-2xl flex flex-col items-center justify-center text-center animate-in zoom-in-95 duration-500 max-w-lg w-full">
-            <div className="text-primary font-black uppercase tracking-[0.2em] text-xl mb-4 animate-pulse">
-              Sold!
-            </div>
-            <h2 className="h-heading text-5xl md:text-6xl mb-6 leading-none text-white drop-shadow-glow">
-              {soldCelebration.playerName}
-            </h2>
-            <div className="flex flex-col items-center gap-3">
-              <div className="text-white/60 uppercase tracking-widest text-sm">Going to</div>
-              <div className="h-heading text-3xl text-secondary">{soldCelebration.teamName}</div>
-            </div>
-            <div className="mt-8 pt-8 border-t border-white/10 w-full flex flex-col items-center">
-              <div className="label-cap mb-1">Final Bid</div>
-              <div className="stat-num text-4xl text-primary">{formatCr(soldCelebration.price)}</div>
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
-  );
+  const available=live.players.filter(p=>p.status==="AVAILABLE" || p.status==="UNSOLD");
+  return <div className="portal-page auction-page"><div data-testid="auction-heading"><PageHeader title="Auction Arena" eyebrow={`${active.name} · ${humanize(active.sportType)}`} description="The players. The teams. The next winning bid." actions={<div className="flex flex-wrap gap-2"><StatusBadge tone={connection==="live" ? "success" : "warning"} live={connection==="live"}>{connection==="live" ? "Live connection" : connection==="interrupted" ? "Connection interrupted" : "Reconciling live state"}</StatusBadge><StatusBadge tone={state.status==="RUNNING" ? "live" : state.status==="PAUSED" ? "warning" : "neutral"}>{humanize(state.status)}</StatusBadge></div>}/></div>
+    {connection!=="live" && <div className="auction-notice" role="status"><Radio size={18}/><span>{connection==="interrupted" ? "Live updates interrupted. Bidding is disabled until the connection is reconciled." : "Connecting to live updates. Controls become available once the latest state is confirmed."}</span><Button variant="ghost" onClick={live.refresh}>Refresh</Button></div>}
+    {(error || live.error) && <div className="form-error mb-5" role="alert">{error || live.error}<Button variant="ghost" className="ml-3" onClick={live.refresh}>Refresh state</Button></div>}
+    {live.outcome && <div className="auction-notice mb-5" role="status" data-testid="unsold-result">{live.outcome}</div>}
+    <p className="sr-only" aria-live="polite" aria-atomic="true">{announcement}</p>
+    <div className="auction-grid"><div className="min-w-0 space-y-5"><section className={`player-spotlight ${state.status==="RUNNING" ? "is-live" : ""}`} data-testid="live-auction-card"><div className="spotlight-track" aria-hidden="true"/><div className="flex flex-wrap items-center justify-between gap-3"><StatusBadge tone={current ? "live" : "neutral"}>{current ? "Player spotlight" : "Auction broadcast"}</StatusBadge><span className="text-xs text-muted">{state.remainingPlayers} players waiting</span></div>
+      {current ? <><div className="spotlight-identity"><PlayerAvatar name={current.fullName} imageUrl={current.photoUrl} size="xl" shape="square"/><div className="min-w-0"><p className="label-cap">{current.gender} · {current.skillLevel || "Player"}</p><h2 className="spotlight-name" data-testid="current-player-name">{current.fullName}</h2><div className="mt-3 flex items-center gap-2 text-sm text-muted">Base price <strong className="text-foreground tabular-nums">{formatCr(Number(current.basePrice))}</strong>{admin && <IconButton label="Edit base price" onClick={()=>setEdit(current)} disabled={!enabled} data-testid="edit-base-price-btn"><Pencil size={14}/></IconButton>}</div></div></div>
+      <div className="spotlight-bid"><div><p className="label-cap">{highest ? "Current highest bid" : "Bidding opens at"}</p><p className="spotlight-price" data-testid="current-bid-amount"><UpdatedValue revision={highest?.id || current.id}>{formatCr(highest ? Number(highest.amount) : Number(current.basePrice))}</UpdatedValue></p><p className="mt-2 text-sm" data-testid="leading-team">{highest ? highest.teamName : "No confirmed bids yet"}</p></div><AuctionClock key={state.bidDeadline || state.status} deadline={state.status==="RUNNING" ? state.bidDeadline : null} status={state.status}/></div></> : <EmptyState title={state.status==="COMPLETED" ? "Auction completed" : "Ready for the next player"} description={state.status==="COMPLETED" ? "Confirmed purchases are available in team rosters and auction history." : "Your championship administrator will bring a player onto the block."}/>}</section>
+      {current && state.status==="RUNNING" && (admin || captain) && <BidPanel key={current.id} minNext={minNext} increment={Number(state.bidIncrement)} current={current} teams={state.teams} isAdmin={admin} userTeamId={access?.teamId} disabled={!enabled} onBid={bid}/>}
+      {!admin && !captain && <p className="flex items-center gap-2 rounded-lg border border-border p-4 text-sm text-muted"><ShieldCheck size={17}/>Read-only auction access. Follow every confirmed bid.</p>}
+      {admin && <Card data-testid="admin-controls"><h2 className="section-title">Auction control desk</h2><p className="mt-2 text-xs text-muted">Changes are confirmed by the server before the arena updates.</p><div className="auction-controls">{state.status==="NOT_STARTED" && <Button onClick={()=>action("start")} disabled={!enabled} data-testid="admin-start">Start auction</Button>}{state.status==="RUNNING" && <Button variant="warn" onClick={()=>action("pause")} disabled={!enabled} data-testid="admin-pause">Pause</Button>}{state.status==="PAUSED" && <Button onClick={()=>action("resume")} disabled={!enabled} data-testid="admin-resume">Resume</Button>}<Button onClick={()=>action("sell")} disabled={!enabled || !highest || !current} loading={busy==="sell"} data-testid="admin-sell">Sell to highest bidder</Button><Button variant="ghost" onClick={()=>action("unsold")} disabled={!enabled || !current} data-testid="admin-unsold">Mark unsold</Button><Button variant="ghost" onClick={()=>action("undo")} disabled={!enabled || !highest} data-testid="admin-undo">Undo last bid</Button><Button variant="ghost" onClick={()=>action("next")} disabled={!enabled || state.status==="COMPLETED"} data-testid="admin-next">Next player</Button><Button variant="ghost" onClick={()=>setToss(true)} disabled={!enabled || state.teams.length<2} data-testid="admin-coin-toss">Coin toss</Button></div><div className="mt-5 border-t border-border pt-5"><label className="field-label" htmlFor="pick-auction-player">Select a player</label><div className="flex gap-2"><Select id="pick-auction-player" value={pick} onChange={e=>setPick(e.target.value)} disabled={!enabled}><option value="">Choose an available player…</option>{available.map(p=><option key={p.id} value={p.id}>{p.fullName} · {p.status}</option>)}</Select><Button variant="ghost" disabled={!enabled || !available.some(p=>p.id===pick)} onClick={()=>action("set-current",{playerId:pick})}>Bring to block</Button></div></div><details className="mt-5 border-t border-border pt-4"><summary className="cursor-pointer text-sm text-muted">Recovery controls</summary><div className="auction-controls"><Button variant="ghost" disabled={!enabled} onClick={()=>{if(window.confirm("Make unsold players available again?"))void action("reset-unsold");}} data-testid="admin-reset-unsold">Reset unsold</Button><Button variant="ghost" disabled={!enabled} onClick={()=>{if(window.confirm("Reset auction status to not started? Purchases are preserved."))void action("set-status",{status:"NOT_STARTED"});}}>Reset status</Button><Button variant="ghost" disabled={!enabled} onClick={()=>{if(window.confirm("Mark this auction completed?"))void action("set-status",{status:"COMPLETED"});}}>Force complete</Button></div></details></Card>}
+    </div><aside className="min-w-0 space-y-5"><BiddingLeaderboard state={state} epoch={live.epoch}/><Card><div className="flex items-center justify-between gap-3"><h2 className="section-title">Team purse</h2><Link href="/teams" className="text-xs text-primary underline">View squads</Link></div><div className="mt-4 divide-y divide-border">{state.teams.map(team=><div className="py-4" key={team.id}><div className="flex items-center justify-between gap-3"><span className="text-sm font-medium">{team.name}</span><span className="text-sm font-mono">{formatCr(Number(team.purseRemaining))}</span></div><div className="mt-2 flex justify-between text-xs text-muted"><span>{team.totalPlayers}/{state.maxSquadSize} players</span><span>{team.maleCount} M · {team.femaleCount} F</span></div>{current && state.status==="RUNNING" && (admin || (captain && access.teamId===team.id)) && <Button variant="ghost" className="mt-3 w-full" disabled={!enabled} onClick={()=>bid(team.id,minNext)} data-testid={`quick-bid-${team.shortCode}`}>Bid {formatCr(minNext)}</Button>}</div>)}</div></Card></aside></div>
+    <Card className="mt-6"><div className="flex flex-wrap items-center justify-between gap-3"><h2 className="section-title">Confirmed bid activity</h2><Link href="/history" className="text-sm text-primary underline">Auction history</Link></div><p className="mt-2 text-xs text-muted">Latest {state.bidHistory.length} recorded bids · Undone bids remain marked in the record.</p><div className="bid-activity" data-testid="bid-history">{state.bidHistory.length ? state.bidHistory.map(b=><div key={b.id} className="activity-row"><PlayerIdentity name={b.playerName} imageUrl={b.playerPhotoUrl} metadata={b.teamName}/><div className="text-right"><p className={`font-mono text-sm ${b.active ? "text-primary" : "text-muted line-through"}`}>{formatCr(Number(b.amount))}</p><p className="mt-1 text-xs text-muted">{b.active ? new Date(b.createdAt).toLocaleTimeString() : "Bid undone"}</p></div></div>) : <EmptyState title="The first bid sets the pace" description="Confirmed bidding activity will appear here."/>}</div></Card>
+    {edit && <BasePriceDialog player={edit} onClose={()=>setEdit(null)} onSaved={()=>{setEdit(null);void live.refresh();}}/>}
+    {toss && <CoinTossDialog teams={state.teams} onClose={()=>setToss(false)} onToss={async ids=>{try{const {data}=await api.post<{winnerTeamName:string}>(base+"/admin/coin-toss",{teamIds:ids});setToss(false);setAnnouncement(`Coin toss winner: ${data.winnerTeamName}`);}catch(failure:any){setError(failure?.response?.data?.message || "Coin toss was not accepted.");setToss(false);}}}/>}
+    {live.sale && <SaleCelebration key={live.sale.saleId} sale={live.sale} onDismiss={dismissSale}/>}
+  </div>;
 }
-
-/* ------------------------------ sub-components ------------------------------ */
-
-function AuctionHeader({
-  status, secondsLeft, timerLow, remaining, showTimer,
-}: { status: string; secondsLeft: number | null; timerLow: boolean; remaining: number; showTimer: boolean }) {
-  return (
-    <div className="flex items-center justify-between mb-8">
-      <div>
-        <div className="label-cap">Live Broadcast</div>
-        <h1 className="h-heading text-5xl font-bold mt-1" data-testid="auction-heading">Auction Arena</h1>
-      </div>
-      <div className="flex items-center gap-3">
-        <StatusPill status={status} />
-        {status === "RUNNING" && secondsLeft !== null && showTimer && (
-          <span className={`chip ${timerLow ? "chip-live" : "chip-primary"}`} data-testid="auction-timer">
-            <Timer size={12} /> {secondsLeft}s
-          </span>
-        )}
-        <span className="chip">
-          <ListChecks size={12} /> {remaining} players left
-        </span>
-      </div>
-    </div>
-  );
-}
-
-function StatusPill({ status }: { status: string }) {
-  const cls =
-    status === "RUNNING" ? "chip chip-live" :
-      status === "PAUSED" ? "chip chip-primary" :
-        status === "COMPLETED" ? "chip chip-primary" :
-          "chip";
-  return (
-    <span className={cls} data-testid="auction-status">
-      {status === "RUNNING" && <span className="w-1.5 h-1.5 rounded-full bg-danger animate-pulse" />}
-      {status.replaceAll("_", " ")}
-    </span>
-  );
-}
-
-function LivePlayerCard({
-  status, current, highest, secondsLeft, timerLow, flash, isAdmin, onEditBasePrice,
-}: {
-  status: string;
-  current: PlayerDto | null | undefined;
-  highest: any;
-  secondsLeft: number | null;
-  timerLow: boolean;
-  flash: boolean;
-  isAdmin: boolean;
-  onEditBasePrice: (p: PlayerDto) => void;
-}) {
-  return (
-    <div
-      className={`relative overflow-hidden rounded-3xl border ${status === "RUNNING" ? "border-primary/40 live-glow" : "border-white/10"} ${flash ? "flash" : ""} dark text-white`}
-      data-testid="live-auction-card"
-    >
-      <div
-        className="absolute inset-0"
-        style={{
-          backgroundImage: "url(https://images.unsplash.com/photo-1626224583764-f87db24ac4ea?crop=entropy&cs=srgb&fm=jpg&q=85&w=1600)",
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          opacity: 0.28,
-        }}
-      />
-      <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, rgba(8,9,10,0.4) 0%, rgba(8,9,10,0.92) 80%)" }} />
-
-      <div className="relative z-10 p-8 md:p-10 min-h-[420px] flex flex-col justify-end">
-        {current ? (
-          <>
-            <div className="flex items-center gap-2 mb-4">
-              <span className="chip chip-live">
-                <span className="w-1.5 h-1.5 rounded-full bg-danger animate-pulse" />
-                On the block
-              </span>
-              <span className="chip">{current.gender}</span>
-              {current.skillLevel && <span className="chip">{current.skillLevel}</span>}
-            </div>
-            <h2 className="h-heading text-6xl md:text-7xl font-bold leading-none" data-testid="current-player-name">
-              {current.fullName}
-            </h2>
-            <div className="mt-6 grid grid-cols-3 gap-6">
-              <div>
-                <div className="label-cap">Base Price</div>
-                <div className="flex items-center gap-2 mt-1">
-                  <div className="stat-num text-2xl">{formatCr(Number(current.basePrice))}</div>
-                  {isAdmin && (
-                    <button
-                      onClick={() => onEditBasePrice(current)}
-                      className="text-white/40 hover:text-primary"
-                      title="Edit base price"
-                      data-testid="edit-base-price-btn"
-                    >
-                      <Pencil size={13} />
-                    </button>
-                  )}
-                </div>
-              </div>
-              <div>
-                <div className="label-cap">Current Bid</div>
-                <div className="stat-num text-4xl mt-1 text-primary drop-shadow-glow" data-testid="current-bid-amount">
-                  {highest ? formatCr(Number(highest.amount)) : "—"}
-                </div>
-              </div>
-              <TimerOrLeader status={status} secondsLeft={secondsLeft} timerLow={timerLow} highest={highest} />
-            </div>
-          </>
-        ) : (
-          <EmptyPlayerState status={status} />
-        )}
-      </div>
-    </div>
-  );
-}
-
-function TimerOrLeader({ status, secondsLeft, timerLow, highest }: any) {
-  if (status === "RUNNING" && secondsLeft !== null) {
-    return (
-      <div>
-        <div className="label-cap">Time Left</div>
-        <div className={`stat-num text-4xl mt-1 ${timerLow ? "text-danger animate-pulse" : "text-secondary"}`}>
-          {String(Math.floor(secondsLeft / 60)).padStart(2, "0")}:{String(secondsLeft % 60).padStart(2, "0")}
-        </div>
-      </div>
-    );
-  }
-  return (
-    <div>
-      <div className="label-cap">Leading</div>
-      <div className="h-heading text-2xl mt-1" data-testid="leading-team">{highest ? highest.teamName : "—"}</div>
-    </div>
-  );
-}
-
-function EmptyPlayerState({ status }: { status: string }) {
-  const msg = status === "COMPLETED" ? "Auction Complete" : "Ready to start next player";
-  return (
-    <div className="text-center py-16">
-      <div className="label-cap">No player on block</div>
-      <div className="h-heading text-3xl mt-2 text-white/60">{msg}</div>
-    </div>
-  );
-}
-
-function AdminControlPanel({
-  status, availablePlayers, onAction, onOpenCoinToss,
-}: {
-  status: string;
-  availablePlayers: PlayerDto[];
-  onAction: (path: string, body?: any) => Promise<void>;
-  onOpenCoinToss: () => void;
-}) {
-  return (
-    <div className="card-elev rounded-2xl p-6" data-testid="admin-controls">
-      <div className="flex items-center justify-between mb-4">
-        <div>
-          <div className="label-cap">Admin</div>
-          <h3 className="h-heading text-xl mt-1">Auction Controls</h3>
-        </div>
-        <div className="flex items-center gap-2">
-          <button
-            className="chip cursor-pointer hover:border-danger hover:text-danger transition-colors"
-            onClick={() => {
-              if (window.confirm("Are you sure you want to force reset the auction to NOT_STARTED?")) {
-                onAction("set-status", { status: "NOT_STARTED" });
-              }
-            }}
-          >
-            Force Reset
-          </button>
-          <button
-            className="chip cursor-pointer hover:border-primary hover:text-primary transition-colors"
-            onClick={() => {
-              if (window.confirm("Are you sure you want to force complete the auction?")) {
-                onAction("set-status", { status: "COMPLETED" });
-              }
-            }}
-          >
-            Force Complete
-          </button>
-        </div>
-      </div>
-      <div className="flex flex-wrap gap-3">
-        {status !== "RUNNING" ? (
-          <button className="btn btn-primary flex-1 min-w-[140px]" onClick={() => onAction("start")} data-testid="admin-start">
-            <Play size={16} /> Start
-          </button>
-        ) : (
-          <button className="btn btn-warn flex-1 min-w-[140px]" onClick={() => onAction("pause")} data-testid="admin-pause">
-            <Pause size={16} /> Pause
-          </button>
-        )}
-        {status === "PAUSED" && (
-          <button className="btn btn-primary flex-1 min-w-[140px]" onClick={() => onAction("resume")} data-testid="admin-resume">
-            <Play size={16} /> Resume
-          </button>
-        )}
-        <button className="btn btn-ghost flex-1 min-w-[140px]" onClick={() => onAction("undo")} data-testid="admin-undo">
-          <Undo2 size={16} /> Undo Bid
-        </button>
-        <button className="btn btn-primary flex-1 min-w-[140px]" onClick={() => onAction("sell")} data-testid="admin-sell">
-          <Hammer size={16} /> Sell (Highest)
-        </button>
-        <button className="btn btn-danger flex-1 min-w-[140px]" onClick={() => onAction("unsold")} data-testid="admin-unsold">
-          <XCircle size={16} /> Mark Unsold
-        </button>
-        <button className="btn btn-ghost flex-1 min-w-[140px]" onClick={() => {
-          if (window.confirm("Are you sure you want to make all UNSOLD players AVAILABLE again?")) {
-            onAction("reset-unsold");
-          }
-        }} data-testid="admin-reset-unsold">
-          <RotateCcw size={16} /> Reset Unsold
-        </button>
-        <button className="btn btn-ghost flex-1 min-w-[140px]" onClick={() => onAction("next")} data-testid="admin-next">
-          <SkipForward size={16} /> Next Player
-        </button>
-        <button className="btn btn-cyan flex-1 min-w-[140px]" onClick={onOpenCoinToss} data-testid="admin-coin-toss">
-          <Shuffle size={16} /> Coin Toss
-        </button>
-      </div>
-
-      <div className="mt-6">
-        <div className="label-cap mb-2">Pick a specific player</div>
-        <div className="flex flex-wrap gap-2 max-h-48 overflow-y-auto">
-          {availablePlayers.slice(0, 40).map((p) => (
-            <button
-              key={p.id}
-              className="chip hover:border-primary/60 hover:text-primary"
-              onClick={() => onAction("set-current", { playerId: p.id })}
-              data-testid={`pick-player-${p.id}`}
-            >
-              {p.fullName} · {p.gender[0]}
-            </button>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function BidHistoryList({ bids }: { bids: AuctionStateDto["bidHistory"] }) {
-  return (
-    <div className="card-elev rounded-2xl p-6">
-      <div className="flex items-center justify-between mb-4">
-        <div>
-          <div className="label-cap">Live feed</div>
-          <h3 className="h-heading text-xl mt-1">Bidding History</h3>
-        </div>
-        <span className="chip">{bids.length} total</span>
-      </div>
-      <div className="space-y-2 max-h-96 overflow-y-auto" data-testid="bid-history">
-        {bids.length === 0 && <div className="text-white/40 text-sm">No bids yet.</div>}
-        {bids.map((b) => (
-          <div key={b.id} className={`flex items-center justify-between border-b border-white/5 py-2 ${!b.active ? "opacity-40 line-through" : ""}`}>
-            <div>
-              <div className="text-sm">
-                <span className="text-white/60">{b.playerName}</span>
-                <span className="text-white/40 mx-1">·</span>
-                <span className="h-heading text-primary">{b.teamName}</span>
-              </div>
-              <div className="text-white/30 text-[10px]">{new Date(b.createdAt).toLocaleTimeString()}</div>
-            </div>
-            <div className="h-heading text-lg">{formatCr(Number(b.amount))}</div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-function TeamPurseCard({ team, leadingTeamId, onQuickBid, maxSquadSize, minMale, minFemale }: { team: AuctionStateDto["teams"][number]; leadingTeamId?: string; onQuickBid?: (teamId: string) => void; maxSquadSize: number; minMale: number; minFemale: number }) {
-  const spent = Number(team.purseTotal) - Number(team.purseRemaining);
-  const pct = (spent / Number(team.purseTotal)) * 100;
-  const isLeading = leadingTeamId === team.id;
-  return (
-    <div
-      onClick={() => onQuickBid?.(team.id)}
-      className={`rounded-2xl p-4 border transition-all ${isLeading ? "border-primary bg-primary/5" : "border-white/10 bg-bg-elev"} ${onQuickBid ? "cursor-pointer hover:border-primary/50 hover:bg-bg-surface hover:shadow-lg hover:-translate-y-0.5" : ""}`}
-      data-testid={`purse-card-${team.shortCode}`}
-    >
-      <div className="flex items-center gap-3">
-        <div
-          className="w-10 h-10 rounded-lg flex items-center justify-center h-heading font-bold"
-          style={{ background: team.primaryColor + "22", color: team.primaryColor, border: `1px solid ${team.primaryColor}55` }}
-        >
-          {team.shortCode}
-        </div>
-        <div className="min-w-0 flex-1">
-          <div className="text-sm font-medium truncate">{team.name}</div>
-          <div className="label-cap text-[10px]">Slots {team.totalPlayers}/{maxSquadSize}</div>
-        </div>
-        {isLeading && <span className="chip chip-primary">Leading</span>}
-      </div>
-      <div className="mt-3">
-        <div className="flex items-baseline justify-between">
-          <div className="stat-num text-xl text-primary">{formatCr(Number(team.purseRemaining))}</div>
-          <div className="label-cap text-[10px]">left</div>
-        </div>
-        <div className="h-1.5 mt-2 bg-white/5 rounded-full overflow-hidden">
-          <div className="h-full rounded-full" style={{ width: `${pct}%`, background: team.primaryColor }} />
-        </div>
-        <div className="grid grid-cols-2 gap-2 mt-3 text-[11px]">
-          <div className="flex justify-between border border-white/10 rounded px-2 py-1">
-            <span className="text-white/50">M</span>
-            <span className="h-heading">{team.maleCount}/{minMale}</span>
-          </div>
-          <div className="flex justify-between border border-white/10 rounded px-2 py-1">
-            <span className="text-white/50">F</span>
-            <span className="h-heading">{team.femaleCount}/{minFemale}</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
+function AuctionClock({deadline,status}:{deadline?:string|null;status:string}) {
+  const [now,setNow]=useState(()=>Date.now());
+  useEffect(()=>{if(!deadline)return;const id=window.setInterval(()=>setNow(Date.now()),1000);return ()=>window.clearInterval(id);},[deadline]);
+  const seconds=deadline ? Math.max(0,Math.ceil((Date.parse(deadline)-now)/1000)) : null;
+  return <div className="auction-clock" data-testid="auction-timer"><p className="label-cap flex items-center justify-center gap-2"><Timer size={14}/>{seconds===null ? "Status" : "Time remaining"}</p><p className={`mt-2 font-mono text-2xl ${seconds!==null && seconds<=10 ? "text-warning" : "text-primary"}`}>{seconds===null ? humanize(status) : `${String(Math.floor(seconds/60)).padStart(2,"0")}:${String(seconds%60).padStart(2,"0")}`}</p>{seconds===0 && <p className="mt-2 text-xs text-muted">Awaiting server result</p>}</div>;
 }

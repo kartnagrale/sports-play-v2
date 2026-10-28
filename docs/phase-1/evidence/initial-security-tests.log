@@ -1,0 +1,291 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] ----------------------< com.neml:sports-platform >----------------------
+[INFO] Building universal-sports-platform 0.0.1-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+Downloading from central: https://repo.maven.apache.org/maven2/org/springframework/security/spring-security-test/6.2.4/spring-security-test-6.2.4.pom
+Progress (1): 1.0 kB
+Progress (1): 1.1 kB
+Progress (1): 2.7 kB
+                    
+Downloaded from central: https://repo.maven.apache.org/maven2/org/springframework/security/spring-security-test/6.2.4/spring-security-test-6.2.4.pom (2.7 kB at 2.1 kB/s)
+Downloading from central: https://repo.maven.apache.org/maven2/org/springframework/security/spring-security-test/6.2.4/spring-security-test-6.2.4.jar
+Progress (1): 0.6/132 kB
+Progress (1): 1.9/132 kB
+Progress (1): 3.2/132 kB
+Progress (1): 4.5/132 kB
+Progress (1): 5.9/132 kB
+Progress (1): 7.3/132 kB
+Progress (1): 8.7/132 kB
+Progress (1): 10/132 kB 
+Progress (1): 11/132 kB
+Progress (1): 13/132 kB
+Progress (1): 14/132 kB
+Progress (1): 15/132 kB
+Progress (1): 17/132 kB
+Progress (1): 18/132 kB
+Progress (1): 20/132 kB
+Progress (1): 21/132 kB
+Progress (1): 22/132 kB
+Progress (1): 24/132 kB
+Progress (1): 25/132 kB
+Progress (1): 26/132 kB
+Progress (1): 28/132 kB
+Progress (1): 29/132 kB
+Progress (1): 30/132 kB
+Progress (1): 32/132 kB
+Progress (1): 33/132 kB
+Progress (1): 35/132 kB
+Progress (1): 36/132 kB
+Progress (1): 37/132 kB
+Progress (1): 39/132 kB
+Progress (1): 40/132 kB
+Progress (1): 41/132 kB
+Progress (1): 43/132 kB
+Progress (1): 44/132 kB
+Progress (1): 46/132 kB
+Progress (1): 47/132 kB
+Progress (1): 48/132 kB
+Progress (1): 50/132 kB
+Progress (1): 51/132 kB
+Progress (1): 55/132 kB
+Progress (1): 59/132 kB
+Progress (1): 61/132 kB
+Progress (1): 65/132 kB
+Progress (1): 69/132 kB
+Progress (1): 73/132 kB
+Progress (1): 77/132 kB
+Progress (1): 82/132 kB
+Progress (1): 86/132 kB
+Progress (1): 90/132 kB
+Progress (1): 94/132 kB
+Progress (1): 99/132 kB
+Progress (1): 103/132 kB
+Progress (1): 107/132 kB
+Progress (1): 111/132 kB
+Progress (1): 115/132 kB
+Progress (1): 120/132 kB
+Progress (1): 124/132 kB
+Progress (1): 128/132 kB
+Progress (1): 132 kB    
+                    
+Downloaded from central: https://repo.maven.apache.org/maven2/org/springframework/security/spring-security-test/6.2.4/spring-security-test-6.2.4.jar (132 kB at 503 kB/s)
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ sports-platform ---
+[INFO] Copying 2 resources from src\main\resources to target\classes
+[INFO] Copying 1 resource from src\main\resources to target\classes
+[INFO] 
+[INFO] --- compiler:3.11.0:compile (default-compile) @ sports-platform ---
+[INFO] Changes detected - recompiling the module! :source
+[INFO] Compiling 139 source files with javac [debug release 17] to target\classes
+[WARNING] /C:/Users/karti/.codex/worktrees/play-neml-upgrade/sports-play-main/backend/src/main/java/com/neml/badminton/entity/Season.java:[29,21] @Builder will ignore the initializing expression entirely. If you want the initializing expression to serve as default, add @Builder.Default. If it is not supposed to be settable during building, make the field final.
+[WARNING] /C:/Users/karti/.codex/worktrees/play-neml-upgrade/sports-play-main/backend/src/main/java/com/neml/badminton/entity/Bid.java:[49,21] @Builder will ignore the initializing expression entirely. If you want the initializing expression to serve as default, add @Builder.Default. If it is not supposed to be settable during building, make the field final.
+[WARNING] /C:/Users/karti/.codex/worktrees/play-neml-upgrade/sports-play-main/backend/src/main/java/com/neml/badminton/entity/Announcement.java:[32,20] @Builder will ignore the initializing expression entirely. If you want the initializing expression to serve as default, add @Builder.Default. If it is not supposed to be settable during building, make the field final.
+[WARNING] /C:/Users/karti/.codex/worktrees/play-neml-upgrade/sports-play-main/backend/src/main/java/com/neml/badminton/entity/Player.java:[47,26] @Builder will ignore the initializing expression entirely. If you want the initializing expression to serve as default, add @Builder.Default. If it is not supposed to be settable during building, make the field final.
+[WARNING] /C:/Users/karti/.codex/worktrees/play-neml-upgrade/sports-play-main/backend/src/main/java/com/neml/badminton/entity/AuctionState.java:[33,27] @Builder will ignore the initializing expression entirely. If you want the initializing expression to serve as default, add @Builder.Default. If it is not supposed to be settable during building, make the field final.
+[WARNING] /C:/Users/karti/.codex/worktrees/play-neml-upgrade/sports-play-main/backend/src/main/java/com/neml/badminton/entity/Match.java:[79,25] @Builder will ignore the initializing expression entirely. If you want the initializing expression to serve as default, add @Builder.Default. If it is not supposed to be settable during building, make the field final.
+[WARNING] /C:/Users/karti/.codex/worktrees/play-neml-upgrade/sports-play-main/backend/src/main/java/com/neml/badminton/entity/Match.java:[86,21] @Builder will ignore the initializing expression entirely. If you want the initializing expression to serve as default, add @Builder.Default. If it is not supposed to be settable during building, make the field final.
+[WARNING] /C:/Users/karti/.codex/worktrees/play-neml-upgrade/sports-play-main/backend/src/main/java/com/neml/badminton/entity/Match.java:[89,21] @Builder will ignore the initializing expression entirely. If you want the initializing expression to serve as default, add @Builder.Default. If it is not supposed to be settable during building, make the field final.
+[WARNING] /C:/Users/karti/.codex/worktrees/play-neml-upgrade/sports-play-main/backend/src/main/java/com/neml/badminton/entity/MatchFormat.java:[62,21] @Builder will ignore the initializing expression entirely. If you want the initializing expression to serve as default, add @Builder.Default. If it is not supposed to be settable during building, make the field final.
+[WARNING] /C:/Users/karti/.codex/worktrees/play-neml-upgrade/sports-play-main/backend/src/main/java/com/neml/badminton/entity/MatchFormat.java:[65,21] @Builder will ignore the initializing expression entirely. If you want the initializing expression to serve as default, add @Builder.Default. If it is not supposed to be settable during building, make the field final.
+[WARNING] /C:/Users/karti/.codex/worktrees/play-neml-upgrade/sports-play-main/backend/src/main/java/com/neml/badminton/entity/MatchFormat.java:[72,21] @Builder will ignore the initializing expression entirely. If you want the initializing expression to serve as default, add @Builder.Default. If it is not supposed to be settable during building, make the field final.
+[WARNING] /C:/Users/karti/.codex/worktrees/play-neml-upgrade/sports-play-main/backend/src/main/java/com/neml/badminton/entity/Team.java:[51,21] @Builder will ignore the initializing expression entirely. If you want the initializing expression to serve as default, add @Builder.Default. If it is not supposed to be settable during building, make the field final.
+[WARNING] /C:/Users/karti/.codex/worktrees/play-neml-upgrade/sports-play-main/backend/src/main/java/com/neml/badminton/entity/Team.java:[54,21] @Builder will ignore the initializing expression entirely. If you want the initializing expression to serve as default, add @Builder.Default. If it is not supposed to be settable during building, make the field final.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ sports-platform ---
+[INFO] skip non existing resourceDirectory C:\Users\karti\.codex\worktrees\play-neml-upgrade\sports-play-main\backend\src\test\resources
+[INFO] 
+[INFO] --- compiler:3.11.0:testCompile (default-testCompile) @ sports-platform ---
+[INFO] Changes detected - recompiling the module! :dependency
+[INFO] Compiling 13 source files with javac [debug release 17] to target\test-classes
+[INFO] 
+[INFO] --- surefire:3.1.2:test (default-test) @ sports-platform ---
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running com.neml.badminton.config.StompAuthorizationInterceptorTest
+OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 6.540 s -- in com.neml.badminton.config.StompAuthorizationInterceptorTest
+[INFO] Running com.neml.badminton.controller.ChampionshipPrincipalTest
+14:30:53.270 [main] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [com.neml.badminton.controller.ChampionshipPrincipalTest]: ChampionshipPrincipalTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+14:30:54.318 [main] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration com.neml.badminton.NemlBadmintonApplication for test class com.neml.badminton.controller.ChampionshipPrincipalTest
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+ :: Spring Boot ::                (v3.2.5)
+
+2026-10-27T14:30:56.898+05:30 INFO  [background-preinit] [traceId=none] o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.1.Final
+2026-10-27T14:30:57.068+05:30 INFO  [main] [traceId=none] c.n.b.c.ChampionshipPrincipalTest - Starting ChampionshipPrincipalTest using Java 17.0.20.1 with PID 5828 (started by karti in C:\Users\karti\.codex\worktrees\play-neml-upgrade\sports-play-main\backend)
+2026-10-27T14:30:57.073+05:30 INFO  [main] [traceId=none] c.n.b.c.ChampionshipPrincipalTest - No active profile set, falling back to 1 default profile: "default"
+2026-10-27T14:31:05.910+05:30 INFO  [main] [traceId=none] o.s.s.web.DefaultSecurityFilterChain - Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@5487a8f1, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@3e5c7588, org.springframework.security.web.context.SecurityContextHolderFilter@69419d59, org.springframework.security.web.header.HeaderWriterFilter@42db955e, org.springframework.web.filter.CorsFilter@5b2ff4df, org.springframework.security.web.authentication.logout.LogoutFilter@62ee1c89, com.neml.badminton.security.JwtAuthFilter@63eea8c4, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@96075c0, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@2337bf27, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@23dff243, org.springframework.security.web.session.SessionManagementFilter@20b67366, org.springframework.security.web.access.ExceptionTranslationFilter@64fc6470, org.springframework.security.web.access.intercept.AuthorizationFilter@62410e1f]
+2026-10-27T14:31:06.872+05:30 INFO  [main] [traceId=none] o.s.b.t.m.w.SpringBootMockServletContext - Initializing Spring TestDispatcherServlet ''
+2026-10-27T14:31:06.872+05:30 INFO  [main] [traceId=none] o.s.t.web.servlet.TestDispatcherServlet - Initializing Servlet ''
+2026-10-27T14:31:06.885+05:30 INFO  [main] [traceId=none] o.s.t.web.servlet.TestDispatcherServlet - Completed initialization in 9 ms
+2026-10-27T14:31:06.976+05:30 INFO  [main] [traceId=none] c.n.b.c.ChampionshipPrincipalTest - Started ChampionshipPrincipalTest in 12.249 seconds (process running for 24.165)
+2026-10-27T14:31:07.758+05:30 INFO  [main] [traceId=dbae72bb-20b5-408c-b7d1-879640c0afc7] c.n.b.config.RequestLoggingFilter - Request completed method=GET path=/api/championships status=200 actor=anonymous durationMs=645
+2026-10-27T14:31:07.889+05:30 INFO  [main] [traceId=e01a6745-ef1e-47be-8f35-1080f0b7e5dd] c.n.b.config.RequestLoggingFilter - Request completed method=GET path=/api/championships status=200 actor=anonymous durationMs=6
+2026-10-27T14:31:07.904+05:30 WARN  [main] [traceId=f5c6250e-8d7b-4aed-a222-fe260da7adf7] c.n.b.controller.ApiExceptionHandler - Request access denied
+2026-10-27T14:31:07.929+05:30 INFO  [main] [traceId=f5c6250e-8d7b-4aed-a222-fe260da7adf7] c.n.b.config.RequestLoggingFilter - Request completed method=GET path=/api/championships status=403 actor=anonymous durationMs=34
+
+MockHttpServletRequest:
+      HTTP Method = GET
+      Request URI = /api/championships
+       Parameters = {}
+          Headers = []
+             Body = null
+    Session Attrs = {}
+
+Handler:
+             Type = com.neml.badminton.controller.ChampionshipController
+           Method = com.neml.badminton.controller.ChampionshipController#list(User)
+
+Async:
+    Async started = false
+     Async result = null
+
+Resolved Exception:
+             Type = null
+
+ModelAndView:
+        View name = null
+             View = null
+            Model = null
+
+FlashMap:
+       Attributes = null
+
+MockHttpServletResponse:
+           Status = 200
+    Error message = null
+          Headers = [X-Correlation-ID:"dbae72bb-20b5-408c-b7d1-879640c0afc7", Vary:"Origin", "Access-Control-Request-Method", "Access-Control-Request-Headers", Content-Type:"application/json", X-Content-Type-Options:"nosniff", X-XSS-Protection:"0", Cache-Control:"no-cache, no-store, max-age=0, must-revalidate", Pragma:"no-cache", Expires:"0", X-Frame-Options:"DENY"]
+     Content type = application/json
+             Body = []
+    Forwarded URL = null
+   Redirected URL = null
+          Cookies = []
+
+MockHttpServletRequest:
+      HTTP Method = GET
+      Request URI = /api/championships
+       Parameters = {}
+          Headers = []
+             Body = null
+    Session Attrs = {}
+
+Handler:
+             Type = com.neml.badminton.controller.ChampionshipController
+           Method = com.neml.badminton.controller.ChampionshipController#list(User)
+
+Async:
+    Async started = false
+     Async result = null
+
+Resolved Exception:
+             Type = null
+
+ModelAndView:
+        View name = null
+             View = null
+            Model = null
+
+FlashMap:
+       Attributes = null
+
+MockHttpServletResponse:
+           Status = 200
+    Error message = null
+          Headers = [X-Correlation-ID:"e01a6745-ef1e-47be-8f35-1080f0b7e5dd", Vary:"Origin", "Access-Control-Request-Method", "Access-Control-Request-Headers", Content-Type:"application/json", X-Content-Type-Options:"nosniff", X-XSS-Protection:"0", Cache-Control:"no-cache, no-store, max-age=0, must-revalidate", Pragma:"no-cache", Expires:"0", X-Frame-Options:"DENY"]
+     Content type = application/json
+             Body = []
+    Forwarded URL = null
+   Redirected URL = null
+          Cookies = []
+
+MockHttpServletRequest:
+      HTTP Method = GET
+      Request URI = /api/championships
+       Parameters = {}
+          Headers = []
+             Body = null
+    Session Attrs = {}
+
+Handler:
+             Type = com.neml.badminton.controller.ChampionshipController
+           Method = com.neml.badminton.controller.ChampionshipController#list(User)
+
+Async:
+    Async started = false
+     Async result = null
+
+Resolved Exception:
+             Type = org.springframework.security.access.AccessDeniedException
+
+ModelAndView:
+        View name = null
+             View = null
+            Model = null
+
+FlashMap:
+       Attributes = null
+
+MockHttpServletResponse:
+           Status = 403
+    Error message = null
+          Headers = [X-Correlation-ID:"f5c6250e-8d7b-4aed-a222-fe260da7adf7", Vary:"Origin", "Access-Control-Request-Method", "Access-Control-Request-Headers", Content-Type:"application/json", X-Content-Type-Options:"nosniff", X-XSS-Protection:"0", Cache-Control:"no-cache, no-store, max-age=0, must-revalidate", Pragma:"no-cache", Expires:"0", X-Frame-Options:"DENY"]
+     Content type = application/json
+             Body = {"timestamp":"2026-10-27T09:01:07.910694200Z","traceId":"f5c6250e-8d7b-4aed-a222-fe260da7adf7","message":"Access denied"}
+    Forwarded URL = null
+   Redirected URL = null
+          Cookies = []
+2026-10-27T14:31:08.054+05:30 INFO  [main] [traceId=62f166d4-5b23-4865-aa88-681204e8c184] c.n.b.config.RequestLoggingFilter - Request completed method=GET path=/api/championships/30efe6c3-edb9-4d43-ab9f-bad218348a85 status=200 actor=anonymous durationMs=62
+2026-10-27T14:31:08.062+05:30 WARN  [main] [traceId=e18e5bab-ed00-4782-bf40-738691baadc5] c.n.b.controller.ApiExceptionHandler - Request access denied
+2026-10-27T14:31:08.062+05:30 INFO  [main] [traceId=e18e5bab-ed00-4782-bf40-738691baadc5] c.n.b.config.RequestLoggingFilter - Request completed method=GET path=/api/championships/9caf78eb-90f6-43fe-a3db-5596602f3a94 status=403 actor=anonymous durationMs=6
+2026-10-27T14:31:08.103+05:30 WARN  [main] [traceId=2fed6c5d-6908-4885-b656-9c5e2211fb41] c.n.b.controller.ApiExceptionHandler - Request access denied
+2026-10-27T14:31:08.106+05:30 INFO  [main] [traceId=2fed6c5d-6908-4885-b656-9c5e2211fb41] c.n.b.config.RequestLoggingFilter - Request completed method=GET path=/api/championships status=403 actor=anonymous durationMs=5
+2026-10-27T14:31:08.126+05:30 INFO  [main] [traceId=8fe827d5-5643-4657-8416-82a2b45ffd4d] c.n.b.config.RequestLoggingFilter - Request completed method=GET path=/api/championships status=403 actor=anonymous durationMs=5
+2026-10-27T14:31:08.141+05:30 INFO  [main] [traceId=e6064cad-1a0d-4acd-9d6e-3844f09bd073] c.n.b.config.RequestLoggingFilter - Request completed method=GET path=/api/championships status=403 actor=anonymous durationMs=3
+2026-10-27T14:31:08.153+05:30 INFO  [main] [traceId=44d20670-62bb-434e-9b1c-57c0a39eb9b5] c.n.b.config.RequestLoggingFilter - Request completed method=GET path=/api/championships status=403 actor=anonymous durationMs=3
+[ERROR] Tests run: 4, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 15.45 s <<< FAILURE! -- in com.neml.badminton.controller.ChampionshipPrincipalTest
+[ERROR] com.neml.badminton.controller.ChampionshipPrincipalTest.staffListsStillWork -- Time elapsed: 0.963 s <<< FAILURE!
+java.lang.AssertionError: Status expected:<200> but was:<403>
+	at org.springframework.test.util.AssertionErrors.fail(AssertionErrors.java:59)
+	at org.springframework.test.util.AssertionErrors.assertEquals(AssertionErrors.java:122)
+	at org.springframework.test.web.servlet.result.StatusResultMatchers.lambda$matcher$9(StatusResultMatchers.java:637)
+	at org.springframework.test.web.servlet.MockMvc$1.andExpect(MockMvc.java:214)
+	at com.neml.badminton.controller.ChampionshipPrincipalTest.staffListsStillWork(ChampionshipPrincipalTest.java:38)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+[INFO] 
+[INFO] Results:
+[INFO] 
+[ERROR] Failures: 
+[ERROR]   ChampionshipPrincipalTest.staffListsStillWork:38 Status expected:<200> but was:<403>
+[INFO] 
+[ERROR] Tests run: 9, Failures: 1, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  01:35 min
+[INFO] Finished at: 2026-10-27T14:31:08+05:30
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-surefire-plugin:3.1.2:test (default-test) on project sports-platform: There are test failures.
+[ERROR] 
+[ERROR] Please refer to C:\Users\karti\.codex\worktrees\play-neml-upgrade\sports-play-main\backend\target\surefire-reports for the individual test results.
+[ERROR] Please refer to dump files (if any exist) [date].dump, [date]-jvmRun[N].dump and [date].dumpstream.
+[ERROR] -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException

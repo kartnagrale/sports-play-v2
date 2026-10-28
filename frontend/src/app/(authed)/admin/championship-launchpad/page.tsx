@@ -14,7 +14,7 @@ import { toast } from "sonner";
 
 interface CreateResponse {
   championship: ChampionshipDto;
-  admin: { userId: string; fullName: string; email: string; mobile: string; temporaryPassword: string; messageQueued: boolean };
+  admin: { userId: string; fullName: string; email: string; mobile: string; setupPath: string; setupExpiresAt: string; messageQueued: boolean };
 }
 
 const initialForm = {
@@ -37,7 +37,7 @@ export default function ChampionshipLaunchpadPage() {
   ), [form]);
 
   if (user?.role !== "SUPER_ADMIN") {
-    return <div className="p-10"><h1 className="h-heading text-3xl">Super Admin access required</h1></div>;
+    return <div className="portal-page"><h1 className="h-heading text-3xl">Super Admin access required</h1></div>;
   }
 
   async function submit(event: FormEvent) {
@@ -71,7 +71,8 @@ export default function ChampionshipLaunchpadPage() {
               <Summary label="Room code" value={created.championship.roomCode} icon={<Trophy size={18}/>}/>
               <Summary label="Administrator" value={created.admin.fullName} icon={<ShieldCheck size={18}/>}/>
               <Summary label="Admin email" value={created.admin.email} icon={<MailCheck size={18}/>}/>
-              <Summary label="One-time password" value={created.admin.temporaryPassword} icon={<KeyRound size={18}/>}/>
+              <Summary label="Account setup link" value={typeof window === "undefined" ? created.admin.setupPath : window.location.origin + created.admin.setupPath} icon={<KeyRound size={18}/>}/>
+              <Summary label="Setup expires" value={new Date(created.admin.setupExpiresAt).toLocaleString()} icon={<KeyRound size={18}/>}/>
               <Summary label="Message status" value={created.admin.messageQueued ? "Queued" : "Not queued"} icon={<MessageSquareText size={18}/>}/>
             </div>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
@@ -85,7 +86,7 @@ export default function ChampionshipLaunchpadPage() {
   }
 
   return (
-    <div className="min-h-screen p-5 md:p-10">
+    <div className="portal-page">
       <div className="mx-auto max-w-7xl">
         <Link href="/admin/championships" className="mb-7 inline-flex items-center gap-2 text-xs text-white/45 transition-colors hover:text-white"><ArrowLeft size={14}/>Back to championships</Link>
         <div className="mb-9 grid gap-6 lg:grid-cols-[1fr_360px] lg:items-end">
@@ -119,7 +120,7 @@ export default function ChampionshipLaunchpadPage() {
             <Field label="Mobile number" required><input className="input" type="tel" value={form.adminMobile} onChange={(e) => setForm({...form, adminMobile:e.target.value})} placeholder="+91 98765 43210" required/></Field>
             <div className="rounded-xl border border-secondary/20 bg-secondary/5 p-4 text-xs leading-5 text-white/55">
               <div className="mb-2 flex items-center gap-2 font-medium text-secondary"><KeyRound size={15}/>Secure credential delivery</div>
-              A strong temporary password is generated server-side, BCrypt-hashed for login, and queued in message_tracker for delivery.
+              A setup link is shown once for secure handoff to the account owner. Use it before the expiry time shown; no password or setup token is stored in the notification queue.
             </div>
           </Section>
 

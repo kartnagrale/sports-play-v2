@@ -1,0 +1,11 @@
+
+Running 4 tests using 1 worker
+
+(node:7716) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 1 e2e\phase5.spec.ts:49:5 › Approved results, actual wizard PDF, download, history, revoke and reissue (11.0s)
+  ok 2 e2e\phase5.spec.ts:61:5 › Winner, runner-up and individual participation APIs enforce eligibility and tenant permissions (988ms)
+  ok 3 e2e\phase5.spec.ts:73:5 › Responsive themes, keyboard dialog navigation and private PDF access (2.3s)
+  ok 4 e2e\phase5.spec.ts:79:5 › Bulk team participation issues unique PDFs and public verification tracks revocation (5.2s)
+
+  4 passed (27.5s)

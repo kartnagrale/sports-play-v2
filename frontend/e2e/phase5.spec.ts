@@ -1,0 +1,106 @@
+import { test, expect, request, type APIRequestContext, type Page } from "@playwright/test";
+import crypto from "node:crypto";
+import fs from "node:fs";
+import { inflateRawSync } from "node:zlib";
+const api=process.env.PHASE5_API_URL||"http://localhost:58095/api";
+const evidence="../docs/phase-5/evidence";
+test.skip(!process.env.PHASE5_API_URL,"Use the disposable Phase 5 runner");
+test.describe.configure({mode:"serial"});test.setTimeout(180000);
+let platform:APIRequestContext,admin:APIRequestContext,captain:APIRequestContext,cid:string,aid:string,otherCid:string,finalId:string,roomCode:string;
+let account={email:`cert-${crypto.randomUUID()}@example.invalid`,password:crypto.randomUUID()};
+let teamList:any[]=[],playerList:any[]=[];let issued:any;
+async function command(client:APIRequestContext,path:string,data?:unknown,status=200,method="POST") {
+ const csrf=await(await client.get(api+"/auth/csrf")).json();const response=await client.fetch(api+path,{method,headers:{"X-XSRF-TOKEN":csrf.token},data});
+ expect(response.status(),`${method} ${path}: ${await response.text()}`).toBe(status);return status===204||status===401?null:response.json();
+}
+const path=()=>`/championships/${cid}`;
+const cert=()=>path()+"/admin/certificates";
+test.beforeAll(async()=>{
+ platform=await request.newContext();admin=await request.newContext();captain=await request.newContext();
+ await command(platform,"/auth/login",{email:process.env.APP_BOOTSTRAP_EMAIL,password:process.env.APP_BOOTSTRAP_PASSWORD});
+ const created=await command(platform,"/championships",{name:"Phase 5 Sports Championship",sportType:"BADMINTON",isPublic:true,adminFullName:"Championship Administrator",adminEmail:account.email,adminMobile:"9999999999"});cid=created.championship.id;roomCode=created.championship.roomCode;
+ await command(admin,"/auth/activate",{token:created.admin.setupPath.split("=")[1],password:account.password},204);await command(admin,"/auth/login",account);
+ const foreign=await command(platform,"/championships",{name:"Isolated Phase 5 Cup",sportType:"CRICKET",adminFullName:"Other Admin",adminEmail:`foreign-${crypto.randomUUID()}@example.invalid`,adminMobile:"9999999999"});otherCid=foreign.championship.id;
+ const s=await command(admin,path()+"/settings",{auctionName:"Phase 5 Auction",maxSquadSize:1,purseLimit:10000,minMale:0,minFemale:0,playerBasePrice:100,bidIncrement:10,timerSeconds:300,customRules:"{}"},200,"PUT");aid=s.auctionId;
+ const cfg=await(await admin.get(api+path()+"/competition/configuration")).json();
+ await command(admin,path()+"/admin/competition/configuration",{expectedConfigurationVersion:cfg.configurationVersion,presetCode:"CUSTOM",configuredTeamCount:2,minimumTeamCount:2,maximumTeamCount:2,minimumRosterSize:1,maximumRosterSize:1,playingSideSize:1,maximumSubstitutes:0,numberOfLegs:1,playoffFormat:"TOP_TWO_FINAL",roundRobinMode:"SINGLE",pointsPerWin:3,pointsPerLoss:0,qualifyingTeamCount:2,tieBreakerPriority:["MATCHES_WON","NAME"],venues:["Championship Court"],leagueStartAt:"2026-10-29T10:00:00Z",fixtureSpacingDays:1,manualDateEditing:true},200,"PUT");
+ const rules=await(await admin.get(api+path()+"/sport-configuration/badminton")).json(); delete rules.status; const rulesVersion=rules.version; delete rules.version;
+ await command(admin,path()+"/sport-configuration/badminton",{...rules,expectedVersion:rulesVersion,presetCode:"CUSTOM",rubbers:[{rubberCode:"MENS_SINGLES",displayLabel:"Open Singles",shortLabel:"OS",displayOrder:1,participantCountPerSide:1,genderRule:"OPEN",bestOfGames:1,pointsPerGame:21,winBy:2,scoreCap:30,enabled:true}]},200,"PUT");
+ await command(admin,path()+"/sport-configuration/quotas",[],200,"PUT");
+ for(const [teamName,shortCode] of [["Northside Aces","ACE"],["Coastal Blazers","BLZ"]])teamList.push(await command(admin,path()+"/admin/teams",{teamName,shortCode,captainFullName:"Captain",captainEmail:`captain-${crypto.randomUUID()}@example.invalid`,captainMobile:"9999999999"}));
+ const csrf=await(await admin.get(api+"/auth/csrf")).json();
+ const uploaded=await admin.post(api+path()+"/admin/players/imports",{headers:{"X-XSRF-TOKEN":csrf.token},multipart:{file:{name:"players.xlsx",mimeType:"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",buffer:fs.readFileSync("../docs/phase-5/fixtures/players.xlsx")}}});expect(uploaded.status()).toBe(200);
+ const preview=await uploaded.json();expect(preview.invalid).toBe(0);await command(admin,path()+`/admin/players/imports/${preview.importId}/confirm`,{checksum:preview.checksum});
+ playerList=await(await admin.get(api+path()+"/players")).json();expect(playerList).toHaveLength(2);
+ // Real auction: two legitimate purchases, then captain confirmations and administrator locks.
+ const auction=path()+`/auctions/${aid}`;await command(admin,auction+"/admin/start");
+ for(let i=0;i<2;i++){const state=await(await admin.get(api+auction+"/state")).json();await command(admin,auction+"/bid",{playerId:state.currentPlayer.id,teamId:teamList[i].teamId,amount:100});await command(admin,auction+"/admin/sell");}
+ playerList=await(await admin.get(api+path()+"/players")).json();
+ for(const t of teamList){const password=crypto.randomUUID();const ctx=await request.newContext();await command(ctx,"/auth/activate",{token:t.setupPath.split("=")[1],password},204);await command(ctx,"/auth/login",{email:t.captainEmail,password});await command(ctx,path()+`/squad-confirmations/teams/${t.teamId}/confirm`,{notes:"Roster reviewed for championship"});if(t===teamList[0]){await captain.dispose();captain=ctx;}else await ctx.dispose();}
+ await command(admin,path()+"/squad-confirmations/lock-all",{notes:"Ready for play"});
+ let competition=await command(admin,path()+"/admin/competition/league/generate");
+ async function finish(f:any){const format=f.formats[0];await command(admin,path()+`/admin/matches/formats/${format.id}/assign`,{sideAPlayerIds:[playerList.find(p=>p.teamId===f.teamA.id).id],sideBPlayerIds:[playerList.find(p=>p.teamId===f.teamB.id).id]});await command(admin,path()+`/admin/matches/formats/${format.id}/result`,{scoreA:21,scoreB:9});}
+ await finish(competition.fixtures[0]);competition=await command(admin,path()+"/admin/competition/playoffs/generate");const final=competition.fixtures.find((f:any)=>f.stageType==="FINAL");finalId=final.id;await finish(final);
+ const complete=await(await admin.get(api+path()+"/dashboard")).json();expect(complete.currentPhase).toBe("COMPLETED");
+ fs.writeFileSync(`${evidence}/workflow.json`,JSON.stringify({sport:"BADMINTON",championshipId:cid,playerImportCount:playerList.length,auctionPurchases:2,lockedSquads:2,completedFixtures:2,finalId,champion:complete.champion,runnerUp:complete.runnerUp},null,2));
+});
+test.afterAll(async()=>{await platform?.dispose();await admin?.dispose();await captain?.dispose();});
+async function login(page:Page){page.setDefaultTimeout(20000);await page.setViewportSize({width:1440,height:960});await page.goto("/login");await page.getByLabel("Email",{exact:true}).fill(account.email);await page.getByLabel("Password",{exact:true}).fill(account.password);await page.getByRole("button",{name:"Sign in",exact:true}).click();await expect(page.getByRole("navigation")).toBeVisible();await page.goto("/certificates");await expect(page.getByRole("heading",{name:"Certificates",exact:true})).toBeVisible();}
+test("Approved results, actual wizard PDF, download, history, revoke and reissue",async({page})=>{
+ const errors:string[]=[];page.on("pageerror",e=>errors.push(e.message));page.on("console",m=>{if(m.type()==="error"&&/hydrat/i.test(m.text()))errors.push(m.text());});
+ await login(page);await page.getByRole("button",{name:"Approve results",exact:true}).click();await page.getByLabel("Approval justification").fill("All championship final scores reviewed and approved");await page.getByRole("button",{name:"Approve finalized results"}).click();await expect(page.getByRole("dialog")).toHaveCount(0);
+ await page.getByRole("button",{name:"Generate certificate",exact:true}).first().click();
+ const dialog=page.getByRole("dialog");await dialog.getByRole("button",{name:"Continue",exact:true}).click();await expect(dialog.getByLabel("Competition / event")).not.toHaveValue("");await dialog.getByRole("button",{name:"Continue",exact:true}).click();await dialog.getByRole("radio").first().check();
+ const response=page.waitForResponse(r=>r.url().endsWith("/preview")&&r.request().method()==="POST");await dialog.getByRole("button",{name:"Preview certificate"}).click();expect((await response).headers()["content-type"]).toContain("application/pdf");await expect(dialog.getByAltText("Certificate preview rendered from the actual PDF")).toBeVisible(); await expect.poll(()=>dialog.locator("img").evaluate((img:HTMLImageElement)=>img.complete&&img.naturalWidth>0)).toBe(true);await page.screenshot({path:`${evidence}/wizard-preview.png`});
+ await dialog.getByRole("button",{name:"Continue to generation"}).click();await dialog.getByLabel("I have reviewed the recipient, award and PDF preview.").check();await dialog.getByRole("button",{name:"Issue certificate",exact:true}).click();await expect(dialog.getByRole("heading",{name:"Certificate issued",exact:true})).toBeVisible();const download=page.waitForEvent("download");await dialog.getByRole("button",{name:"Download PDF",exact:true}).click();const saved=await download;const file=await saved.path();expect(fs.readFileSync(file!).subarray(0,5).toString()).toBe("%PDF-");await dialog.getByRole("button",{name:"Done",exact:true}).click();
+ const history=await(await admin.get(api+cert())).json();issued=history.items[0];expect(issued.status).toBe("ISSUED");await expect(page.getByText(issued.certificate.reference,{exact:true})).toBeVisible();await page.screenshot({path:`${evidence}/certificate-history.png`});
+ await page.getByRole("button",{name:"Revoke",exact:true}).click();await page.getByLabel("Revocation reason").fill("Incorrect presentation name requires correction");await page.getByRole("button",{name:"Confirm revocation"}).click();await expect(page.getByRole("dialog")).toHaveCount(0);await expect(page.getByText("REVOKED",{exact:true})).toBeVisible();await page.screenshot({path:`${evidence}/certificate-revoked.png`});
+ await page.getByRole("button",{name:"Reissue",exact:true}).click();await page.getByRole("dialog").getByRole("button",{name:"Continue",exact:true}).click();await page.getByRole("dialog").getByRole("button",{name:"Continue",exact:true}).click();await page.getByRole("radio").first().check();await page.getByLabel("Correction justification").fill("Presentation reviewed and replacement authorized");await page.getByRole("button",{name:"Preview certificate"}).click();await page.getByRole("button",{name:"Continue to generation"}).click();await page.getByLabel("I have reviewed the recipient, award and PDF preview.").check();await page.getByRole("button",{name:"Issue certificate",exact:true}).click();await expect(page.getByRole("heading",{name:"Certificate issued",exact:true})).toBeVisible();await page.getByRole("button",{name:"Done",exact:true}).click();
+ expect(errors).toEqual([]);
+});
+test("Winner, runner-up and individual participation APIs enforce eligibility and tenant permissions",async()=>{
+ const eligibility=await(await admin.get(api+cert()+"/eligibility?category=WINNER&recipientType=TEAM")).json();
+ const r={requestId:crypto.randomUUID(),approvalId:eligibility.approval.id,category:"RUNNER_UP",recipientType:"TEAM",recipientId:""};
+ const runner=await(await admin.get(api+cert()+"/eligibility?category=RUNNER_UP&recipientType=TEAM")).json();r.recipientId=runner.recipients[0].id;
+ await command(admin,cert(),{...r,category:"WINNER"},409);const x=await command(admin,cert(),r);expect(x.certificate.recipient.name).toBe(runner.recipients[0].name);
+ expect((await command(admin,cert(),r)).certificate.id).toBe(x.certificate.id);
+ const participation=await(await admin.get(api+cert()+"/eligibility?category=PARTICIPATION&recipientType=PLAYER")).json();expect(participation.recipients).toHaveLength(2);
+ for(const p of participation.recipients){const issued=await command(admin,cert(),{...r,requestId:crypto.randomUUID(),category:"PARTICIPATION",recipientType:"PLAYER",recipientId:p.id});expect(issued.certificate.recipient.name).toBe(p.name);}
+ const anonymous=await request.newContext();for(const ctx of [anonymous,platform,captain]){expect((await ctx.get(api+cert())).status()).toBe(ctx===anonymous?401:403);await command(ctx,cert(),r,ctx===anonymous?401:403);}await anonymous.dispose();
+ expect((await admin.get(api+`/championships/${otherCid}/admin/certificates`)).status()).toBe(403);
+ const navigation=await(await captain.get(api+`/navigation?championshipId=${cid}`)).json();expect(navigation.screens.some((s:any)=>s.code==="CERTIFICATES")).toBe(false);
+});
+test("Responsive themes, keyboard dialog navigation and private PDF access",async({page})=>{
+ await login(page);await page.setViewportSize({width:375,height:812});
+ for(const theme of ["light","dark"]){if(await page.locator("html").evaluate(el=>el.classList.contains("dark"))!==(theme==="dark"))await page.getByRole("button",{name:"Toggle theme",exact:true}).click();expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);await page.screenshot({path:`${evidence}/certificates-mobile-${theme}.png`,fullPage:true});}
+ await page.setViewportSize({width:1440,height:960});await page.getByRole("button",{name:"Generate certificate",exact:true}).first().focus();await page.keyboard.press("Enter");await expect(page.getByRole("dialog")).toBeVisible();await page.keyboard.press("Tab");expect(await page.evaluate(()=>!!document.activeElement?.closest("dialog"))).toBe(true);await page.keyboard.press("Escape");await expect(page.getByRole("dialog")).toHaveCount(0);
+ const pdf=await admin.get(api+cert()+`/${issued.certificate.id}/pdf`);expect(pdf.headers()["cache-control"]).toContain("no-store");expect(pdf.headers()["content-disposition"]).toContain("attachment");expect((await captain.get(api+cert()+`/${issued.certificate.id}/pdf`)).status()).toBe(403);
+});
+test("Bulk team participation issues unique PDFs and public verification tracks revocation",async({page,browser})=>{
+ test.skip(process.env.PHASE5_STAGE_B_ONLY==="true","Stage B checkpoint");
+ await login(page);await page.getByRole("button",{name:"Bulk generation",exact:true}).click();
+ const dialog=page.getByRole("dialog");await dialog.getByLabel("Bulk recipient type",{exact:true}).selectOption("TEAM");
+ await expect(dialog.getByRole("checkbox")).toHaveCount(2);await dialog.getByRole("button",{name:"Select up to 25",exact:true}).click();
+ await dialog.getByLabel("I confirm these recipients, the award category and championship.").check();await page.screenshot({path:`${evidence}/bulk-confirmation.png`});
+ const result=page.waitForResponse(r=>r.url().endsWith("/certificates/batches")&&r.request().method()==="POST");await dialog.getByRole("button",{name:"Issue selected certificates",exact:true}).click();
+ const response=await result;expect(response.status()).toBe(200);const batch=await response.json();expect(batch.certificates).toHaveLength(2);expect(new Set(batch.certificates.map((c:any)=>c.certificate.reference)).size).toBe(2);
+ const download=page.waitForEvent("download");await dialog.getByRole("button",{name:"Download ZIP",exact:true}).click();const file=await(await download).path();const archive=fs.readFileSync(file!);expect(archive.subarray(0,2).toString()).toBe("PK");
+ const eocd=archive.lastIndexOf(Buffer.from([0x50,0x4b,0x05,0x06]));expect(eocd).toBeGreaterThan(0);expect(archive.readUInt16LE(eocd+10)).toBe(2);let central=archive.readUInt32LE(eocd+16);const names:string[]=[];
+ for(let i=0;i<2;i++){expect(archive.readUInt32LE(central)).toBe(0x02014b50);const compressed=archive.readUInt32LE(central+20),length=archive.readUInt16LE(central+28);const name=archive.toString("utf8",central+46,central+46+length);expect(name).toMatch(/^PN-[0-9A-F]{32}\.pdf$/);names.push(name);const local=archive.readUInt32LE(central+42);const start=local+30+archive.readUInt16LE(local+26)+archive.readUInt16LE(local+28);const pdf=inflateRawSync(archive.subarray(start,start+compressed));expect(pdf.subarray(0,5).toString()).toBe("%PDF-");fs.writeFileSync(`${evidence}/bulk-${i+1}.pdf`,pdf);central+=46+length+archive.readUInt16LE(central+30)+archive.readUInt16LE(central+32);}
+ expect(new Set(names).size).toBe(2);const repeated=await admin.get(api+cert()+`/batches/${batch.id}/zip`);expect(await repeated.body()).toEqual(archive);
+ fs.writeFileSync(`${evidence}/bulk-archive-validation.json`,JSON.stringify({batchId:batch.id,count:2,names,zipBytes:archive.length,repeatedDownloadIdentical:true,recipients:batch.certificates.map((c:any)=>({name:c.certificate.recipient.name,reference:c.certificate.reference}))},null,2));
+ await page.screenshot({path:`${evidence}/bulk-success.png`});await dialog.getByRole("button",{name:"Done",exact:true}).click();
+ const history=await(await admin.get(api+cert())).json();expect(history.items.filter((row:any)=>batch.certificates.some((c:any)=>c.certificate.id===row.certificate.id))).toHaveLength(2);
+ const item=batch.certificates[0];expect(item.certificate.verificationUrl).toBe(`http://localhost:53005/verify?reference=${item.certificate.reference}`);
+ const publicContext=await browser.newContext();const publicPage=await publicContext.newPage();
+ try{await publicPage.goto(item.certificate.verificationUrl);await expect(publicPage.getByText("Valid certificate",{exact:true})).toBeVisible();await publicPage.screenshot({path:`${evidence}/verification-valid.png`});
+ const publicResult=await(await publicContext.request.get(api+"/certificate-verification/"+item.certificate.reference)).json();expect(Object.keys(publicResult).sort()).toEqual(["status","reference","recipient","championship","sport","category","issueDate"].sort());
+ await command(admin,cert()+`/${item.certificate.id}/revoke`,{reason:"Incorrect presentation details require a replacement"});await publicPage.reload();await expect(publicPage.getByText("Revoked certificate",{exact:true})).toBeVisible();await publicPage.screenshot({path:`${evidence}/verification-revoked.png`});
+ await publicPage.getByLabel("Certificate reference",{exact:true}).fill("PN-00000000000000000000000000000000");await publicPage.getByRole("button",{name:"Verify certificate",exact:true}).click();await expect(publicPage.getByText("Invalid / not found",{exact:true})).toBeVisible();
+ }finally{await publicContext.close();}
+ const csrf=await(await captain.get(api+"/auth/csrf")).json();expect((await captain.post(api+cert()+"/batches",{headers:{"X-XSRF-TOKEN":csrf.token},data:{requestId:crypto.randomUUID(),approvalId:item.certificate.approvalId,category:"WINNER",recipientType:"TEAM",recipientIds:[item.certificate.recipient.id]}})).status()).toBe(403);
+ expect((await captain.get(api+cert()+`/batches/${batch.id}/zip`)).status()).toBe(403);
+ const viewer=await request.newContext();try{const joined=await command(viewer,"/championships/join-room",{roomCode});const headers={Authorization:`Bearer ${joined.token}`};expect((await viewer.get(api+cert(),{headers})).status()).toBe(403);const csrf=await(await viewer.get(api+"/auth/csrf")).json();expect((await viewer.post(api+cert()+"/batches",{headers:{...headers,"X-XSRF-TOKEN":csrf.token},data:{requestId:crypto.randomUUID(),approvalId:item.certificate.approvalId,category:"PARTICIPATION",recipientType:"TEAM",recipientIds:[item.certificate.recipient.id]}})).status()).toBe(403);const nav=await(await viewer.get(api+`/navigation?championshipId=${cid}`,{headers})).json();expect(nav.screens.some((s:any)=>s.code==="CERTIFICATES")).toBe(false);}finally{await viewer.dispose();}
+ const before=await(await admin.get(api+path()+"/competition")).json();const final=before.fixtures.find((f:any)=>f.id===finalId);await command(admin,path()+`/admin/matches/formats/${final.formats[0].id}/result`,{scoreA:9,scoreB:21},200,"PUT");
+ const corrected=await(await admin.get(api+cert())).json();expect(corrected.items.every((c:any)=>c.status==="REVOKED")).toBe(true);const verification=await(await request.newContext()).get(api+"/certificate-verification/"+batch.certificates[1].certificate.reference);expect((await verification.json()).status).toBe("REVOKED");
+});

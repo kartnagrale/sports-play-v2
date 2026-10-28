@@ -1,0 +1,6 @@
+DO
+                                        verification                                        
+--------------------------------------------------------------------------------------------
+ populated upgrade, repeat, checksum rejection, quarantine and preserved tenant data passed
+(1 row)
+

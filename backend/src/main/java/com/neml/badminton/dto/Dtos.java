@@ -24,24 +24,25 @@ public class Dtos {
 
     public record PlayerDto(UUID id, String fullName, Gender gender, BigDecimal basePrice,
                             BigDecimal soldPrice, PlayerStatus status, UUID teamId, String teamName,
-                            String skillLevel, Integer auctionOrder) {
+                            String skillLevel, Integer auctionOrder, String playerReference, String photoUrl) {
+        public static String photoUrl(Player p){return p.getPhotoKey()==null?null:"/championships/"+p.getChampionship().getId()+"/players/"+p.getId()+"/photo?version="+p.getPhotoKey();}
         public static PlayerDto from(Player p) {
             return new PlayerDto(
                     p.getId(), p.getFullName(), p.getGender(), p.getBasePrice(),
                     p.getSoldPrice(), p.getStatus(),
                     p.getTeam() == null ? null : p.getTeam().getId(),
                     p.getTeam() == null ? null : p.getTeam().getName(),
-                    p.getSkillLevel(), p.getAuctionOrder()
+                    p.getSkillLevel(), p.getAuctionOrder(), p.getPlayerReference(),photoUrl(p)
             );
         }
     }
 
     public record BidDto(UUID id, UUID playerId, String playerName, UUID teamId, String teamName,
-                         BigDecimal amount, Instant createdAt, Boolean active) {
+                         BigDecimal amount, Instant createdAt, Boolean active, String playerPhotoUrl) {
         public static BidDto from(Bid b) {
             return new BidDto(b.getId(), b.getPlayer().getId(), b.getPlayer().getFullName(),
                     b.getTeam().getId(), b.getTeam().getName(),
-                    b.getAmount(), b.getCreatedAt(), b.getActive());
+                    b.getAmount(), b.getCreatedAt(), b.getActive(),PlayerDto.photoUrl(b.getPlayer()));
         }
     }
 
@@ -50,7 +51,8 @@ public class Dtos {
                                   List<TeamDto> teams, Integer remainingPlayers,
                                   java.time.Instant bidDeadline, Integer timerSeconds,
                                   BigDecimal bidIncrement, Integer maxSquadSize,
-                                  Integer minMale, Integer minFemale) {}
+                                  Integer minMale, Integer minFemale,
+                                  Long revision, List<BidDto> teamBids) {}
 
     public record PlaceBidRequest(@NotNull UUID playerId, @NotNull UUID teamId,
                                   @NotNull @DecimalMin(value = "0.01") BigDecimal amount) {}

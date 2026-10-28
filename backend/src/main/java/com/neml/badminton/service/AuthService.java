@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class AuthService {
@@ -32,19 +33,21 @@ public class AuthService {
         this.championshipRoleRepository = championshipRoleRepository;
     }
 
+    @Transactional(readOnly=true)
     public AuthDtos.AuthResponse login(AuthDtos.LoginRequest req) {
         User user = userRepository.findByEmail(req.email().toLowerCase().trim()).orElse(null);
         if (user == null) {
             log.warn("Authentication failed: account not found");
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid credentials");
         }
-        if (!passwordEncoder.matches(req.password(), user.getPasswordHash())) {
+        if (!Boolean.TRUE.equals(user.getAccountEnabled()) || !passwordEncoder.matches(req.password(), user.getPasswordHash())) {
             log.warn("Authentication failed userId={}", user.getId());
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid credentials");
         }
         Map<String, Object> claims = new HashMap<>();
         claims.put("email", user.getEmail());
         claims.put("global_role", user.getRole().name());
+        claims.put("cv", user.getCredentialVersion());
         String token = jwtService.generateToken(user.getId().toString(), claims);
         AuthDtos.UserInfo info = new AuthDtos.UserInfo(
                 user.getId().toString(),
@@ -56,10 +59,19 @@ public class AuthService {
         return new AuthDtos.AuthResponse(token, info);
     }
 
+    @Transactional(readOnly=true)
     public AuthDtos.UserInfo me(User user) {
         return new AuthDtos.UserInfo(
                 user.getId().toString(), user.getEmail(), user.getFullName(), user.getRole(), accesses(user)
         );
+    }
+
+    @Transactional
+    public void logout(User user) {
+        if(user==null)return;
+        User locked=userRepository.findByIdForUpdate(user.getId()).orElseThrow();
+        locked.setCredentialVersion(locked.getCredentialVersion()+1);
+        userRepository.save(locked);
     }
 
     private java.util.List<AuthDtos.ChampionshipAccess> accesses(User user) {

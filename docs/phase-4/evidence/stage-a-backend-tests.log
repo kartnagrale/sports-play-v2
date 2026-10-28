@@ -1,0 +1,221 @@
+09:24:16.600 [main] INFO org.hibernate.Version -- HHH000412: Hibernate ORM core version 6.6.53.Final
+09:24:16.915 [main] INFO org.hibernate.cache.internal.RegionFactoryInitiator -- HHH000026: Second-level cache disabled
+09:24:17.460 [main] WARN org.hibernate.orm.deprecation -- HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+09:24:17.504 [main] INFO org.hibernate.orm.connections.pooling -- HHH10001005: Database info:
+	Database JDBC URL [undefined/unknown]
+	Database driver: undefined/unknown
+	Database version: 12.0
+	Autocommit mode: undefined/unknown
+	Isolation level: <unknown>
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+09:24:22.168 [main] INFO org.hibernate.validator.internal.util.Version -- HV000001: Hibernate Validator 8.0.3.Final
+09:24:24.155 [main] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+09:24:24.157 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+09:24:24.185 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 20 ms
+09:24:24.587 [main] ERROR com.neml.badminton.controller.ApiExceptionHandler -- Unexpected API failure
+java.lang.IllegalStateException: Internal failure details
+	at com.neml.badminton.controller.ApiExceptionHandlerTest$TestController.failure(ApiExceptionHandlerTest.java:37)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:258)
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:191)
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:118)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:991)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:896)
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87)
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1089)
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:979)
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014)
+	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:903)
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:564)
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885)
+	at org.springframework.test.web.servlet.TestDispatcherServlet.service(TestDispatcherServlet.java:72)
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658)
+	at org.springframework.mock.web.MockFilterChain$ServletFilterProxy.doFilter(MockFilterChain.java:165)
+	at org.springframework.mock.web.MockFilterChain.doFilter(MockFilterChain.java:132)
+	at org.springframework.test.web.servlet.MockMvc.perform(MockMvc.java:201)
+	at com.neml.badminton.controller.ApiExceptionHandlerTest.unexpectedFailureStillReturnsSanitizedServerError(ApiExceptionHandlerTest.java:26)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:775)
+	at org.junit.platform.commons.support.ReflectionSupport.invokeMethod(ReflectionSupport.java:479)
+	at org.junit.jupiter.engine.execution.MethodInvocation.proceed(MethodInvocation.java:60)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain$ValidatingInvocation.proceed(InvocationInterceptorChain.java:131)
+	at org.junit.jupiter.engine.extension.TimeoutExtension.intercept(TimeoutExtension.java:161)
+	at org.junit.jupiter.engine.extension.TimeoutExtension.interceptTestableMethod(TimeoutExtension.java:152)
+	at org.junit.jupiter.engine.extension.TimeoutExtension.interceptTestMethod(TimeoutExtension.java:91)
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker$ReflectiveInterceptorCall.lambda$ofVoidMethod$0(InterceptingExecutableInvoker.java:112)
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker.lambda$invoke$0(InterceptingExecutableInvoker.java:94)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain$InterceptedInvocation.proceed(InvocationInterceptorChain.java:106)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain.proceed(InvocationInterceptorChain.java:64)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain.chainAndInvoke(InvocationInterceptorChain.java:45)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain.invoke(InvocationInterceptorChain.java:37)
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker.invoke(InterceptingExecutableInvoker.java:93)
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker.invoke(InterceptingExecutableInvoker.java:87)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.lambda$invokeTestMethod$7(TestMethodTestDescriptor.java:216)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.invokeTestMethod(TestMethodTestDescriptor.java:212)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.execute(TestMethodTestDescriptor.java:137)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.execute(TestMethodTestDescriptor.java:69)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:156)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:146)
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:144)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:143)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:100)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.invokeAll(SameThreadHierarchicalTestExecutorService.java:41)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:160)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:146)
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:144)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:143)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:100)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.invokeAll(SameThreadHierarchicalTestExecutorService.java:41)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:160)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:146)
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:144)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:143)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:100)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.submit(SameThreadHierarchicalTestExecutorService.java:35)
+	at org.junit.platform.engine.support.hierarchical.HierarchicalTestExecutor.execute(HierarchicalTestExecutor.java:57)
+	at org.junit.platform.engine.support.hierarchical.HierarchicalTestEngine.execute(HierarchicalTestEngine.java:54)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:201)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:170)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:94)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.lambda$execute$0(EngineExecutionOrchestrator.java:59)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.withInterceptedStreams(EngineExecutionOrchestrator.java:142)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:58)
+	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:103)
+	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:85)
+	at org.junit.platform.launcher.core.DelegatingLauncher.execute(DelegatingLauncher.java:47)
+	at org.junit.platform.launcher.core.InterceptingLauncher.lambda$execute$1(InterceptingLauncher.java:39)
+	at org.junit.platform.launcher.core.ClasspathAlignmentCheckingLauncherInterceptor.intercept(ClasspathAlignmentCheckingLauncherInterceptor.java:25)
+	at org.junit.platform.launcher.core.InterceptingLauncher.execute(InterceptingLauncher.java:38)
+	at org.junit.platform.launcher.core.DelegatingLauncher.execute(DelegatingLauncher.java:47)
+	at org.apache.maven.surefire.junitplatform.LauncherAdapter.executeWithoutCancellationToken(LauncherAdapter.java:60)
+	at org.apache.maven.surefire.junitplatform.LauncherAdapter.execute(LauncherAdapter.java:52)
+	at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.execute(JUnitPlatformProvider.java:203)
+	at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.invokeAllTests(JUnitPlatformProvider.java:168)
+	at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.invoke(JUnitPlatformProvider.java:136)
+	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:385)
+	at org.apache.maven.surefire.booter.ForkedBooter.execute(ForkedBooter.java:162)
+	at org.apache.maven.surefire.booter.ForkedBooter.run(ForkedBooter.java:507)
+	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:495)
+09:24:25.153 [main] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+09:24:25.153 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+09:24:25.153 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 0 ms
+09:24:25.162 [main] WARN com.neml.badminton.controller.ApiExceptionHandler -- Request access denied
+09:24:25.367 [main] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [com.neml.badminton.controller.BrowserAuthSecurityTest]: BrowserAuthSecurityTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+09:24:25.846 [main] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration com.neml.badminton.NemlBadmintonApplication for test class com.neml.badminton.controller.BrowserAuthSecurityTest
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::               (v3.5.16)
+
+2026-10-28T09:24:27.850+05:30 INFO  [main] [traceId=none] c.n.b.controller.BrowserAuthSecurityTest - Starting BrowserAuthSecurityTest using Java 17.0.20.1 with PID 5464 (started by karti in C:\Users\karti\.codex\worktrees\play-neml-upgrade\sports-play-main\backend)
+2026-10-28T09:24:27.850+05:30 INFO  [main] [traceId=none] c.n.b.controller.BrowserAuthSecurityTest - No active profile set, falling back to 1 default profile: "default"
+2026-10-28T09:24:30.576+05:30 INFO  [main] [traceId=none] o.s.s.c.a.a.c.InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer - Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
+2026-10-28T09:24:31.665+05:30 INFO  [main] [traceId=none] o.s.b.t.m.w.SpringBootMockServletContext - Initializing Spring TestDispatcherServlet ''
+2026-10-28T09:24:31.667+05:30 INFO  [main] [traceId=none] o.s.t.web.servlet.TestDispatcherServlet - Initializing Servlet ''
+2026-10-28T09:24:31.667+05:30 INFO  [main] [traceId=none] o.s.t.web.servlet.TestDispatcherServlet - Completed initialization in 0 ms
+2026-10-28T09:24:31.727+05:30 INFO  [main] [traceId=none] c.n.b.controller.BrowserAuthSecurityTest - Started BrowserAuthSecurityTest in 5.627 seconds (process running for 17.987)
+2026-10-28T09:24:31.831+05:30 INFO  [main] [traceId=f0fa5d83-ffb5-4e24-9227-0955cd6426d1] c.n.b.config.RequestLoggingFilter - Request completed method=GET path=/api/auth/csrf status=200 actor=anonymous durationMs=58
+2026-10-28T09:24:32.254+05:30 INFO  [main] [traceId=945a2908-81ce-4d96-b0a2-44e1e6597074] c.n.b.config.RequestLoggingFilter - Request completed method=POST path=/api/auth/login status=200 actor=anonymous durationMs=359
+2026-10-28T09:24:32.288+05:30 INFO  [main] [traceId=04ba24f1-4f43-4806-9897-3a6f16dbdb29] c.n.b.config.RequestLoggingFilter - Request completed method=GET path=/api/auth/csrf status=200 actor=anonymous durationMs=1
+2026-10-28T09:24:32.292+05:30 INFO  [main] [traceId=b51a44b4-f5a5-4d7e-b2b3-03d994bcdc20] c.n.b.config.RequestLoggingFilter - Request completed method=POST path=/api/auth/logout status=403 actor=anonymous durationMs=1
+2026-10-28T09:24:32.298+05:30 INFO  [main] [traceId=20ef2880-0996-4560-a57f-ccad3537ed92] c.n.b.config.RequestLoggingFilter - Request completed method=OPTIONS path=/api/auth/login status=403 actor=anonymous durationMs=3
+2026-10-28T09:24:32.301+05:30 INFO  [main] [traceId=b728745d-0d07-4796-9a56-a3a9bc0605ec] c.n.b.config.RequestLoggingFilter - Request completed method=OPTIONS path=/api/auth/login status=200 actor=anonymous durationMs=0
+2026-10-28T09:24:32.323+05:30 INFO  [main] [traceId=f4f5504c-c402-4248-a646-af5598d54db1] c.n.b.config.RequestLoggingFilter - Request completed method=POST path=/api/auth/login status=403 actor=anonymous durationMs=1
+2026-10-28T09:24:32.349+05:30 INFO  [main] [traceId=none] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [com.neml.badminton.controller.ChampionshipPrincipalTest]: ChampionshipPrincipalTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-10-28T09:24:32.380+05:30 INFO  [main] [traceId=none] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration com.neml.badminton.NemlBadmintonApplication for test class com.neml.badminton.controller.ChampionshipPrincipalTest
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::               (v3.5.16)
+
+2026-10-28T09:24:32.442+05:30 INFO  [main] [traceId=none] c.n.b.c.ChampionshipPrincipalTest - Starting ChampionshipPrincipalTest using Java 17.0.20.1 with PID 5464 (started by karti in C:\Users\karti\.codex\worktrees\play-neml-upgrade\sports-play-main\backend)
+2026-10-28T09:24:32.442+05:30 INFO  [main] [traceId=none] c.n.b.c.ChampionshipPrincipalTest - No active profile set, falling back to 1 default profile: "default"
+2026-10-28T09:24:33.363+05:30 INFO  [main] [traceId=none] o.s.s.c.a.a.c.InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer - Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
+2026-10-28T09:24:33.754+05:30 INFO  [main] [traceId=none] o.s.b.t.m.w.SpringBootMockServletContext - Initializing Spring TestDispatcherServlet ''
+2026-10-28T09:24:33.754+05:30 INFO  [main] [traceId=none] o.s.t.web.servlet.TestDispatcherServlet - Initializing Servlet ''
+2026-10-28T09:24:33.756+05:30 INFO  [main] [traceId=none] o.s.t.web.servlet.TestDispatcherServlet - Completed initialization in 2 ms
+2026-10-28T09:24:33.824+05:30 INFO  [main] [traceId=none] c.n.b.c.ChampionshipPrincipalTest - Started ChampionshipPrincipalTest in 1.437 seconds (process running for 20.081)
+2026-10-28T09:24:34.064+05:30 INFO  [main] [traceId=798bdc18-bdf5-4a23-bf57-4a93591544df] c.n.b.config.RequestLoggingFilter - Request completed method=GET path=/api/championships status=200 actor=anonymous durationMs=179
+2026-10-28T09:24:34.129+05:30 INFO  [main] [traceId=af6bd2e9-78ff-41ee-b317-56e593fc3d0a] c.n.b.config.RequestLoggingFilter - Request completed method=GET path=/api/championships status=200 actor=anonymous durationMs=7
+2026-10-28T09:24:34.234+05:30 INFO  [main] [traceId=765ddce9-0493-48f5-a4d1-cf3215046b56] c.n.b.config.RequestLoggingFilter - Request completed method=GET path=/api/championships/a6b7ab7e-7e54-4c81-9a36-d4d0a9abd9d2 status=200 actor=anonymous durationMs=75
+2026-10-28T09:24:34.247+05:30 WARN  [main] [traceId=1b83d659-dd1d-4c64-addf-2aa25b37caec] c.n.b.controller.ApiExceptionHandler - Request access denied
+2026-10-28T09:24:34.254+05:30 INFO  [main] [traceId=1b83d659-dd1d-4c64-addf-2aa25b37caec] c.n.b.config.RequestLoggingFilter - Request completed method=GET path=/api/championships/b781856e-1bf2-45f8-9007-b4459c2f38bd status=403 actor=anonymous durationMs=15
+2026-10-28T09:24:34.287+05:30 WARN  [main] [traceId=50bace4e-2649-4773-8354-e75c60b88ce4] c.n.b.controller.ApiExceptionHandler - Request access denied
+2026-10-28T09:24:34.289+05:30 INFO  [main] [traceId=50bace4e-2649-4773-8354-e75c60b88ce4] c.n.b.config.RequestLoggingFilter - Request completed method=GET path=/api/championships status=403 actor=anonymous durationMs=8
+2026-10-28T09:24:34.330+05:30 INFO  [main] [traceId=8d1034f6-34b6-4c70-964a-ad1ae582a8af] c.n.b.config.RequestLoggingFilter - Request completed method=GET path=/api/championships status=401 actor=anonymous durationMs=3
+2026-10-28T09:24:34.355+05:30 INFO  [main] [traceId=de39de47-ebeb-452c-b630-1fa3b87dca47] c.n.b.config.RequestLoggingFilter - Request completed method=GET path=/api/championships status=401 actor=anonymous durationMs=3
+2026-10-28T09:24:34.363+05:30 INFO  [main] [traceId=34d5f367-ebb0-4fe4-a53a-7e941b190143] c.n.b.config.RequestLoggingFilter - Request completed method=GET path=/api/championships status=401 actor=anonymous durationMs=2
+2026-10-28T09:24:37.752+05:30 INFO  [main] [traceId=none] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [com.neml.badminton.service.PlayerImportDatabaseTest]: PlayerImportDatabaseTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-10-28T09:24:37.805+05:30 INFO  [main] [traceId=none] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration com.neml.badminton.NemlBadmintonApplication for test class com.neml.badminton.service.PlayerImportDatabaseTest
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::               (v3.5.16)
+
+2026-10-28T09:24:37.863+05:30 INFO  [main] [traceId=none] c.n.b.service.PlayerImportDatabaseTest - Starting PlayerImportDatabaseTest using Java 17.0.20.1 with PID 5464 (started by karti in C:\Users\karti\.codex\worktrees\play-neml-upgrade\sports-play-main\backend)
+2026-10-28T09:24:37.863+05:30 INFO  [main] [traceId=none] c.n.b.service.PlayerImportDatabaseTest - No active profile set, falling back to 1 default profile: "default"
+2026-10-28T09:24:38.803+05:30 INFO  [main] [traceId=none] o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-10-28T09:24:39.101+05:30 INFO  [main] [traceId=none] o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 275 ms. Found 32 JPA repository interfaces.
+2026-10-28T09:24:39.832+05:30 INFO  [main] [traceId=none] o.hibernate.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-10-28T09:24:39.844+05:30 INFO  [main] [traceId=none] o.h.c.internal.RegionFactoryInitiator - HHH000026: Second-level cache disabled
+2026-10-28T09:24:39.954+05:30 INFO  [main] [traceId=none] o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-10-28T09:24:40.025+05:30 INFO  [main] [traceId=none] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2026-10-28T09:24:40.485+05:30 INFO  [main] [traceId=none] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@5194394
+2026-10-28T09:24:40.490+05:30 INFO  [main] [traceId=none] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2026-10-28T09:24:40.631+05:30 INFO  [main] [traceId=none] org.hibernate.orm.connections.pooling - HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 15.19
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-10-28T09:24:43.611+05:30 INFO  [main] [traceId=none] o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-10-28T09:24:43.844+05:30 INFO  [main] [traceId=none] o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-10-28T09:24:45.350+05:30 INFO  [main] [traceId=none] o.s.d.j.r.query.QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-10-28T09:24:50.631+05:30 INFO  [main] [traceId=none] o.s.s.c.a.a.c.InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer - Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
+2026-10-28T09:24:51.539+05:30 INFO  [main] [traceId=none] o.s.m.s.b.SimpleBrokerMessageHandler - Starting...
+2026-10-28T09:24:51.555+05:30 INFO  [main] [traceId=none] o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=true, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@39bd738b]]
+2026-10-28T09:24:51.555+05:30 INFO  [main] [traceId=none] o.s.m.s.b.SimpleBrokerMessageHandler - Started.
+2026-10-28T09:24:51.571+05:30 INFO  [main] [traceId=none] c.n.b.service.PlayerImportDatabaseTest - Started PlayerImportDatabaseTest in 13.757 seconds (process running for 37.828)
+2026-10-28T09:24:52.697+05:30 INFO  [main] [traceId=none] c.n.badminton.seed.SuperAdminBootstrap - Super-admin bootstrap created userId=2ddb8a03-ca93-42c9-8eaf-4802bfc10045
+2026-10-28T09:24:52.706+05:30 INFO  [main] [traceId=none] c.n.b.config.ApplicationLifecycleLogger - Sports-Play ready profiles=default port=58094 logFile=C:\Users\karti\.codex\worktrees\play-neml-upgrade\sports-play-main\tmp\phase4-runtime-logs/sports-play.log
+2026-10-28T09:24:52.709+05:30 INFO  [main] [traceId=none] c.n.b.config.ApplicationLifecycleLogger - Database ready product=PostgreSQL version=15.19 url=jdbc:postgresql://127.0.0.1:55444/phase4 schema=play_neml
+2026-10-28T09:24:55.010+05:30 WARN  [main] [traceId=none] o.h.engine.jdbc.spi.SqlExceptionHelper - SQL Error: 0, SQLState: P0001
+2026-10-28T09:24:55.011+05:30 ERROR [main] [traceId=none] o.h.engine.jdbc.spi.SqlExceptionHelper - ERROR: synthetic rollback test
+  Where: PL/pgSQL function reject_phase4_test() line 1 at RAISE

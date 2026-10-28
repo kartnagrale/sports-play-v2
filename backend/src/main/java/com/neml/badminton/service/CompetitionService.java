@@ -190,7 +190,7 @@ public class CompetitionService {
                     format.getSideAPlayers().forEach(player->used.computeIfAbsent(match.getTeamA().getId(),key->new HashSet<>()).add(player.getId()));
                     format.getSideBPlayers().forEach(player->used.computeIfAbsent(match.getTeamB().getId(),key->new HashSet<>()).add(player.getId()));
                 }));
-        List<Player> roster=players.findAllByChampionshipIdOrderByAuctionOrderAsc(cid);
+        List<Player> roster=players.findAllByChampionshipIdAndTeamIsNotNull(cid);
         Map<UUID,List<UUID>> unplayed=new HashMap<>();
         teamList.forEach(team->unplayed.put(team.getId(),roster.stream()
                 .filter(player->player.getTeam()!=null&&player.getTeam().getId().equals(team.getId()))
@@ -349,7 +349,7 @@ public class CompetitionService {
                 engine==null?Map.of("fixture","Match","standings","Standings"):engine.terminology(),
                 engine==null?Map.of():engine.dashboardMetrics(table,all),configured,blockers,
                 teams.findAllByChampionshipIdOrderByName(cid).size(),
-                players.findAllByChampionshipIdOrderByAuctionOrderAsc(cid).size(),
+                (int)players.countByChampionshipId(cid),
                 squad.lockedTeams(),squad.totalTeams(),upcoming,recent,table,
                 TeamRef.from(c.getChampion()),TeamRef.from(c.getRunnerUp()));
     }

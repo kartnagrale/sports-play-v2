@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { PlayerIdentity } from "@/components/players/PlayerAvatar";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import {
@@ -28,24 +29,26 @@ export default function SquadConfirmationPage() {
   const isAdmin = role === "CHAMPIONSHIP_ADMIN";
   const captainTeamId = role === "TEAM_CAPTAIN" ? access?.teamId : null;
 
-  const load = useCallback(async () => {
+  const load = useCallback( () => {
     if (!active) return;
-    setLoading(true);
-    try {
-      const [summaryResponse, historyResponse, playerResponse] = await Promise.all([
+
+    return Promise.all([
         api.get<SquadSummaryDto>(`/championships/${active.id}/squad-confirmations`),
         api.get<SquadEventDto[]>(`/championships/${active.id}/squad-confirmations/history`),
         api.get<PlayerDto[]>(`/championships/${active.id}/players`),
-      ]);
-      setSummary(summaryResponse.data);
+      ]).then(([summaryResponse, historyResponse, playerResponse]) => {
+setSummary(summaryResponse.data);
       setHistory(historyResponse.data);
       setPlayers(playerResponse.data);
       setSelectedTeamId((current) => captainTeamId || current || summaryResponse.data.teams[0]?.teamId || null);
-    } catch (error: any) {
+
+}).catch((error: any) => {
+
       toast.error(error?.response?.data?.message || "Unable to load squad confirmation");
-    } finally {
+
+}).finally(() => {
       setLoading(false);
-    }
+    });
   }, [active, captainTeamId]);
 
   useEffect(() => { load(); }, [load]);
@@ -78,7 +81,7 @@ export default function SquadConfirmationPage() {
   if (loading || !summary) return <LoadingState />;
 
   return (
-    <div className="min-h-screen p-5 md:p-10">
+    <div className="portal-page">
       <header className="mb-8 flex flex-col gap-5 xl:flex-row xl:items-end xl:justify-between">
         <div>
           <div className="label-cap text-primary">Phase 2 · Competition control</div>
@@ -128,10 +131,10 @@ export default function SquadConfirmationPage() {
             </div>
             {selected.validationIssues.length>0 && <div className="mx-6 mt-5 rounded-xl border border-danger/30 bg-danger/10 p-4 text-sm text-danger">{selected.validationIssues.map(issue=><div key={issue}>• {issue}</div>)}</div>}
             <div className="overflow-x-auto px-6 pb-6">
-              <table className="mt-3 w-full min-w-[620px] text-sm">
-                <thead><tr className="border-b border-white/10 text-left label-cap text-[9px]"><th className="py-3">#</th><th>Player</th><th>Gender</th><th>Skill</th><th>Status</th></tr></thead>
-                <tbody>{roster.map((player,index)=><tr key={player.id} className="border-b border-white/5"><td className="py-3 text-white/30">{String(index+1).padStart(2,"0")}</td><td className="font-medium">{player.fullName}</td><td><span className="chip">{player.gender}</span></td><td className="text-white/55">{player.skillLevel||"—"}</td><td><span className="inline-flex items-center gap-1.5 text-xs text-primary"><Check size={12}/>{player.status}</span></td></tr>)}</tbody>
-              </table>
+              <div className="table-scroll" role="region" aria-label="Championship records" tabIndex={0}><table className="mt-3 w-full min-w-[620px] text-sm data-table">
+                <thead><tr className="border-b border-white/10 text-left label-cap text-[9px]"><th scope="col" className="py-3">#</th><th>Player</th><th>Gender</th><th>Skill</th><th>Status</th></tr></thead>
+                <tbody>{roster.map((player,index)=><tr key={player.id} className="border-b border-white/5"><td className="py-3 text-white/30">{String(index+1).padStart(2,"0")}</td><td className="font-medium"><PlayerIdentity name={player.fullName} imageUrl={player.photoUrl}/></td><td><span className="chip">{player.gender}</span></td><td className="text-white/55">{player.skillLevel||"—"}</td><td><span className="inline-flex items-center gap-1.5 text-xs text-primary"><Check size={12}/>{player.status}</span></td></tr>)}</tbody>
+              </table></div>
             </div>
           </section>}
         </div>
@@ -167,4 +170,4 @@ function RuleChip({valid,label}:{valid:boolean;label:string}) { return <span cla
 function PhaseChip({status}:{status:SquadSummaryDto["phaseStatus"]}) { const active=status==="COMPLETED"?"chip chip-primary":status==="IN_PROGRESS"?"chip text-warning border-warning/30 bg-warning/10":"chip"; return <span className={active}>{status.replaceAll("_"," ")}</span>; }
 function Metric({label,value,tone}:{label:string;value:string;tone:"green"|"cyan"|"amber"}) { const color=tone==="green"?"text-primary":tone==="cyan"?"text-secondary":"text-warning"; return <div className="min-w-24 rounded-2xl border border-white/10 bg-black/15 px-4 py-3 text-center"><div className={`stat-num text-2xl ${color}`}>{value}</div><div className="label-cap mt-1 text-[8px]">{label}</div></div>; }
 function StatusTimeline({team}:{team:SquadTeamDto}) { const stage=team.status==="LOCKED"?3:team.status==="CONFIRMED"?2:1; return <div className="space-y-4">{[[1,"Roster ready","Auction allocation validated"],[2,"Captain confirmed",team.confirmedBy?`By ${team.confirmedBy.fullName}`:"Awaiting captain"],[3,"Admin locked",team.lockedBy?`By ${team.lockedBy.fullName}`:"Awaiting administrator"]].map(([number,label,detail])=>{const done=stage>=Number(number);return <div key={String(number)} className="flex gap-3"><div className={`grid h-7 w-7 shrink-0 place-items-center rounded-full border text-[10px] ${done?"border-primary/40 bg-primary/10 text-primary":"border-white/10 text-white/25"}`}>{done?<Check size={13}/>:number}</div><div><div className={`text-sm ${done?"text-white":"text-white/35"}`}>{label}</div><div className="mt-0.5 text-[10px] text-white/30">{detail}</div></div></div>})}</div>; }
-function LoadingState() { return <div className="min-h-screen p-6 md:p-10"><div className="skeleton h-4 w-44 rounded"/><div className="skeleton mt-4 h-14 max-w-xl rounded-xl"/><div className="skeleton mt-9 h-48 rounded-3xl"/><div className="mt-6 grid gap-4 md:grid-cols-2">{[1,2,3,4].map(item=><div key={item} className="skeleton h-32 rounded-2xl"/>)}</div></div>; }
+function LoadingState() { return <div className="portal-page"><div className="skeleton h-4 w-44 rounded"/><div className="skeleton mt-4 h-14 max-w-xl rounded-xl"/><div className="skeleton mt-9 h-48 rounded-3xl"/><div className="mt-6 grid gap-4 md:grid-cols-2">{[1,2,3,4].map(item=><div key={item} className="skeleton h-32 rounded-2xl"/>)}</div></div>; }

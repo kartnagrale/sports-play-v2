@@ -14,6 +14,20 @@ import java.util.Map;
 @RestControllerAdvice
 public class ApiExceptionHandler {
     private static final Logger log = LoggerFactory.getLogger(ApiExceptionHandler.class);
+    @ExceptionHandler(org.springframework.web.multipart.MaxUploadSizeExceededException.class)
+    public ResponseEntity<Map<String,Object>> uploadTooLarge(Exception e){return ResponseEntity.status(413).body(body("Upload exceeds the allowed file size"));}
+    @ExceptionHandler({org.springframework.web.multipart.support.MissingServletRequestPartException.class,
+            org.springframework.web.bind.MissingServletRequestParameterException.class,
+            org.springframework.web.method.annotation.MethodArgumentTypeMismatchException.class,
+            org.springframework.http.converter.HttpMessageNotReadableException.class})
+    public ResponseEntity<Map<String,Object>> malformedRequest(Exception e){return ResponseEntity.badRequest().body(body("Required request fields are missing or invalid"));}
+
+    @ExceptionHandler({org.springframework.dao.OptimisticLockingFailureException.class,
+            org.springframework.dao.DataIntegrityViolationException.class})
+    public ResponseEntity<Map<String,Object>> conflict(Exception error){
+        log.warn("Concurrent or conflicting update rejected type={}",error.getClass().getSimpleName());
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(body("Data changed or conflicts with existing records. Reload and try again."));
+    }
 
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<Map<String,Object>> denied(AccessDeniedException e) {

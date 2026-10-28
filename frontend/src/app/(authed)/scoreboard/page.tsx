@@ -1,47 +1,37 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useState } from "react";
 import { api, StandingDto } from "@/lib/api";
-import { createMatchSocket } from "@/lib/ws";
+import { useChampionship } from "@/lib/championship";
+import { useMatchUpdates } from "@/lib/use-match-updates";
+import { useTenantResource } from "@/lib/use-resource";
+import { ErrorState, SearchInput } from "@/components/ui";
+import { PortalLoading } from "@/components/portal/Portal";
 import { Trophy, RefreshCw, AlertTriangle } from "lucide-react";
 
 export default function ScoreboardPage() {
-  const [rows, setRows] = useState<StandingDto[]>([]);
-  const [penaltiesOn, setPenaltiesOn] = useState(true);
-  const [loading, setLoading] = useState(true);
-
-  const load = useCallback(async (penalties: boolean) => {
-    setLoading(true);
-    try {
-      const { data } = await api.get<StandingDto[]>(`/analytics/standings?penalties=${penalties}`);
-      setRows(data);
-    } catch (err) {
-      console.warn("standings load failed", err);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    load(penaltiesOn);
-  }, [load, penaltiesOn]);
-
-  useEffect(() => {
-    const client = createMatchSocket(() => { load(penaltiesOn); });
-    return () => { client.deactivate(); };
-  }, [load, penaltiesOn]);
+  const cricket = useChampionship(s => s.active?.sportType) === "CRICKET";
+  const [penaltiesOn,setPenaltiesOn]=useState(true);
+  const [search,setSearch]=useState("");
+  const standings=useTenantResource<StandingDto[]>('/analytics/standings?penalties='+penaltiesOn);
+  const rows=(standings.data || []).filter(row=>row.team.name.toLowerCase().includes(search.toLowerCase()));
+  const loading=standings.loading;
+  const load=standings.refresh;
+  const connection = useMatchUpdates(load);
+  if(loading)return <PortalLoading/>;
+  if(standings.error)return <ErrorState description={standings.error} onRetry={load}/>;
 
   const anyPenalty = rows.some((r) => r.penalty > 0);
   const noMatches = rows.every((r) => r.played === 0);
 
   return (
-    <div className="p-10">
+    <div className="portal-page">
       <div className="flex items-end justify-between mb-8 flex-wrap gap-4">
         <div>
-          <div className="label-cap">League Table</div>
+          <div className="label-cap">League Table · {connection === "live" ? "Live updates" : "Reconnecting · periodic refresh active"}</div>
           <h1 className="h-heading text-5xl font-bold mt-1" data-testid="scoreboard-heading">Score Board</h1>
           <p className="text-white/50 mt-2 max-w-xl">
-            Live standings. Ranked by total points → head-to-head → format wins → format difference.
+            Live standings follow the configured championship sport rules.
           </p>
         </div>
         <div className="flex gap-2">
@@ -52,14 +42,15 @@ export default function ScoreboardPage() {
               onChange={(e) => setPenaltiesOn(e.target.checked)}
               className="accent-primary"
             />
-            Apply -2 pt penalties
+            Apply configured participation penalties
           </label>
-          <button className="btn btn-ghost" onClick={() => load(penaltiesOn)} data-testid="refresh-standings">
+          <button className="btn btn-ghost" onClick={() => load()} data-testid="refresh-standings">
             <RefreshCw size={14} /> Refresh
           </button>
         </div>
       </div>
 
+      <SearchInput label="Search standings" placeholder="Find a team…" value={search} onChange={e=>setSearch(e.target.value)} className="mb-5 max-w-sm" />
       {noMatches && (
         <div className="card-elev rounded-2xl p-8 mb-6 flex items-center gap-4">
           <AlertTriangle className="text-warning" />
@@ -73,20 +64,18 @@ export default function ScoreboardPage() {
       )}
 
       <div className="card-elev rounded-2xl overflow-hidden">
-        <table className="w-full text-sm" data-testid="standings-table">
+        <div className="table-scroll" role="region" aria-label="Championship records" tabIndex={0}><table className="w-full text-sm data-table" data-testid="standings-table">
           <thead>
             <tr className="text-left label-cap text-[10px] bg-white/5">
-              <th className="py-4 pl-6 pr-4 w-14">#</th>
-              <th className="py-4 pr-4">Team</th>
-              <th className="py-4 pr-4 text-center">P</th>
-              <th className="py-4 pr-4 text-center">W</th>
-              <th className="py-4 pr-4 text-center">L</th>
-              <th className="py-4 pr-4 text-center">FW</th>
-              <th className="py-4 pr-4 text-center">FL</th>
-              <th className="py-4 pr-4 text-center">Diff</th>
-              <th className="py-4 pr-4 text-center">Base</th>
-              <th className="py-4 pr-4 text-center">Penalty</th>
-              <th className="py-4 pr-6 text-right">Points</th>
+              <th scope="col" className="py-4 pl-6 pr-4 w-14">#</th>
+              <th scope="col" className="py-4 pr-4">Team</th>
+              <th scope="col" className="py-4 pr-4 text-center">P</th>
+              <th scope="col" className="py-4 pr-4 text-center">W</th>
+              <th scope="col" className="py-4 pr-4 text-center">L</th>
+              {cricket ? <th scope="col" className="py-4 pr-4 text-center">NRR</th> : <><th scope="col" className="py-4 pr-4 text-center">FW</th><th scope="col" className="py-4 pr-4 text-center">FL</th><th scope="col" className="py-4 pr-4 text-center">Diff</th></>}
+              <th scope="col" className="py-4 pr-4 text-center">Base</th>
+              <th scope="col" className="py-4 pr-4 text-center">Penalty</th>
+              <th scope="col" className="py-4 pr-6 text-right">Points</th>
             </tr>
           </thead>
           <tbody>
@@ -114,11 +103,7 @@ export default function ScoreboardPage() {
                 <td className="py-4 pr-4 text-center text-white/70">{r.played}</td>
                 <td className="py-4 pr-4 text-center h-heading text-primary">{r.won}</td>
                 <td className="py-4 pr-4 text-center text-white/70">{r.lost}</td>
-                <td className="py-4 pr-4 text-center text-white/70">{r.formatWins}</td>
-                <td className="py-4 pr-4 text-center text-white/70">{r.formatLosses}</td>
-                <td className={`py-4 pr-4 text-center h-heading ${r.formatDiff > 0 ? "text-success" : r.formatDiff < 0 ? "text-danger" : "text-white/50"}`}>
-                  {r.formatDiff > 0 ? "+" : ""}{r.formatDiff}
-                </td>
+                {cricket ? <td className="py-4 pr-4 text-center">{r.netRunRate == null ? "—" : r.netRunRate.toFixed(3)}</td> : <><td className="py-4 pr-4 text-center text-white/70">{r.formatWins}</td><td className="py-4 pr-4 text-center text-white/70">{r.formatLosses}</td><td className="py-4 pr-4 text-center">{r.formatDiff > 0 ? "+" : ""}{r.formatDiff}</td></>}
                 <td className="py-4 pr-4 text-center text-white/60">{r.basePoints}</td>
                 <td className="py-4 pr-4 text-center">
                   {r.penalty > 0 ? (
@@ -133,7 +118,7 @@ export default function ScoreboardPage() {
               </tr>
             ))}
           </tbody>
-        </table>
+        </table></div>
       </div>
 
       {anyPenalty && (

@@ -23,7 +23,7 @@ Open:
 - Backend health: http://localhost:8001/api/health
 - PostgreSQL: localhost:5432, database `sports_play`
 
-The first database start runs `docs/sql/sports-play-complete-schema.sql`. The backend waits for PostgreSQL, validates the complete schema, and seeds local demonstration data. Database data persists in the `sports_play_postgres` Docker volume.
+The first database start runs `docs/sql/sports-play-complete-schema.sql` and the tracked Phase 1 account-security migration. The backend waits for PostgreSQL, validates the complete schema, and seeds local demonstration data. Database data persists in the `sports_play_postgres` Docker volume.
 
 To rebuild application images after pulling changes:
 
@@ -37,16 +37,11 @@ To stop the stack without deleting data:
 docker compose down
 ```
 
-To deliberately reset the local database and seed it again:
-
-```bash
-docker compose down -v
-docker compose up --build
-```
+Retain database volumes when stopping or upgrading. Rehearse reviewed migrations on an isolated copy before changing a populated database.
 
 ## Manual local setup
 
-Requirements: Java 17, Maven 3.8+, Node.js 20+, npm, and PostgreSQL 15+.
+Requirements: Java 17, Maven 3.9.11 (wrapper included), Node.js 22, npm 10, and PostgreSQL 15+.
 
 ### 1. Create and initialize PostgreSQL
 
@@ -57,7 +52,7 @@ createdb -U postgres sports_play
 psql -U postgres -d sports_play -f docs/sql/sports-play-complete-schema.sql
 ```
 
-The application uses Hibernate `validate`; it never creates or alters the application schema at startup.
+The application uses Hibernate `validate`; it never creates or alters the application schema at startup. After the empty bootstrap, run `tools/apply-migrations.ps1` as the database owner. Essential navigation is independent of demo data. See [Phase 1 operations](docs/phase-1/OPERATIONS.md) for populated upgrades, onboarding and security settings.
 
 ### 2. Start the backend
 

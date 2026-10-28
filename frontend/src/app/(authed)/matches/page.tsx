@@ -1,19 +1,23 @@
 "use client";
+import { Dialog } from "@/components/ui/Dialog";
+
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { api, MatchDto, MatchFormatDto, PlayerDto, TeamDto, SquadSummaryDto } from "@/lib/api";
 import {CricketMatchPanel} from "@/components/CricketMatchPanel";
-import { createMatchSocket } from "@/lib/ws";
+import { useMatchUpdates } from "@/lib/use-match-updates";
+import { ErrorState } from "@/components/ui";
 import { useNavigation } from "@/lib/navigation";
 import { useChampionship } from "@/lib/championship";
 import Link from "next/link";
 import { toast } from "sonner";
-import type { Client } from "@stomp/stompjs";
+
 import { Calendar, Circle, Check, ChevronRight, Plus, Minus, Trash2, RefreshCw, Lock } from "lucide-react";
 
 export default function MatchesPage() {
   const role = useNavigation((state) => state.role);
   const active = useChampionship((state) => state.active);
+  const championshipId = active?.id;
   const isAdmin = role === "CHAMPIONSHIP_ADMIN";
   const [matches, setMatches] = useState<MatchDto[]>([]);
   const [teams, setTeams] = useState<TeamDto[]>([]);
@@ -23,57 +27,37 @@ export default function MatchesPage() {
   const [loading, setLoading] = useState(true);
   const [squadsReady, setSquadsReady] = useState(false);
   const selectedIdRef = useRef<string | null>(null);
-  selectedIdRef.current = selectedId;
+  useEffect(() => { selectedIdRef.current = selectedId; }, [selectedId]);
 
+  const [error, setError] = useState("");
+  const pending = useRef<AbortController | null>(null);
   const load = useCallback(async () => {
-    setLoading(true);
+    if (!championshipId) return;
+    pending.current?.abort(); const controller = new AbortController(); pending.current = controller;
+    const base = `/championships/${championshipId}`;
     try {
-      const [m, t, p, squad] = await Promise.all([
-        api.get<MatchDto[]>("/matches"),
-        api.get<TeamDto[]>("/teams"),
-        api.get<PlayerDto[]>("/players"),
-        active ? api.get<SquadSummaryDto>(`/championships/${active.id}/squad-confirmations`) : Promise.resolve({data:null}),
+      const [m,t,p,squad] = await Promise.all([
+        api.get<MatchDto[]>(base+"/matches", { signal:controller.signal }),
+        api.get<TeamDto[]>(base+"/teams", { signal:controller.signal }),
+        api.get<PlayerDto[]>(base+"/players", { signal:controller.signal }),
+        api.get<SquadSummaryDto>(base+"/squad-confirmations", { signal:controller.signal }),
       ]);
-      setMatches(m.data);
-      setTeams(t.data);
-      setPlayers(p.data);
-      setSquadsReady(Boolean(squad.data?.allSquadsLocked));
-      if (!selectedIdRef.current && m.data.length) setSelectedId(m.data[0].id);
-    } catch (err) {
-      console.warn("matches load failed", err);
-    } finally {
-      setLoading(false);
-    }
-  }, [active]);
-
-  useEffect(() => {
-    load();
-  }, [load]);
-
-  // Realtime updates: reload matches whenever a MATCH event arrives.
-  useEffect(() => {
-    const client = createMatchSocket((evt) => {
-      if (evt.type === "FORMAT_RESULT") {
-        toast.success(`Match #${evt.data.matchNumber}: ${evt.data.teamA} vs ${evt.data.teamB} — result updated`);
-      } else if (evt.type === "FORMAT_ASSIGNED") {
-        toast(`Match #${evt.data.matchNumber}: players assigned`);
-      } else if (evt.type === "MATCH_CREATED") {
-        toast.success(`New match created: ${evt.data.teamA} vs ${evt.data.teamB}`);
-      }
-      load();
-    });
-    return () => {
-      client.deactivate();
-    };
-  }, [load]);
-
+      if (controller.signal.aborted) return;
+      setMatches(m.data); setTeams(t.data); setPlayers(p.data); setSquadsReady(squad.data.allSquadsLocked); setError("");
+      if (!m.data.some(match=>match.id===selectedIdRef.current)) setSelectedId(m.data[0]?.id || null);
+    } catch (e: unknown) { if (!controller.signal.aborted) setError((e as {response?:{data?:{message?:string}}})?.response?.data?.message || "Could not load championship matches."); }
+    finally { if (!controller.signal.aborted) setLoading(false); }
+  }, [championshipId]);
+  useEffect(() => { const timer = setTimeout(() => void load(), 0); return () => { clearTimeout(timer); pending.current?.abort(); }; }, [load]);
+  const connection = useMatchUpdates(load);
   const selected = matches.find((m) => m.id === selectedId);
 
   return (
-    <div className="p-10">
+    <div className="portal-page">
+      {error && <ErrorState description={error} onRetry={() => void load()} />}
       <div className="flex items-end justify-between mb-8 flex-wrap gap-4">
         <div>
-          <div className="label-cap">Fixtures</div>
+          <div className="label-cap">Fixtures · {connection === "live" ? "Live updates" : "Reconnecting"}</div>
           <h1 className="h-heading text-5xl font-bold mt-1" data-testid="matches-heading">Matches</h1>
           <p className="text-white/50 mt-2 max-w-xl">League and playoff fixtures with backend-validated sport formats.</p>
         </div>
@@ -347,14 +331,14 @@ function FormatCard({ match, format, players, isAdmin, onChange }: {
             <div className="flex flex-col items-center">
               <div className="label-cap mb-4 text-base" style={{ color: match.teamA.primaryColor }}>{match.teamA.shortCode}</div>
               <div className="flex items-center gap-3 sm:gap-5">
-                <button 
+                <button
                   className="w-10 h-10 sm:w-12 sm:h-12 rounded-full border border-white/20 flex items-center justify-center hover:bg-white/10 transition-colors text-white/70 hover:text-white"
                   onClick={() => handleScoreChange(Math.max(0, sA - 1), sB)}
                 >
                   <Minus size={20} />
                 </button>
                 <div className="stat-num text-5xl sm:text-6xl w-16 sm:w-20 text-center text-white">{sA}</div>
-                <button 
+                <button
                   className="w-10 h-10 sm:w-12 sm:h-12 rounded-full border border-primary/40 bg-primary/10 flex items-center justify-center hover:bg-primary/20 transition-colors text-primary"
                   onClick={() => handleScoreChange(sA + 1, sB)}
                 >
@@ -369,14 +353,14 @@ function FormatCard({ match, format, players, isAdmin, onChange }: {
             <div className="flex flex-col items-center">
               <div className="label-cap mb-4 text-base" style={{ color: match.teamB.primaryColor }}>{match.teamB.shortCode}</div>
               <div className="flex items-center gap-3 sm:gap-5">
-                <button 
+                <button
                   className="w-10 h-10 sm:w-12 sm:h-12 rounded-full border border-white/20 flex items-center justify-center hover:bg-white/10 transition-colors text-white/70 hover:text-white"
                   onClick={() => handleScoreChange(sA, Math.max(0, sB - 1))}
                 >
                   <Minus size={20} />
                 </button>
                 <div className="stat-num text-5xl sm:text-6xl w-16 sm:w-20 text-center text-white">{sB}</div>
-                <button 
+                <button
                   className="w-10 h-10 sm:w-12 sm:h-12 rounded-full border border-primary/40 bg-primary/10 flex items-center justify-center hover:bg-primary/20 transition-colors text-primary"
                   onClick={() => handleScoreChange(sA, sB + 1)}
                 >
@@ -438,37 +422,33 @@ function CreateMatchDialog({ teams, onClose, onCreated }: { teams: TeamDto[]; on
     }
   };
   return (
-    <div className="fixed inset-0 z-50 grid place-items-center bg-black/70 backdrop-blur-sm" onClick={onClose}>
-      <div className="card-elev rounded-2xl p-8 w-full max-w-md" onClick={(e) => e.stopPropagation()}>
-        <div className="label-cap">Fixtures</div>
-        <h3 className="h-heading text-2xl mt-1 mb-4">Schedule Match</h3>
+    <Dialog title="Schedule Match" description="Fixtures" onClose={onClose}>
         <div className="space-y-3">
           <div>
-            <label className="label-cap block mb-1">Team A</label>
-            <select className="input" value={teamA} onChange={(e) => setTeamA(e.target.value)} data-testid="new-team-a">
+            <label htmlFor="new-team-a" className="field-label">Team A</label>
+            <select className="input" value={teamA} onChange={(e) => setTeamA(e.target.value)} id="new-team-a" data-testid="new-team-a">
               {teams.map((t) => <option key={t.id} value={t.id}>{t.name}</option>)}
             </select>
           </div>
           <div>
-            <label className="label-cap block mb-1">Team B</label>
-            <select className="input" value={teamB} onChange={(e) => setTeamB(e.target.value)} data-testid="new-team-b">
+            <label htmlFor="new-team-b" className="field-label">Team B</label>
+            <select className="input" value={teamB} onChange={(e) => setTeamB(e.target.value)} id="new-team-b" data-testid="new-team-b">
               {teams.map((t) => <option key={t.id} value={t.id}>{t.name}</option>)}
             </select>
           </div>
           <div>
-            <label className="label-cap block mb-1">Scheduled at</label>
-            <input type="datetime-local" className="input" value={when} onChange={(e) => setWhen(e.target.value)} data-testid="new-when" />
+            <label htmlFor="new-when" className="field-label">Scheduled at</label>
+            <input type="datetime-local" className="input" value={when} onChange={(e) => setWhen(e.target.value)} id="new-when" data-testid="new-when" />
           </div>
           <div>
-            <label className="label-cap block mb-1">Venue</label>
-            <input className="input" value={venue} onChange={(e) => setVenue(e.target.value)} data-testid="new-venue" />
+            <label htmlFor="new-venue" className="field-label">Venue</label>
+            <input className="input" value={venue} onChange={(e) => setVenue(e.target.value)} id="new-venue" data-testid="new-venue" />
           </div>
           <div className="flex gap-2 pt-2">
             <button className="btn btn-ghost flex-1 justify-center" onClick={onClose}>Cancel</button>
             <button className="btn btn-primary flex-1 justify-center" onClick={submit} data-testid="submit-new-match">Create</button>
           </div>
         </div>
-      </div>
-    </div>
+    </Dialog>
   );
 }

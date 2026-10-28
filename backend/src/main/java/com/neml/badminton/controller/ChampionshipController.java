@@ -21,7 +21,9 @@ public class ChampionshipController {
     public CreateChampionshipResponse create(@Valid @RequestBody CreateChampionshipRequest req) {
         return service.create(req);
     }
-    @GetMapping public List<ChampionshipDto> list(@AuthenticationPrincipal User user) { return service.listFor(user); }
+    @GetMapping
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'USER')")
+    public List<ChampionshipDto> list(@AuthenticationPrincipal User user) { return service.listFor(user); }
     @PostMapping("/join-room") public JoinRoomResponse join(@Valid @RequestBody JoinRoomRequest req) { return service.join(req); }
 
     @GetMapping("/{championshipId}")
@@ -32,6 +34,13 @@ public class ChampionshipController {
     @PreAuthorize("@championshipSecurity.canManage(#championshipId, authentication)")
     public ResponseEntity<Void> assign(@PathVariable UUID championshipId, @Valid @RequestBody AssignRoleRequest req) {
         service.assign(championshipId, req); return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/{championshipId}/accounts/{userId}/setup")
+    @PreAuthorize("hasRole('SUPER_ADMIN') or @championshipSecurity.canManage(#championshipId, authentication)")
+    public com.neml.badminton.service.AccountActivationService.Invitation reissueSetup(@PathVariable UUID championshipId,
+            @PathVariable UUID userId,@AuthenticationPrincipal User actor){
+        return service.reissueSetup(championshipId,userId,actor);
     }
 
     @GetMapping("/{championshipId}/settings")

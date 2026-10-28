@@ -1,28 +1,24 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { api, TeamAnalysisDto, TeamDto, FORMAT_LABEL, FORMAT_SHORT } from "@/lib/api";
+import { useTenantResource } from "@/lib/use-resource";
+import { ErrorState } from "@/components/ui";
+import { PortalLoading } from "@/components/portal/Portal";
 import { TrendingUp, TrendingDown, Target } from "lucide-react";
 
 export default function AnalysisPage() {
-  const [teams, setTeams] = useState<TeamDto[]>([]);
-  const [selected, setSelected] = useState<string | null>(null);
-  const [data, setData] = useState<TeamAnalysisDto | null>(null);
-
-  useEffect(() => {
-    api.get<TeamDto[]>("/teams").then((r) => {
-      setTeams(r.data);
-      if (r.data.length) setSelected(r.data[0].id);
-    });
-  }, []);
-
-  useEffect(() => {
-    if (!selected) return;
-    api.get<TeamAnalysisDto>(`/analytics/team/${selected}`).then((r) => setData(r.data));
-  }, [selected]);
+  const teamRequest=useTenantResource<TeamDto[]>("/teams");
+  const teams=teamRequest.data || [];
+  const [choice,setSelected]=useState<string|null>(null);
+  const selected=choice || teams[0]?.id || null;
+  const analysis=useTenantResource<TeamAnalysisDto>(selected ? '/analytics/team/'+selected : null);
+  const data=analysis.data;
+  if(teamRequest.loading)return <PortalLoading/>;
+  if(teamRequest.error || analysis.error)return <ErrorState description={teamRequest.error || analysis.error} onRetry={()=>{teamRequest.refresh();analysis.refresh();}}/>;
 
   return (
-    <div className="p-10">
+    <div className="portal-page">
       <div className="mb-8">
         <div className="label-cap">Deep dive</div>
         <h1 className="h-heading text-5xl font-bold mt-1" data-testid="team-analysis-heading">Team Analysis</h1>

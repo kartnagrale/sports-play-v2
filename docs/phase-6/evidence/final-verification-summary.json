@@ -1,0 +1,51 @@
+{
+  "status": "Phase 6 complete",
+  "backend": {
+    "skipped": 3,
+    "passed": 96,
+    "evidence": "final-backend-summary.json",
+    "errors": 0,
+    "tests": 99,
+    "failed": 0
+  },
+  "frontend": {
+    "modelTestsPassed": 18,
+    "build": "26 pages passed; unchanged Stage C build reused",
+    "types": "passed",
+    "lint": "passed"
+  },
+  "browser": {
+    "distinctJourneysPassed": 10,
+    "auctionPortfolio": 3,
+    "phase6": 6,
+    "finalDemo": "1 passed; final-demo-browser.log",
+    "preparedDemo": 1,
+    "finalAuction": "3 passed; final-auction-browser.log",
+    "initialAggregate": "8 passed, 1 selector failure; retained final-browser.log"
+  },
+  "workload": {
+    "concurrentViewers": 12,
+    "expectedRejections": 28,
+    "unexpectedErrors": 0,
+    "bidBursts": 4,
+    "players": 500,
+    "evidence": "performance-final-verified.json",
+    "commandsPerBurst": 8,
+    "accepted": 4,
+    "teams": 2
+  },
+  "environment": {
+    "merged": false,
+    "phase7Started": false,
+    "dockerizationStarted": false,
+    "database": "retained",
+    "disposableServices": "stopped",
+    "privateFiles": "ignored",
+    "pushed": false
+  },
+  "blockers": [
+    "CVE-2026-47890",
+    "CVE-2026-47884"
+  ],
+  "productionReady": false
+}

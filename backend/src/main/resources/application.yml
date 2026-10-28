@@ -4,6 +4,10 @@ server:
     context-path: /
 
 spring:
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 6MB
   application:
     name: neml-badminton
   sql:
@@ -41,13 +45,21 @@ spring:
       write-dates-as-timestamps: false
 
 app:
+  certificates:
+    public-enabled: ${CERTIFICATES_PUBLIC_ENABLED:false}
+    public-base-url: ${CERTIFICATES_PUBLIC_BASE_URL:}
+  players:
+    photo:
+      directory: ${PLAYER_PHOTO_DIR:./var/player-photos}
   auth:
     cookie-secure: ${AUTH_COOKIE_SECURE:true}
+    activation-lifetime: ${ACTIVATION_LIFETIME:PT30M}
+    rate-limit-attempts: ${AUTH_RATE_LIMIT_ATTEMPTS:300}
   seed:
     enabled: ${DATA_SEED_ENABLED:false}
   jwt:
     secret: ${JWT_SECRET}
-    expiration-ms: 86400000
+    expiration-ms: ${JWT_EXPIRATION_MS:28800000}
   cors:
     allowed-origins: ${CORS_ORIGINS:http://localhost:3000}
 logging:

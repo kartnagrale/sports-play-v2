@@ -1,0 +1,20 @@
+{
+  "batchId": "d78ae1d0-f7d3-4ebd-adc6-32b7a7006644",
+  "count": 2,
+  "names": [
+    "PN-8A4FA2E9E3684D89AEB2759AF215199B.pdf",
+    "PN-9026BC28AC4F405997DB7F92BA24990B.pdf"
+  ],
+  "zipBytes": 28785,
+  "repeatedDownloadIdentical": true,
+  "recipients": [
+    {
+      "name": "Northside Aces",
+      "reference": "PN-8A4FA2E9E3684D89AEB2759AF215199B"
+    },
+    {
+      "name": "Coastal Blazers",
+      "reference": "PN-9026BC28AC4F405997DB7F92BA24990B"
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] ----------------------< com.neml:sports-platform >----------------------
+[INFO] Building universal-sports-platform 0.0.1-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- dependency:3.8.1:tree (default-cli) @ sports-platform ---
+[INFO] Wrote dependency tree to: C:\Users\karti\.codex\worktrees\play-neml-upgrade\sports-play-main\docs\phase-1\evidence\backend-dependency-tree.txt
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  5.148 s
+[INFO] Finished at: 2026-10-27T19:44:28+05:30
+[INFO] ------------------------------------------------------------------------

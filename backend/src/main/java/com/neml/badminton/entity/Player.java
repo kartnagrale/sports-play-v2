@@ -53,4 +53,11 @@ public class Player {
     private String skillLevel;
 
     private Integer auctionOrder;
+
+    @Column(length = 64)
+    private String playerReference;
+    private UUID photoKey;
+    private Integer photoSize;
+    private java.time.Instant photoUpdatedAt;
+    private UUID photoUpdatedBy;
 }

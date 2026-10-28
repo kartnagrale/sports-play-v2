@@ -41,7 +41,7 @@ export const useAuth = create<AuthState>((set) => ({
       sessionStorage.removeItem("sports_viewer_championship");
     }
     // Server sets the httpOnly cookie on success; we still get the user info back.
-    const { data } = await api.post<{ token: string; user: UserInfo }>("/auth/login", { email, password });
+    const { data } = await api.post<{ user: UserInfo }>("/auth/login", { email, password });
     set({ user: data.user });
     return data.user;
   },

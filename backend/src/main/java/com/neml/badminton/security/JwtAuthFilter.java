@@ -2,96 +2,35 @@ package com.neml.badminton.security;
 
 import com.neml.badminton.config.RequestLoggingFilter;
 import com.neml.badminton.entity.User;
-import com.neml.badminton.repository.UserRepository;
-import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.*;
+import jakarta.servlet.http.*;
 import org.springframework.lang.NonNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-
 import java.io.IOException;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
 
 @Component
 public class JwtAuthFilter extends OncePerRequestFilter {
-
-    public static final String COOKIE_NAME = "neml_auth";
-    private static final Logger log = LoggerFactory.getLogger(JwtAuthFilter.class);
-
-    private final JwtService jwtService;
-    private final UserRepository userRepository;
-
-    public JwtAuthFilter(JwtService jwtService, UserRepository userRepository) {
-        this.jwtService = jwtService;
-        this.userRepository = userRepository;
-    }
-
-    private String extractToken(HttpServletRequest request) {
-        String header = request.getHeader("Authorization");
-        if (header != null && header.startsWith("Bearer ")) {
-            return header.substring(7);
-        }
-        if (request.getCookies() != null) {
-            for (Cookie c : request.getCookies()) {
-                if (COOKIE_NAME.equals(c.getName())) {
-                    return c.getValue();
-                }
-            }
-        }
-        return null;
-    }
-
-    @Override
-    protected void doFilterInternal(@NonNull HttpServletRequest request,
-                                    @NonNull HttpServletResponse response,
-                                    @NonNull FilterChain filterChain) throws ServletException, IOException {
-        String token = extractToken(request);
-        if (token != null) {
+    public static final String COOKIE_NAME="neml_auth";
+    private final TokenAuthenticationService tokens;
+    public JwtAuthFilter(TokenAuthenticationService tokens){this.tokens=tokens;}
+    @Override protected void doFilterInternal(@NonNull HttpServletRequest request,
+            @NonNull HttpServletResponse response,@NonNull FilterChain chain) throws ServletException,IOException {
+        String token=null,header=request.getHeader("Authorization");
+        if(header!=null&&header.startsWith("Bearer "))token=header.substring(7);
+        else if(request.getCookies()!=null)for(Cookie cookie:request.getCookies())
+            if(COOKIE_NAME.equals(cookie.getName())){token=cookie.getValue();break;}
+        if(token!=null){
             try {
-                Claims claims = jwtService.parse(token);
-                if ("viewer".equals(claims.get("token_type", String.class))) {
-                    UUID championshipId = UUID.fromString(claims.get("championship_id", String.class));
-                    UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
-                            new ViewerPrincipal(championshipId), null,
-                            List.of(new SimpleGrantedAuthority("ROLE_VIEWER"),
-                                    new SimpleGrantedAuthority("CHAMPIONSHIP_" + championshipId)));
-                    auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                    SecurityContextHolder.getContext().setAuthentication(auth);
-                    request.setAttribute(RequestLoggingFilter.ACTOR_ATTRIBUTE, "viewer:" + championshipId);
-                    filterChain.doFilter(request, response);
-                    return;
-                }
-                String userId = claims.getSubject();
-                Optional<User> userOpt = userRepository.findById(UUID.fromString(userId));
-                if (userOpt.isPresent() && SecurityContextHolder.getContext().getAuthentication() == null) {
-                    User user = userOpt.get();
-                    UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
-                            user, null,
-                            List.of(new SimpleGrantedAuthority("ROLE_" + user.getRole().name()))
-                    );
-                    auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                    SecurityContextHolder.getContext().setAuthentication(auth);
-                    request.setAttribute(RequestLoggingFilter.ACTOR_ATTRIBUTE, "user:" + user.getId());
-                } else if (userOpt.isEmpty()) {
-                    log.debug("JWT subject no longer identifies an existing user");
-                }
-            } catch (JwtException | IllegalArgumentException exception) {
-                log.debug("JWT rejected type={}", exception.getClass().getSimpleName());
-            }
+                var auth=tokens.authenticate(token);
+                SecurityContextHolder.getContext().setAuthentication(auth);
+                Object principal=auth.getPrincipal();
+                request.setAttribute(RequestLoggingFilter.ACTOR_ATTRIBUTE,principal instanceof User user?
+                        "user:"+user.getId():"viewer:"+((ViewerPrincipal)principal).championshipId());
+            }catch(JwtException|IllegalArgumentException e){SecurityContextHolder.clearContext();}
         }
-        filterChain.doFilter(request, response);
+        chain.doFilter(request,response);
     }
 }

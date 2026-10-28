@@ -1,0 +1,49 @@
+
+Running 9 tests using 1 worker
+
+(node:13804) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 1 e2e\phase3.spec.ts:37:5 › multi-client live arena: ranks, rapid bids, undo, committed sale, duplicates and reconnect (23.6s)
+  ok 2 e2e\phase3.spec.ts:82:5 › complete team bids survive the 50-row history window; scoped reads and commands remain protected (6.8s)
+  x  3 e2e\phase3.spec.ts:95:5 › portfolio and operational pages: real metrics, filters, rosters and responsive presentation (2.1s)
+(node:4472) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 4 e2e\phase6.spec.ts:51:5 › Approved results, actual wizard PDF, download, history, revoke and reissue (11.7s)
+  ok 5 e2e\phase6.spec.ts:63:5 › Winner, runner-up and individual participation APIs enforce eligibility and tenant permissions (723ms)
+  ok 6 e2e\phase6.spec.ts:75:5 › Responsive themes, keyboard dialog navigation and private PDF access (2.7s)
+  ok 7 e2e\phase6.spec.ts:81:5 › Bulk team participation issues unique PDFs and public verification tracks revocation (5.5s)
+  ok 8 e2e\phase6.spec.ts:109:5 › All four portals expose authorized analytics with responsive accessible meters (16.1s)
+  ok 9 e2e\phase6.spec.ts:119:5 › Match reconnect reconciles a missed score and tenant switches replace the subscription (6.8s)
+
+
+  1) e2e\phase3.spec.ts:95:5 › portfolio and operational pages: real metrics, filters, rosters and responsive presentation
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('navigation')
+    Expected: visible
+    Error: strict mode violation: getByRole('navigation') resolved to 2 elements:
+        1) <nav aria-label="Role-based navigation" class="flex-1 overflow-y-auto px-3 py-2">…</nav> aka getByRole('navigation', { name: 'Role-based navigation' })
+        2) <nav aria-label="Pagination" class="flex items-center justify-end gap-3 p-4 text-sm">…</nav> aka getByRole('navigation', { name: 'Pagination' })
+
+    Call log:
+      - Expect "toBeVisible" getByRole('navigation') with timeout 5000ms
+      - waiting for getByRole('navigation')
+
+
+       95 | test("portfolio and operational pages: real metrics, filters, rosters and responsive presentation",async({page})=>{
+       96 |   const errors=watch(page);
+    >  97 |   await page.goto("/login");await page.getByLabel("Email",{exact:true}).fill(process.env.APP_BOOTSTRAP_EMAIL!);await page.getByLabel("Password",{exact:true}).fill(process.env.APP_BOOTSTRAP_PASSWORD!);await page.getByTestId("login-submit").click();await expect(page.getByRole("navigation")).toBeVisible();await page.goto("/admin/championships");await expect(page.getByRole("heading",{name:"Every championship. One view."})).toBeVisible();
+          |                                                                                                                                                                                                                                                                                                   ^
+       98 |   await page.getByRole("searchbox",{name:"Search championships"}).fill("NEML Championship Arena");await expect(page.getByRole("button").filter({hasText:"NEML Championship Arena"})).toHaveCount(1);
+       99 |   for(const [width,height,size] of [[1440,960,"desktop"],[768,1024,"tablet"],[375,812,"mobile"]] as const){await page.setViewportSize({width,height});for(const theme of ["light","dark"]){if(await page.locator("html").evaluate(el=>el.classList.contains("dark"))!==(theme==="dark"))await page.getByRole("button",{name:"Toggle theme",exact:true}).click();expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);await capture(page,`portfolio-${size}-${theme}`);}}
+      100 |   await page.getByRole("button").filter({hasText:"NEML Championship Arena"}).click();await expect(page.getByRole("dialog",{name:"NEML Championship Arena"})).toBeVisible();await page.keyboard.press("Escape");
+        at C:\Users\karti\.codex\worktrees\play-neml-upgrade\sports-play-main\frontend\e2e\phase3.spec.ts:97:291
+
+    Error Context: test-results\phase3-portfolio-and-opera-62184-and-responsive-presentation\error-context.md
+
+    Error Context: test-results\phase3-portfolio-and-opera-62184-and-responsive-presentation\error-context.md
+
+  1 failed
+    e2e\phase3.spec.ts:95:5 › portfolio and operational pages: real metrics, filters, rosters and responsive presentation
+  8 passed (1.5m)

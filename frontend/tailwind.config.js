@@ -1,53 +1,21 @@
 /** @type {import('tailwindcss').Config} */
+const token = name => `rgb(var(--${name}-rgb) / <alpha-value>)`;
 module.exports = {
   darkMode: 'class',
-  content: [
-    "./src/**/*.{js,ts,jsx,tsx,mdx}",
-  ],
-  theme: {
-    extend: {
-      colors: {
-        white: "rgb(var(--color-fg) / <alpha-value>)",
-        bg: {
-          DEFAULT: "var(--color-bg)",
-          surface: "var(--color-surface)",
-          elev: "var(--color-elev)",
-        },
-        primary: {
-          DEFAULT: "var(--color-primary)",
-          hover: "var(--color-primary-hover)",
-        },
-        secondary: "var(--color-secondary)",
-        danger: "var(--color-danger)",
-        success: "var(--color-success)",
-        warning: "var(--color-warning)",
-      },
-      fontFamily: {
-        heading: ["Oswald", "sans-serif"],
-        body: ["Outfit", "sans-serif"],
-        mono: ["JetBrains Mono", "monospace"],
-      },
-      dropShadow: {
-        glow: "0 0 12px rgba(211, 255, 36, 0.45)",
-        cyan: "0 0 12px rgba(0, 240, 255, 0.45)",
-        danger: "0 0 12px rgba(255, 59, 48, 0.45)",
-      },
-      animation: {
-        "pulse-slow": "pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite",
-        "fade-in": "fadeIn 0.5s ease-out",
-        "slide-up": "slideUp 0.4s ease-out",
-      },
-      keyframes: {
-        fadeIn: {
-          "0%": { opacity: 0 },
-          "100%": { opacity: 1 },
-        },
-        slideUp: {
-          "0%": { opacity: 0, transform: "translateY(20px)" },
-          "100%": { opacity: 1, transform: "translateY(0)" },
-        },
-      },
+  content: ['./src/**/*.{js,ts,jsx,tsx,mdx}'],
+  safelist: ['motion-expand', 'motion-success', 'motion-error', 'motion-celebrate', 'motion-enter', 'motion-highlight'],
+  theme: { extend: {
+    colors: {
+      white: 'rgb(var(--color-fg) / <alpha-value>)',
+      bg: { DEFAULT: token('bg'), surface: token('surface'), elev: token('elev') },
+      primary: { DEFAULT: token('primary'), hover: 'var(--color-primary-hover)' },
+      secondary: token('secondary'), danger: token('danger'), success: token('success'), warning: token('warning'), info: token('info'), live: token('live'),
+      muted: 'var(--text-muted)', foreground: 'var(--text-main)', border: 'var(--color-border)',
     },
-  },
+    fontFamily: { heading: ['var(--font-outfit)','sans-serif'], body: ['var(--font-outfit)','sans-serif'], mono: ['var(--font-jetbrains)','monospace'] },
+    borderRadius: { card: 'var(--radius-lg)' },
+    boxShadow: { card: 'var(--shadow-card)' },
+    animation: { 'pulse-slow': 'pulse 2s ease-in-out infinite', 'fade-in': 'motion-enter var(--motion-base) var(--ease-out)', 'slide-up': 'motion-enter var(--motion-base) var(--ease-out)' },
+  } },
   plugins: [],
 };

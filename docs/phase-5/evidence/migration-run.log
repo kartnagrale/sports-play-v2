@@ -1,0 +1,8 @@
+psql:/opt/play-neml-migrations/phase1-apply.psql:8: NOTICE:  relation "schema_migrations" already exists, skipping
+psql:/opt/play-neml-migrations/phase1-apply.psql:8: NOTICE:  relation "schema_migrations" already exists, skipping
+psql:/opt/play-neml-migrations/phase1-apply.psql:8: NOTICE:  relation "schema_migrations" already exists, skipping
+psql:/opt/play-neml-migrations/phase1-apply.psql:8: NOTICE:  relation "schema_migrations" already exists, skipping
+psql:/opt/play-neml-migrations/phase1-apply.psql:8: NOTICE:  relation "schema_migrations" already exists, skipping
+psql:/opt/play-neml-migrations/phase1-apply.psql:8: NOTICE:  relation "schema_migrations" already exists, skipping
+psql:/opt/play-neml-migrations/phase1-apply.psql:8: NOTICE:  relation "schema_migrations" already exists, skipping
+Migration verification passed in disposable database phase5_upgrade_bc51d8b4

@@ -1,0 +1,12 @@
+BEGIN
+ pg_advisory_xact_lock
+-----------------------
+
+(1 row)
+
+CREATE TABLE
+psql:/opt/play-neml-migrations/phase1-apply.psql:8: NOTICE:  relation "schema_migrations" already exists, skipping
+INSERT 0 1
+INSERT 0 1
+INSERT 0 1
+COMMIT

@@ -24,7 +24,7 @@ java -version # Verify installation
 ### B. Node.js (For Next.js Frontend)
 We recommend installing Node v20 via NodeSource.
 ```bash
-curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+curl -fsSL https://deb.nodesource.com/setup_22.x | sudo -E bash -
 sudo apt install -y nodejs
 node -v # Verify installation
 ```
@@ -41,7 +41,7 @@ Install the database and set it up to start on boot.
 sudo apt install postgresql postgresql-contrib -y
 sudo systemctl enable --now postgresql
 ```
-For a new installation, create an empty database and run `docs/sql/sports-play-complete-schema.sql` once as the database owner. For an existing company database, request connection details and approved `play_neml` permissions from the DBA and apply only the reviewed dated migrations.
+For a new installation, create an empty database and run `docs/sql/sports-play-complete-schema.sql` once as the database owner. For an existing company database, request connection details and approved `play_neml` permissions from the DBA and apply only reviewed incremental migrations through `tools/apply-migrations.ps1`. Apply the Phase 1 account migration before starting this application version. See [Phase 1 operations](docs/phase-1/OPERATIONS.md); do not auto-baseline an unknown populated schema.
 
 ### E. Nginx (Reverse Proxy)
 Nginx is used to route web traffic on port 80/443 to your Next.js frontend and Spring Boot backend.

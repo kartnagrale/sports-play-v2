@@ -1,0 +1,19 @@
+-- Called by the owner-run PowerShell wrapper or the empty-database Docker initializer.
+-- Required variables: version, migration_file (relative to this driver), checksum.
+\set ON_ERROR_STOP on
+BEGIN;
+SELECT pg_advisory_xact_lock(2026102701);
+CREATE TABLE IF NOT EXISTS play_neml.schema_migrations (
+ version varchar(100) PRIMARY KEY, checksum varchar(64) NOT NULL, applied_at timestamptz NOT NULL DEFAULT now()
+);
+SELECT NOT EXISTS(SELECT 1 FROM play_neml.schema_migrations WHERE version=:'version') AS needs_apply,
+ COALESCE((SELECT checksum=:'checksum' FROM play_neml.schema_migrations WHERE version=:'version'),true) AS valid_checksum \gset
+\if :valid_checksum
+\else
+ DO $$ BEGIN RAISE EXCEPTION 'Migration checksum mismatch. Stop and review schema history.'; END $$;
+\endif
+\if :needs_apply
+ \ir :migration_file
+ INSERT INTO play_neml.schema_migrations(version,checksum) VALUES (:'version',:'checksum');
+\endif
+COMMIT;

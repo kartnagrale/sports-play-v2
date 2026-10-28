@@ -1,0 +1,55 @@
+Standard Commons Logging discovery in action with spring-jcl: please remove commons-logging.jar from classpath in order to avoid potential conflicts
+21:25:32.500 [main] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [com.neml.badminton.service.DashboardAnalyticsDatabaseTest]: DashboardAnalyticsDatabaseTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+21:25:33.330 [main] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration com.neml.badminton.NemlBadmintonApplication for test class com.neml.badminton.service.DashboardAnalyticsDatabaseTest
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::               (v3.5.16)
+
+2026-10-28T21:25:35.059+05:30 INFO  [background-preinit] [traceId=none] o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.3.Final
+2026-10-28T21:25:35.212+05:30 INFO  [main] [traceId=none] c.n.b.s.DashboardAnalyticsDatabaseTest - Starting DashboardAnalyticsDatabaseTest using Java 17.0.20.1 with PID 9128 (started by karti in C:\Users\karti\.codex\worktrees\play-neml-upgrade\sports-play-main\backend)
+2026-10-28T21:25:35.212+05:30 INFO  [main] [traceId=none] c.n.b.s.DashboardAnalyticsDatabaseTest - No active profile set, falling back to 1 default profile: "default"
+2026-10-28T21:25:38.722+05:30 INFO  [main] [traceId=none] o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-10-28T21:25:39.159+05:30 INFO  [main] [traceId=none] o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 408 ms. Found 32 JPA repository interfaces.
+2026-10-28T21:25:41.139+05:30 INFO  [main] [traceId=none] o.hibernate.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-10-28T21:25:41.499+05:30 INFO  [main] [traceId=none] org.hibernate.Version - HHH000412: Hibernate ORM core version 6.6.53.Final
+2026-10-28T21:25:41.690+05:30 INFO  [main] [traceId=none] o.h.c.internal.RegionFactoryInitiator - HHH000026: Second-level cache disabled
+2026-10-28T21:25:43.080+05:30 INFO  [main] [traceId=none] o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-10-28T21:25:43.181+05:30 INFO  [main] [traceId=none] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2026-10-28T21:25:43.637+05:30 INFO  [main] [traceId=none] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@62c53685
+2026-10-28T21:25:43.641+05:30 INFO  [main] [traceId=none] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2026-10-28T21:25:43.809+05:30 INFO  [main] [traceId=none] org.hibernate.orm.connections.pooling - HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 15.19
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-10-28T21:25:47.927+05:30 INFO  [main] [traceId=none] o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-10-28T21:25:48.061+05:30 INFO  [main] [traceId=none] o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-10-28T21:25:48.788+05:30 INFO  [main] [traceId=none] o.s.d.j.r.query.QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-10-28T21:25:53.843+05:30 INFO  [main] [traceId=none] o.s.s.c.a.a.c.InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer - Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
+2026-10-28T21:25:56.132+05:30 INFO  [main] [traceId=none] o.s.b.t.m.w.SpringBootMockServletContext - Initializing Spring TestDispatcherServlet ''
+2026-10-28T21:25:56.132+05:30 INFO  [main] [traceId=none] o.s.t.web.servlet.TestDispatcherServlet - Initializing Servlet ''
+2026-10-28T21:25:56.136+05:30 INFO  [main] [traceId=none] o.s.t.web.servlet.TestDispatcherServlet - Completed initialization in 4 ms
+2026-10-28T21:25:56.200+05:30 INFO  [main] [traceId=none] o.s.m.s.b.SimpleBrokerMessageHandler - Starting...
+2026-10-28T21:25:56.202+05:30 INFO  [main] [traceId=none] o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=true, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@4b8dbce4]]
+2026-10-28T21:25:56.204+05:30 INFO  [main] [traceId=none] o.s.m.s.b.SimpleBrokerMessageHandler - Started.
+2026-10-28T21:25:56.232+05:30 INFO  [main] [traceId=none] c.n.b.s.DashboardAnalyticsDatabaseTest - Started DashboardAnalyticsDatabaseTest in 22.414 seconds (process running for 26.445)
+2026-10-28T21:25:57.004+05:30 INFO  [main] [traceId=none] c.n.b.config.ApplicationLifecycleLogger - Sports-Play ready profiles=default port=8001 logFile=logs/sports-play.log
+2026-10-28T21:25:57.008+05:30 INFO  [main] [traceId=none] c.n.b.config.ApplicationLifecycleLogger - Database ready product=PostgreSQL version=15.19 url=jdbc:postgresql://127.0.0.1:55446/phase6 schema=play_neml
+OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+2026-10-28T21:25:58.787+05:30 INFO  [main] [traceId=2e621ad5-bea0-43c2-aebe-7a91b8d43d0f] c.n.b.config.RequestLoggingFilter - Request completed method=GET path=/api/championships/8772bd9b-d542-4737-b1dc-c639da0ebec6/analytics/summary status=401 actor=anonymous durationMs=86
+2026-10-28T21:25:59.191+05:30 INFO  [main] [traceId=18c24b34-1e35-4ca4-aabc-3007b5c6e036] c.n.b.config.RequestLoggingFilter - Request completed method=GET path=/api/championships/8772bd9b-d542-4737-b1dc-c639da0ebec6/analytics/summary status=200 actor=anonymous durationMs=364
+2026-10-28T21:25:59.353+05:30 INFO  [main] [traceId=131369f3-bc38-4b16-8335-d3d779c2c423] c.n.b.config.RequestLoggingFilter - Request completed method=GET path=/api/championships/8772bd9b-d542-4737-b1dc-c639da0ebec6/analytics/summary status=200 actor=anonymous durationMs=12
+2026-10-28T21:25:59.376+05:30 WARN  [main] [traceId=4b39f7a3-db7f-4e54-96d4-be2bc096a3b0] c.n.b.controller.ApiExceptionHandler - Request access denied
+2026-10-28T21:25:59.386+05:30 INFO  [main] [traceId=4b39f7a3-db7f-4e54-96d4-be2bc096a3b0] c.n.b.config.RequestLoggingFilter - Request completed method=GET path=/api/championships/6d15478c-928e-4122-9c9b-8461c2abad07/analytics/summary status=403 actor=anonymous durationMs=29
+2026-10-28T21:25:59.395+05:30 WARN  [main] [traceId=bddb3586-3c63-4f1b-a4ec-991d22ba5fb2] c.n.b.controller.ApiExceptionHandler - Request access denied
+2026-10-28T21:25:59.397+05:30 INFO  [main] [traceId=bddb3586-3c63-4f1b-a4ec-991d22ba5fb2] c.n.b.config.RequestLoggingFilter - Request completed method=GET path=/api/platform/analytics status=403 actor=anonymous durationMs=7
+2026-10-28T21:25:59.426+05:30 INFO  [main] [traceId=7dc10750-e026-4697-b31c-13c2f5fc7689] c.n.b.config.RequestLoggingFilter - Request completed method=GET path=/api/platform/analytics status=200 actor=anonymous durationMs=27

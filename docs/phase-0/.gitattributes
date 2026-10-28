@@ -1,0 +1,4 @@
+# Preserve original evidence bytes so SHA256SUMS survives checkout on any OS.
+evidence/*.log -text
+evidence/*.json -text
+evidence/backend-dependency-tree.txt -text

@@ -1,0 +1,2 @@
+Synthetic archive certificates and a separate interactive live arena are ready. Credentials remain only in ignored tmp/phase6-demo-access.json.
+{"archiveCertificates":4,"liveArenaPrepared":true,"privateAccountFile":"tmp/phase6-demo-access.json"}

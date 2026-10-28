@@ -32,14 +32,14 @@ public class ChampionshipDtos {
                                            @Pattern(regexp = "^[0-9+() -]{7,20}$") @NotBlank String captainMobile) {}
     public record ProvisionedTeamDto(UUID teamId, String teamName, String shortCode,
                                     UUID captainUserId, String captainName, String captainEmail,
-                                    String captainMobile, String temporaryPassword, boolean messageQueued) {}
+                                    String captainMobile, String setupPath, java.time.Instant setupExpiresAt, boolean messageQueued) {}
     public record JoinRoomRequest(@NotBlank String roomCode, String passcode) {}
     public record AssignRoleRequest(@Email @NotBlank String email, @NotNull ChampionshipRoleType role,
                                     UUID teamId) {}
     public record ChampionshipDto(UUID id, String name, String sportType, String roomCode,
                                   Boolean isPublic, ChampionshipStatus status,
                                   ChampionshipPhase lifecyclePhase, UUID defaultAuctionId) {}
-    public record ProvisionedAdminDto(UUID userId, String fullName, String email, String mobile, String temporaryPassword,
+    public record ProvisionedAdminDto(UUID userId, String fullName, String email, String mobile, String setupPath, java.time.Instant setupExpiresAt,
                                       boolean messageQueued) {}
     public record CreateChampionshipResponse(ChampionshipDto championship, ProvisionedAdminDto admin) {}
     public record JoinRoomResponse(String token, ChampionshipDto championship) {}

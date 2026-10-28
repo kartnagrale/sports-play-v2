@@ -1,0 +1,21 @@
+{
+  "sport": "BADMINTON",
+  "championshipId": "8ae2efdb-a924-4ae8-9078-3cccc706bfc9",
+  "playerImportCount": 2,
+  "auctionPurchases": 2,
+  "lockedSquads": 2,
+  "completedFixtures": 2,
+  "finalId": "46693296-cbb9-4373-a37f-208140aca84c",
+  "champion": {
+    "id": "0bda6429-7d51-406e-9c85-aef78c4bdbea",
+    "name": "Coastal Blazers",
+    "shortCode": "BLZ",
+    "primaryColor": "#7CFF6B"
+  },
+  "runnerUp": {
+    "id": "fab3a4ab-6f60-4f36-80ab-7035fa65ae0f",
+    "name": "Northside Aces",
+    "shortCode": "ACE",
+    "primaryColor": "#7CFF6B"
+  }
+}

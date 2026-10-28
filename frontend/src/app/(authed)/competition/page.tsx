@@ -88,23 +88,11 @@ export default function CompetitionPage() {
     useState<AuctionConfiguration | null>(null);
   const [quotas, setQuotas] = useState<QuotaRuleDto[]>([]);
 
-  const load = useCallback(async () => {
+  const load = useCallback( () => {
     if (!active) return;
-    setLoading(true);
-    try {
-      const base = `/championships/${active.id}`;
-      const sport =
-        active.sportType.toLowerCase() === "cricket" ? "cricket" : "badminton";
-      const [
-        competition,
-        capabilities,
-        history,
-        workspaceResponse,
-        sportResponse,
-        brandingResponse,
-        auctionResponse,
-        quotaResponse,
-      ] = await Promise.all([
+    const base = `/championships/${active.id}`;
+    const sport=active.sportType.toLowerCase()==="cricket"?"cricket":"badminton";
+    return Promise.all([
         api.get<CompetitionOverviewDto>(`${base}/competition`),
         api.get<DashboardCapabilitiesDto>(`${base}/dashboard`),
         api.get<CompetitionAuditDto[]>(`${base}/competition/audit`),
@@ -119,8 +107,17 @@ export default function CompetitionPage() {
           `${base}/administrative-configuration/auction`,
         ),
         api.get<QuotaRuleDto[]>(`${base}/sport-configuration/quotas`),
-      ]);
-      setOverview(competition.data);
+      ]).then(([
+        competition,
+        capabilities,
+        history,
+        workspaceResponse,
+        sportResponse,
+        brandingResponse,
+        auctionResponse,
+        quotaResponse,
+      ]) => {
+setOverview(competition.data);
       setDashboard(capabilities.data);
       setAudit(history.data);
       setWorkspace(workspaceResponse.data);
@@ -163,14 +160,17 @@ export default function CompetitionPage() {
         simultaneousFixturesAllowed: c.simultaneousFixturesAllowed,
         teamMayPlayTwicePerDay: c.teamMayPlayTwicePerDay,
       });
-    } catch (error: any) {
+
+}).catch((error: any) => {
+
       toast.error(
         error?.response?.data?.message ||
           "Unable to load competition management",
       );
-    } finally {
+
+}).finally(() => {
       setLoading(false);
-    }
+    });
   }, [active]);
   useEffect(() => {
     load();
@@ -307,7 +307,7 @@ export default function CompetitionPage() {
     );
   if (!overview || !form || !dashboard)
     return (
-      <div className="p-10">
+      <div className="portal-page">
         <div className="card-elev rounded-2xl p-10 text-center text-white/50">
           Competition data is unavailable.
         </div>

@@ -1,0 +1,10 @@
+BEGIN
+ pg_advisory_xact_lock 
+-----------------------
+ 
+(1 row)
+
+CREATE TABLE
+psql:docs/sql/phase1-apply.psql:8: NOTICE:  relation "schema_migrations" already exists, skipping
+psql:docs/sql/phase1-apply.psql:13: ERROR:  Migration checksum mismatch. Stop and review schema history.
+CONTEXT:  PL/pgSQL function inline_code_block line 1 at RAISE

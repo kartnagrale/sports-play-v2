@@ -1,0 +1,1037 @@
+{
+  "scannedAt": "2026-10-27T03:52:41.409Z",
+  "source": "https://api.osv.dev/v1/querybatch",
+  "scope": "Resolved Maven compile/runtime/test dependency tree; excludes build plugins, JDK and container OS; package matches are not exploitability proof",
+  "packages": [
+    {
+      "name": "org.springframework.boot:spring-boot-starter-web",
+      "version": "3.2.5",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.springframework.boot:spring-boot-starter",
+      "version": "3.2.5",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.springframework.boot:spring-boot",
+      "version": "3.2.5",
+      "scope": "compile",
+      "vulnerabilities": [
+        {
+          "id": "GHSA-rc42-6c7j-7h5r",
+          "modified": "2026-09-10T03:50:24.246697Z"
+        }
+      ]
+    },
+    {
+      "name": "org.springframework.boot:spring-boot-autoconfigure",
+      "version": "3.2.5",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.springframework.boot:spring-boot-starter-logging",
+      "version": "3.2.5",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "ch.qos.logback:logback-classic",
+      "version": "1.4.14",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "ch.qos.logback:logback-core",
+      "version": "1.4.14",
+      "scope": "compile",
+      "vulnerabilities": [
+        {
+          "id": "GHSA-25qh-j22f-pwp8",
+          "modified": "2026-09-10T03:50:29.081250Z"
+        },
+        {
+          "id": "GHSA-6v67-2wr5-gvf4",
+          "modified": "2026-09-10T03:50:21.323991Z"
+        },
+        {
+          "id": "GHSA-jhq6-gfmj-v8fx",
+          "modified": "2026-09-10T03:50:50.074688Z"
+        },
+        {
+          "id": "GHSA-p47f-322f-whfh",
+          "modified": "2026-09-10T03:50:47.152421Z"
+        },
+        {
+          "id": "GHSA-pr98-23f8-jwxv",
+          "modified": "2026-09-10T03:50:21.783184Z"
+        },
+        {
+          "id": "GHSA-qqpg-mvqg-649v",
+          "modified": "2026-09-10T03:50:33.725359Z"
+        }
+      ]
+    },
+    {
+      "name": "org.apache.logging.log4j:log4j-to-slf4j",
+      "version": "2.21.1",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.apache.logging.log4j:log4j-api",
+      "version": "2.21.1",
+      "scope": "compile",
+      "vulnerabilities": [
+        {
+          "id": "GHSA-qv9r-c865-cp47",
+          "modified": "2026-09-10T03:50:52.972700Z"
+        }
+      ]
+    },
+    {
+      "name": "org.slf4j:jul-to-slf4j",
+      "version": "2.0.13",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "jakarta.annotation:jakarta.annotation-api",
+      "version": "2.1.1",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.yaml:snakeyaml",
+      "version": "2.2",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.springframework.boot:spring-boot-starter-json",
+      "version": "3.2.5",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "com.fasterxml.jackson.datatype:jackson-datatype-jdk8",
+      "version": "2.15.4",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "com.fasterxml.jackson.datatype:jackson-datatype-jsr310",
+      "version": "2.15.4",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "com.fasterxml.jackson.module:jackson-module-parameter-names",
+      "version": "2.15.4",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.springframework.boot:spring-boot-starter-tomcat",
+      "version": "3.2.5",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.apache.tomcat.embed:tomcat-embed-core",
+      "version": "10.1.20",
+      "scope": "compile",
+      "vulnerabilities": [
+        {
+          "id": "GHSA-23hv-mwm6-g8jf",
+          "modified": "2026-07-01T16:30:08.497253Z"
+        },
+        {
+          "id": "GHSA-25xr-qj8w-c4vf",
+          "modified": "2026-09-10T03:50:25.989583Z"
+        },
+        {
+          "id": "GHSA-27hp-xhwr-wr2m",
+          "modified": "2026-09-10T03:50:56.287801Z"
+        },
+        {
+          "id": "GHSA-3p2h-wqq4-wf4h",
+          "modified": "2026-09-10T03:50:57.424635Z"
+        },
+        {
+          "id": "GHSA-42wg-hm62-jcwg",
+          "modified": "2025-10-29T16:13:33.340454Z"
+        },
+        {
+          "id": "GHSA-563x-q5rq-57qp",
+          "modified": "2026-09-11T08:25:36.344434Z"
+        },
+        {
+          "id": "GHSA-5j33-cvvr-w245",
+          "modified": "2026-09-10T03:50:21.575819Z"
+        },
+        {
+          "id": "GHSA-5m62-pw8w-7w9f",
+          "modified": "2026-09-11T08:25:25.696036Z"
+        },
+        {
+          "id": "GHSA-5mp6-jrq3-r938",
+          "modified": "2026-09-11T08:25:26.202863Z"
+        },
+        {
+          "id": "GHSA-7jqf-v358-p8g7",
+          "modified": "2026-08-13T20:11:57.962107Z"
+        },
+        {
+          "id": "GHSA-83qj-6fr2-vhqg",
+          "modified": "2026-09-10T03:50:23.313083Z"
+        },
+        {
+          "id": "GHSA-9m3c-qcxr-9x87",
+          "modified": "2026-09-11T08:25:31.206255Z"
+        },
+        {
+          "id": "GHSA-9m89-8frq-c98c",
+          "modified": "2026-09-11T08:25:30.451322Z"
+        },
+        {
+          "id": "GHSA-9xv2-5v5q-p794",
+          "modified": "2026-09-11T08:25:52.825871Z"
+        },
+        {
+          "id": "GHSA-ff77-26x5-69cr",
+          "modified": "2026-09-10T03:50:24.113174Z"
+        },
+        {
+          "id": "GHSA-fpj8-gq4v-p354",
+          "modified": "2026-09-11T08:25:48.825991Z"
+        },
+        {
+          "id": "GHSA-fv25-8xcx-gqjc",
+          "modified": "2026-09-10T03:51:05.853750Z"
+        },
+        {
+          "id": "GHSA-gcx9-497g-6cp6",
+          "modified": "2026-09-11T08:25:41.300012Z"
+        },
+        {
+          "id": "GHSA-gqp3-2cvr-x8m3",
+          "modified": "2026-05-13T16:35:26.549711Z"
+        },
+        {
+          "id": "GHSA-gx5v-xp9w-j4cg",
+          "modified": "2026-09-11T08:25:36.520411Z"
+        },
+        {
+          "id": "GHSA-h2fw-rfh5-95r3",
+          "modified": "2026-09-10T03:50:57.935292Z"
+        },
+        {
+          "id": "GHSA-h3gc-qfqq-6h8f",
+          "modified": "2026-09-10T03:50:25.525981Z"
+        },
+        {
+          "id": "GHSA-h3x4-894j-xpx5",
+          "modified": "2026-09-11T08:25:40.118635Z"
+        },
+        {
+          "id": "GHSA-h6fc-48rj-7qqh",
+          "modified": "2026-09-11T08:25:26.501986Z"
+        },
+        {
+          "id": "GHSA-hgrr-935x-pq79",
+          "modified": "2026-09-10T03:50:30.251352Z"
+        },
+        {
+          "id": "GHSA-mgp5-rv84-w37q",
+          "modified": "2026-09-10T03:50:35.574464Z"
+        },
+        {
+          "id": "GHSA-r29c-68gh-xp6x",
+          "modified": "2026-09-10T03:50:55.679134Z"
+        },
+        {
+          "id": "GHSA-rv64-5gf8-9qq8",
+          "modified": "2026-09-11T08:25:42.129097Z"
+        },
+        {
+          "id": "GHSA-vfww-5hm6-hx2j",
+          "modified": "2026-09-10T03:50:30.791118Z"
+        },
+        {
+          "id": "GHSA-wc4r-xq3c-5cf3",
+          "modified": "2026-09-10T03:50:26.000004Z"
+        },
+        {
+          "id": "GHSA-wm9w-rjj3-j356",
+          "modified": "2026-09-10T03:50:17.269240Z"
+        },
+        {
+          "id": "GHSA-wmwf-9ccg-fff5",
+          "modified": "2026-09-10T03:50:30.776927Z"
+        },
+        {
+          "id": "GHSA-wr62-c79q-cv37",
+          "modified": "2026-03-06T22:01:30.941844Z"
+        },
+        {
+          "id": "GHSA-x4m4-345f-5h5g",
+          "modified": "2026-09-11T08:25:51.806825Z"
+        }
+      ]
+    },
+    {
+      "name": "org.apache.tomcat.embed:tomcat-embed-websocket",
+      "version": "10.1.20",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.springframework:spring-web",
+      "version": "6.1.6",
+      "scope": "compile",
+      "vulnerabilities": [
+        {
+          "id": "GHSA-2rmj-mq67-h97g",
+          "modified": "2026-09-10T03:50:55.885781Z"
+        },
+        {
+          "id": "GHSA-4gc7-5j7h-4qph",
+          "modified": "2026-09-10T03:50:19.586027Z"
+        },
+        {
+          "id": "GHSA-6r3c-xf4w-jxjm",
+          "modified": "2026-09-10T03:50:25.010163Z"
+        }
+      ]
+    },
+    {
+      "name": "org.springframework:spring-beans",
+      "version": "6.1.6",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "io.micrometer:micrometer-observation",
+      "version": "1.12.5",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "io.micrometer:micrometer-commons",
+      "version": "1.12.5",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.springframework:spring-webmvc",
+      "version": "6.1.6",
+      "scope": "compile",
+      "vulnerabilities": [
+        {
+          "id": "GHSA-3chg-m5w7-qfv5",
+          "modified": "2026-09-10T03:50:55.485813Z"
+        },
+        {
+          "id": "GHSA-4773-3jfm-qmx3",
+          "modified": "2026-09-10T03:50:37.345211Z"
+        },
+        {
+          "id": "GHSA-6hcq-hmm3-jj3c",
+          "modified": "2026-09-10T03:51:00.075344Z"
+        },
+        {
+          "id": "GHSA-6p4f-wcwh-5vvm",
+          "modified": "2026-09-10T03:50:43.783544Z"
+        },
+        {
+          "id": "GHSA-72pg-x5f8-j25j",
+          "modified": "2026-09-10T03:50:49.015129Z"
+        },
+        {
+          "id": "GHSA-957g-f97v-vppc",
+          "modified": "2026-09-10T03:50:49.221153Z"
+        },
+        {
+          "id": "GHSA-cjpg-rgq5-fr37",
+          "modified": "2026-09-10T03:51:08.751198Z"
+        },
+        {
+          "id": "GHSA-cx7f-g6mp-7hqm",
+          "modified": "2026-09-10T03:50:19.091945Z"
+        },
+        {
+          "id": "GHSA-g5vr-rgqm-vf78",
+          "modified": "2026-09-28T16:00:23.315362Z"
+        },
+        {
+          "id": "GHSA-h3qp-gqrc-q736",
+          "modified": "2026-09-10T03:50:49.910720Z"
+        },
+        {
+          "id": "GHSA-mq64-j8f9-9gcj",
+          "modified": "2026-09-10T03:51:09.434155Z"
+        },
+        {
+          "id": "GHSA-pc63-qcmh-9cmg",
+          "modified": "2026-10-05T23:30:04.884745Z"
+        },
+        {
+          "id": "GHSA-r936-gwx5-v52f",
+          "modified": "2026-09-10T03:50:27.662656Z"
+        },
+        {
+          "id": "GHSA-wg35-8jpf-2xv3",
+          "modified": "2026-09-10T03:51:04.065980Z"
+        },
+        {
+          "id": "GHSA-x23c-287f-qqv5",
+          "modified": "2026-09-10T03:50:51.456648Z"
+        }
+      ]
+    },
+    {
+      "name": "org.springframework:spring-context",
+      "version": "6.1.6",
+      "scope": "compile",
+      "vulnerabilities": [
+        {
+          "id": "GHSA-4gc7-5j7h-4qph",
+          "modified": "2026-09-10T03:50:19.586027Z"
+        },
+        {
+          "id": "GHSA-4wp7-92pw-q264",
+          "modified": "2026-09-10T03:50:24.401937Z"
+        }
+      ]
+    },
+    {
+      "name": "org.springframework:spring-expression",
+      "version": "6.1.6",
+      "scope": "compile",
+      "vulnerabilities": [
+        {
+          "id": "GHSA-9f52-rjqv-25qv",
+          "modified": "2026-09-10T03:50:49.325466Z"
+        },
+        {
+          "id": "GHSA-r5w3-xv2f-j59q",
+          "modified": "2026-09-10T03:50:50.592219Z"
+        },
+        {
+          "id": "GHSA-wxpp-56q6-5pcg",
+          "modified": "2026-09-10T03:50:51.051005Z"
+        }
+      ]
+    },
+    {
+      "name": "org.springframework.boot:spring-boot-starter-data-jpa",
+      "version": "3.2.5",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.springframework.boot:spring-boot-starter-aop",
+      "version": "3.2.5",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.aspectj:aspectjweaver",
+      "version": "1.9.22",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.springframework.boot:spring-boot-starter-jdbc",
+      "version": "3.2.5",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "com.zaxxer:HikariCP",
+      "version": "5.0.1",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.springframework:spring-jdbc",
+      "version": "6.1.6",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.hibernate.orm:hibernate-core",
+      "version": "6.4.4.Final",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "jakarta.persistence:jakarta.persistence-api",
+      "version": "3.1.0",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "jakarta.transaction:jakarta.transaction-api",
+      "version": "2.0.1",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.jboss.logging:jboss-logging",
+      "version": "3.5.3.Final",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.hibernate.common:hibernate-commons-annotations",
+      "version": "6.0.6.Final",
+      "scope": "runtime",
+      "vulnerabilities": []
+    },
+    {
+      "name": "io.smallrye:jandex",
+      "version": "3.1.2",
+      "scope": "runtime",
+      "vulnerabilities": []
+    },
+    {
+      "name": "com.fasterxml:classmate",
+      "version": "1.6.0",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "net.bytebuddy:byte-buddy",
+      "version": "1.14.13",
+      "scope": "runtime",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.glassfish.jaxb:jaxb-runtime",
+      "version": "4.0.5",
+      "scope": "runtime",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.glassfish.jaxb:jaxb-core",
+      "version": "4.0.5",
+      "scope": "runtime",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.eclipse.angus:angus-activation",
+      "version": "2.0.2",
+      "scope": "runtime",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.glassfish.jaxb:txw2",
+      "version": "4.0.5",
+      "scope": "runtime",
+      "vulnerabilities": []
+    },
+    {
+      "name": "com.sun.istack:istack-commons-runtime",
+      "version": "4.1.2",
+      "scope": "runtime",
+      "vulnerabilities": []
+    },
+    {
+      "name": "jakarta.inject:jakarta.inject-api",
+      "version": "2.0.1",
+      "scope": "runtime",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.antlr:antlr4-runtime",
+      "version": "4.13.0",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.springframework.data:spring-data-jpa",
+      "version": "3.2.5",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.springframework.data:spring-data-commons",
+      "version": "3.2.5",
+      "scope": "compile",
+      "vulnerabilities": [
+        {
+          "id": "GHSA-5m4m-73w9-8433",
+          "modified": "2026-09-10T03:51:08.050596Z"
+        },
+        {
+          "id": "GHSA-5vpf-xvv7-c8vh",
+          "modified": "2026-09-10T03:51:08.062104Z"
+        }
+      ]
+    },
+    {
+      "name": "org.springframework:spring-orm",
+      "version": "6.1.6",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.springframework:spring-tx",
+      "version": "6.1.6",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.slf4j:slf4j-api",
+      "version": "2.0.13",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.springframework:spring-aspects",
+      "version": "6.1.6",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.springframework.boot:spring-boot-starter-security",
+      "version": "3.2.5",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.springframework:spring-aop",
+      "version": "6.1.6",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.springframework.security:spring-security-config",
+      "version": "6.2.4",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.springframework.security:spring-security-core",
+      "version": "6.2.4",
+      "scope": "compile",
+      "vulnerabilities": [
+        {
+          "id": "GHSA-q3v6-hm2v-pw99",
+          "modified": "2026-09-10T03:50:21.931277Z"
+        }
+      ]
+    },
+    {
+      "name": "org.springframework.security:spring-security-crypto",
+      "version": "6.2.4",
+      "scope": "compile",
+      "vulnerabilities": [
+        {
+          "id": "GHSA-mg83-c7gq-rv5c",
+          "modified": "2026-09-10T03:49:48.718826Z"
+        }
+      ]
+    },
+    {
+      "name": "org.springframework.security:spring-security-web",
+      "version": "6.2.4",
+      "scope": "compile",
+      "vulnerabilities": [
+        {
+          "id": "GHSA-293q-567p-wmwq",
+          "modified": "2026-09-10T03:51:07.677957Z"
+        },
+        {
+          "id": "GHSA-c4q5-6c82-3qpw",
+          "modified": "2026-09-10T03:50:19.827744Z"
+        },
+        {
+          "id": "GHSA-mf92-479x-3373",
+          "modified": "2026-09-10T03:50:40.172563Z"
+        }
+      ]
+    },
+    {
+      "name": "org.springframework.boot:spring-boot-starter-validation",
+      "version": "3.2.5",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.apache.tomcat.embed:tomcat-embed-el",
+      "version": "10.1.20",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.hibernate.validator:hibernate-validator",
+      "version": "8.0.1.Final",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "jakarta.validation:jakarta.validation-api",
+      "version": "3.0.2",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.springframework.boot:spring-boot-starter-websocket",
+      "version": "3.2.5",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.springframework:spring-messaging",
+      "version": "6.1.6",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.springframework:spring-websocket",
+      "version": "6.1.6",
+      "scope": "compile",
+      "vulnerabilities": [
+        {
+          "id": "GHSA-7fch-4f2f-jcgm",
+          "modified": "2026-09-10T03:50:29.574459Z"
+        },
+        {
+          "id": "GHSA-q723-847q-5g8g",
+          "modified": "2026-07-29T18:26:45.363620Z"
+        }
+      ]
+    },
+    {
+      "name": "org.postgresql:postgresql",
+      "version": "42.6.2",
+      "scope": "runtime",
+      "vulnerabilities": [
+        {
+          "id": "GHSA-98qh-xjc8-98pq",
+          "modified": "2026-09-10T03:51:05.114618Z"
+        }
+      ]
+    },
+    {
+      "name": "org.checkerframework:checker-qual",
+      "version": "3.31.0",
+      "scope": "runtime",
+      "vulnerabilities": []
+    },
+    {
+      "name": "io.jsonwebtoken:jjwt-api",
+      "version": "0.12.5",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "io.jsonwebtoken:jjwt-impl",
+      "version": "0.12.5",
+      "scope": "runtime",
+      "vulnerabilities": []
+    },
+    {
+      "name": "io.jsonwebtoken:jjwt-jackson",
+      "version": "0.12.5",
+      "scope": "runtime",
+      "vulnerabilities": []
+    },
+    {
+      "name": "com.fasterxml.jackson.core:jackson-databind",
+      "version": "2.15.4",
+      "scope": "compile",
+      "vulnerabilities": [
+        {
+          "id": "GHSA-3pjw-73gf-8qr5",
+          "modified": "2026-09-10T03:51:10.312389Z"
+        },
+        {
+          "id": "GHSA-5gvw-p9qm-jgwh",
+          "modified": "2026-10-19T19:45:04.650428Z"
+        },
+        {
+          "id": "GHSA-5jmj-h7xm-6q6v",
+          "modified": "2026-09-10T03:51:08.069993Z"
+        },
+        {
+          "id": "GHSA-cxp5-3px4-pw24",
+          "modified": "2026-09-30T15:46:18.051343Z"
+        },
+        {
+          "id": "GHSA-gx83-3vf8-gh7j",
+          "modified": "2026-09-28T21:00:05.608227Z"
+        },
+        {
+          "id": "GHSA-hgj6-7826-r7m5",
+          "modified": "2026-09-10T03:50:49.909813Z"
+        },
+        {
+          "id": "GHSA-j3rv-43j4-c7qm",
+          "modified": "2026-09-10T03:50:50.187641Z"
+        },
+        {
+          "id": "GHSA-q4xh-88c3-wmh7",
+          "modified": "2026-09-28T20:30:05.315085Z"
+        },
+        {
+          "id": "GHSA-rmj7-2vxq-3g9f",
+          "modified": "2026-09-11T15:45:08.499771Z"
+        },
+        {
+          "id": "GHSA-vvgp-rfg2-7rr6",
+          "modified": "2026-09-28T20:30:05.324367Z"
+        },
+        {
+          "id": "GHSA-wjgm-6hv5-3cvf",
+          "modified": "2026-09-28T20:30:05.331167Z"
+        },
+        {
+          "id": "GHSA-wv8q-qhhj-9h54",
+          "modified": "2026-09-30T15:46:18.451708Z"
+        }
+      ]
+    },
+    {
+      "name": "com.fasterxml.jackson.core:jackson-annotations",
+      "version": "2.15.4",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "com.fasterxml.jackson.core:jackson-core",
+      "version": "2.15.4",
+      "scope": "compile",
+      "vulnerabilities": [
+        {
+          "id": "GHSA-72hv-8253-57qq",
+          "modified": "2026-09-10T03:50:34.318297Z"
+        },
+        {
+          "id": "GHSA-7hhh-6rmp-j9qf",
+          "modified": "2026-10-01T15:30:05.552671Z"
+        },
+        {
+          "id": "GHSA-r7wm-3cxj-wff9",
+          "modified": "2026-10-02T23:15:06.853935Z"
+        }
+      ]
+    },
+    {
+      "name": "org.projectlombok:lombok",
+      "version": "1.18.42",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.springframework.boot:spring-boot-starter-test",
+      "version": "3.2.5",
+      "scope": "test",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.springframework.boot:spring-boot-test",
+      "version": "3.2.5",
+      "scope": "test",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.springframework.boot:spring-boot-test-autoconfigure",
+      "version": "3.2.5",
+      "scope": "test",
+      "vulnerabilities": []
+    },
+    {
+      "name": "com.jayway.jsonpath:json-path",
+      "version": "2.9.0",
+      "scope": "test",
+      "vulnerabilities": []
+    },
+    {
+      "name": "jakarta.xml.bind:jakarta.xml.bind-api",
+      "version": "4.0.2",
+      "scope": "runtime",
+      "vulnerabilities": []
+    },
+    {
+      "name": "jakarta.activation:jakarta.activation-api",
+      "version": "2.1.3",
+      "scope": "runtime",
+      "vulnerabilities": []
+    },
+    {
+      "name": "net.minidev:json-smart",
+      "version": "2.5.1",
+      "scope": "test",
+      "vulnerabilities": [
+        {
+          "id": "GHSA-pq2g-wx69-c263",
+          "modified": "2026-09-10T03:50:22.800274Z"
+        }
+      ]
+    },
+    {
+      "name": "net.minidev:accessors-smart",
+      "version": "2.5.1",
+      "scope": "test",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.ow2.asm:asm",
+      "version": "9.6",
+      "scope": "test",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.assertj:assertj-core",
+      "version": "3.24.2",
+      "scope": "test",
+      "vulnerabilities": [
+        {
+          "id": "GHSA-rqfh-9r24-8c9r",
+          "modified": "2026-02-03T03:04:53.356771Z"
+        }
+      ]
+    },
+    {
+      "name": "org.awaitility:awaitility",
+      "version": "4.2.1",
+      "scope": "test",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.hamcrest:hamcrest",
+      "version": "2.2",
+      "scope": "test",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.junit.jupiter:junit-jupiter",
+      "version": "5.10.2",
+      "scope": "test",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.junit.jupiter:junit-jupiter-api",
+      "version": "5.10.2",
+      "scope": "test",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.opentest4j:opentest4j",
+      "version": "1.3.0",
+      "scope": "test",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.junit.platform:junit-platform-commons",
+      "version": "1.10.2",
+      "scope": "test",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.apiguardian:apiguardian-api",
+      "version": "1.1.2",
+      "scope": "test",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.junit.jupiter:junit-jupiter-params",
+      "version": "5.10.2",
+      "scope": "test",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.junit.jupiter:junit-jupiter-engine",
+      "version": "5.10.2",
+      "scope": "test",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.junit.platform:junit-platform-engine",
+      "version": "1.10.2",
+      "scope": "test",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.mockito:mockito-core",
+      "version": "5.7.0",
+      "scope": "test",
+      "vulnerabilities": []
+    },
+    {
+      "name": "net.bytebuddy:byte-buddy-agent",
+      "version": "1.14.13",
+      "scope": "test",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.objenesis:objenesis",
+      "version": "3.3",
+      "scope": "test",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.mockito:mockito-junit-jupiter",
+      "version": "5.7.0",
+      "scope": "test",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.skyscreamer:jsonassert",
+      "version": "1.5.1",
+      "scope": "test",
+      "vulnerabilities": []
+    },
+    {
+      "name": "com.vaadin.external.google:android-json",
+      "version": "0.0.20131108.vaadin1",
+      "scope": "test",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.springframework:spring-core",
+      "version": "6.1.6",
+      "scope": "compile",
+      "vulnerabilities": [
+        {
+          "id": "GHSA-659m-px2c-25wj",
+          "modified": "2026-09-10T03:50:48.636887Z"
+        },
+        {
+          "id": "GHSA-jmp9-x22r-554x",
+          "modified": "2026-09-10T03:50:28.526913Z"
+        }
+      ]
+    },
+    {
+      "name": "org.springframework:spring-jcl",
+      "version": "6.1.6",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.springframework:spring-test",
+      "version": "6.1.6",
+      "scope": "test",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.xmlunit:xmlunit-core",
+      "version": "2.9.1",
+      "scope": "test",
+      "vulnerabilities": [
+        {
+          "id": "GHSA-chfm-68vv-pvw5",
+          "modified": "2024-12-05T05:28:04.518630Z"
+        }
+      ]
+    }
+  ]
+}

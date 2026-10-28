@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Dialog } from "@/components/ui/Dialog";
 import { api, PlayerDto } from "@/lib/api";
 import { formatCr } from "@/lib/format";
 import { toast } from "sonner";
@@ -25,13 +26,11 @@ export default function BasePriceDialog({ player, onClose, onSaved }: Props) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 grid place-items-center bg-black/70 backdrop-blur-sm" onClick={onClose}>
-      <div className="card-elev rounded-2xl p-8 w-full max-w-md" onClick={(e) => e.stopPropagation()}>
-        <div className="label-cap">Player pricing</div>
-        <h3 className="h-heading text-2xl mt-1 mb-4">{player.fullName}</h3>
+    <Dialog title={player.fullName} description="Player pricing" onClose={onClose}>
         <div>
-          <label className="label-cap block mb-2">Base price (₹)</label>
+          <label htmlFor="base-price" className="field-label">Base price (₹)</label>
           <input
+            id="base-price"
             type="number"
             step={100000}
             min={100000}
@@ -48,7 +47,6 @@ export default function BasePriceDialog({ player, onClose, onSaved }: Props) {
             Save
           </button>
         </div>
-      </div>
-    </div>
+    </Dialog>
   );
 }

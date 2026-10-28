@@ -1,0 +1,580 @@
+{
+  "at": "2026-10-27T14:50:00.172Z",
+  "base": "http://localhost:58092/api",
+  "publicRoom": {
+    "roomCode": "P13582FC4B",
+    "championshipId": "1165490d-5b9a-4721-8382-da4beced98dc"
+  },
+  "results": [
+    {
+      "name": "health",
+      "pass": true,
+      "detail": {
+        "expected": 200,
+        "status": 200
+      }
+    },
+    {
+      "name": "anonymous staff list denied",
+      "pass": true,
+      "detail": {
+        "expected": 401,
+        "status": 401
+      }
+    },
+    {
+      "name": "valid credentials without CSRF denied",
+      "pass": true
+    },
+    {
+      "name": "foreign WebSocket origin denied",
+      "pass": true
+    },
+    {
+      "name": "invalid JWT denied",
+      "pass": true,
+      "detail": {
+        "expected": 401,
+        "status": 401
+      }
+    },
+    {
+      "name": "bootstrap login",
+      "pass": true,
+      "detail": {
+        "expected": 200,
+        "status": 200
+      }
+    },
+    {
+      "name": "bootstrap login uses cookie only",
+      "pass": true
+    },
+    {
+      "name": "expired signed JWT denied",
+      "pass": true,
+      "detail": {
+        "expected": 401,
+        "status": 401
+      }
+    },
+    {
+      "name": "essential navigation seeded",
+      "pass": true,
+      "detail": {
+        "expected": 200,
+        "status": 200
+      }
+    },
+    {
+      "name": "platform menus available without demos",
+      "pass": true
+    },
+    {
+      "name": "BADMINTON provisioning",
+      "pass": true,
+      "detail": {
+        "expected": 200,
+        "status": 200
+      }
+    },
+    {
+      "name": "BADMINTON provisioning has no password",
+      "pass": true
+    },
+    {
+      "name": "BADMINTON inactive login denied",
+      "pass": true,
+      "detail": {
+        "expected": 401,
+        "status": 401
+      }
+    },
+    {
+      "name": "setup link renewal",
+      "pass": true,
+      "detail": {
+        "expected": 200,
+        "status": 200
+      }
+    },
+    {
+      "name": "superseded setup denied",
+      "pass": true,
+      "detail": {
+        "expected": 400,
+        "status": 400
+      }
+    },
+    {
+      "name": "BADMINTON activate",
+      "pass": true,
+      "detail": {
+        "expected": 204,
+        "status": 204
+      }
+    },
+    {
+      "name": "BADMINTON replay denied",
+      "pass": true,
+      "detail": {
+        "expected": 400,
+        "status": 400
+      }
+    },
+    {
+      "name": "BADMINTON admin login",
+      "pass": true,
+      "detail": {
+        "expected": 200,
+        "status": 200
+      }
+    },
+    {
+      "name": "BADMINTON admin login uses cookie only",
+      "pass": true
+    },
+    {
+      "name": "BADMINTON admin list",
+      "pass": true,
+      "detail": {
+        "expected": 200,
+        "status": 200
+      }
+    },
+    {
+      "name": "BADMINTON dashboard",
+      "pass": true,
+      "detail": {
+        "expected": 200,
+        "status": 200
+      }
+    },
+    {
+      "name": "BADMINTON configure auction",
+      "pass": true,
+      "detail": {
+        "expected": 200,
+        "status": 200
+      }
+    },
+    {
+      "name": "BADMINTON read settings",
+      "pass": true,
+      "detail": {
+        "expected": 200,
+        "status": 200
+      }
+    },
+    {
+      "name": "BADMINTON manual player create",
+      "pass": true,
+      "detail": {
+        "expected": 200,
+        "status": 200
+      }
+    },
+    {
+      "name": "BADMINTON public viewer join",
+      "pass": true,
+      "detail": {
+        "expected": 200,
+        "status": 200
+      }
+    },
+    {
+      "name": "BADMINTON viewer staff list is controlled 403",
+      "pass": true,
+      "detail": {
+        "expected": 403,
+        "status": 403
+      }
+    },
+    {
+      "name": "BADMINTON viewer room preserved",
+      "pass": true,
+      "detail": {
+        "expected": 200,
+        "status": 200
+      }
+    },
+    {
+      "name": "BADMINTON viewer players",
+      "pass": true,
+      "detail": {
+        "expected": 200,
+        "status": 200
+      }
+    },
+    {
+      "name": "BADMINTON viewer writes denied",
+      "pass": true,
+      "detail": {
+        "expected": 403,
+        "status": 403
+      }
+    },
+    {
+      "name": "BADMINTON super admin tenant write denied",
+      "pass": true,
+      "detail": {
+        "expected": 403,
+        "status": 403
+      }
+    },
+    {
+      "name": "CRICKET provisioning",
+      "pass": true,
+      "detail": {
+        "expected": 200,
+        "status": 200
+      }
+    },
+    {
+      "name": "CRICKET provisioning has no password",
+      "pass": true
+    },
+    {
+      "name": "CRICKET inactive login denied",
+      "pass": true,
+      "detail": {
+        "expected": 401,
+        "status": 401
+      }
+    },
+    {
+      "name": "CRICKET activate",
+      "pass": true,
+      "detail": {
+        "expected": 204,
+        "status": 204
+      }
+    },
+    {
+      "name": "CRICKET replay denied",
+      "pass": true,
+      "detail": {
+        "expected": 400,
+        "status": 400
+      }
+    },
+    {
+      "name": "CRICKET admin login",
+      "pass": true,
+      "detail": {
+        "expected": 200,
+        "status": 200
+      }
+    },
+    {
+      "name": "CRICKET admin login uses cookie only",
+      "pass": true
+    },
+    {
+      "name": "CRICKET admin list",
+      "pass": true,
+      "detail": {
+        "expected": 200,
+        "status": 200
+      }
+    },
+    {
+      "name": "CRICKET dashboard",
+      "pass": true,
+      "detail": {
+        "expected": 200,
+        "status": 200
+      }
+    },
+    {
+      "name": "CRICKET configure auction",
+      "pass": true,
+      "detail": {
+        "expected": 200,
+        "status": 200
+      }
+    },
+    {
+      "name": "CRICKET read settings",
+      "pass": true,
+      "detail": {
+        "expected": 200,
+        "status": 200
+      }
+    },
+    {
+      "name": "CRICKET manual player create",
+      "pass": true,
+      "detail": {
+        "expected": 200,
+        "status": 200
+      }
+    },
+    {
+      "name": "CRICKET public viewer join",
+      "pass": true,
+      "detail": {
+        "expected": 200,
+        "status": 200
+      }
+    },
+    {
+      "name": "CRICKET viewer staff list is controlled 403",
+      "pass": true,
+      "detail": {
+        "expected": 403,
+        "status": 403
+      }
+    },
+    {
+      "name": "CRICKET viewer room preserved",
+      "pass": true,
+      "detail": {
+        "expected": 200,
+        "status": 200
+      }
+    },
+    {
+      "name": "CRICKET viewer players",
+      "pass": true,
+      "detail": {
+        "expected": 200,
+        "status": 200
+      }
+    },
+    {
+      "name": "CRICKET viewer writes denied",
+      "pass": true,
+      "detail": {
+        "expected": 403,
+        "status": 403
+      }
+    },
+    {
+      "name": "CRICKET super admin tenant write denied",
+      "pass": true,
+      "detail": {
+        "expected": 403,
+        "status": 403
+      }
+    },
+    {
+      "name": "foreign admin read denied",
+      "pass": true,
+      "detail": {
+        "expected": 403,
+        "status": 403
+      }
+    },
+    {
+      "name": "foreign viewer read denied",
+      "pass": true,
+      "detail": {
+        "expected": 403,
+        "status": 403
+      }
+    },
+    {
+      "name": "anonymous CONNECT rejected",
+      "pass": true
+    },
+    {
+      "name": "anonymous SEND before CONNECT rejected",
+      "pass": true
+    },
+    {
+      "name": "staff broker SEND rejected",
+      "pass": true
+    },
+    {
+      "name": "client SEND denied topic",
+      "pass": true
+    },
+    {
+      "name": "client SEND denied /queue/events",
+      "pass": true
+    },
+    {
+      "name": "client SEND denied /app/score",
+      "pass": true
+    },
+    {
+      "name": "cross championship subscription denied",
+      "pass": true
+    },
+    {
+      "name": "forged championship event never delivered",
+      "pass": true
+    },
+    {
+      "name": "provision captain 1",
+      "pass": true,
+      "detail": {
+        "expected": 200,
+        "status": 200
+      }
+    },
+    {
+      "name": "activate captain 1",
+      "pass": true,
+      "detail": {
+        "expected": 204,
+        "status": 204
+      }
+    },
+    {
+      "name": "captain 1 login",
+      "pass": true,
+      "detail": {
+        "expected": 200,
+        "status": 200
+      }
+    },
+    {
+      "name": "captain 1 login uses cookie only",
+      "pass": true
+    },
+    {
+      "name": "provision captain 2",
+      "pass": true,
+      "detail": {
+        "expected": 200,
+        "status": 200
+      }
+    },
+    {
+      "name": "activate captain 2",
+      "pass": true,
+      "detail": {
+        "expected": 204,
+        "status": 204
+      }
+    },
+    {
+      "name": "captain 2 login",
+      "pass": true,
+      "detail": {
+        "expected": 200,
+        "status": 200
+      }
+    },
+    {
+      "name": "captain 2 login uses cookie only",
+      "pass": true
+    },
+    {
+      "name": "auction starts",
+      "pass": true,
+      "detail": {
+        "expected": 200,
+        "status": 200
+      }
+    },
+    {
+      "name": "authorized subscriber receives committed server broadcast",
+      "pass": true
+    },
+    {
+      "name": "captain cannot bid for another team",
+      "pass": true,
+      "detail": {
+        "expected": 403,
+        "status": 403
+      }
+    },
+    {
+      "name": "viewer cannot bid",
+      "pass": true,
+      "detail": {
+        "expected": 403,
+        "status": 403
+      }
+    },
+    {
+      "name": "simultaneous equal bids have one winner",
+      "pass": true,
+      "detail": {
+        "statuses": [
+          400,
+          200
+        ]
+      }
+    },
+    {
+      "name": "auction sale",
+      "pass": true,
+      "detail": {
+        "expected": 200,
+        "status": 200
+      }
+    },
+    {
+      "name": "sold roster persists",
+      "pass": true,
+      "detail": {
+        "expected": 200,
+        "status": 200
+      }
+    },
+    {
+      "name": "sold player and purse remain consistent",
+      "pass": true
+    },
+    {
+      "name": "logout",
+      "pass": true,
+      "detail": {
+        "expected": 204,
+        "status": 204
+      }
+    },
+    {
+      "name": "logged out JWT replay denied",
+      "pass": true,
+      "detail": {
+        "expected": 401,
+        "status": 401
+      }
+    },
+    {
+      "name": "fresh admin login after logout",
+      "pass": true,
+      "detail": {
+        "expected": 200,
+        "status": 200
+      }
+    },
+    {
+      "name": "fresh admin login after logout uses cookie only",
+      "pass": true
+    },
+    {
+      "name": "valid server event after logout",
+      "pass": true,
+      "detail": {
+        "expected": 200,
+        "status": 200
+      }
+    },
+    {
+      "name": "logged out subscriber receives no further events",
+      "pass": true
+    },
+    {
+      "name": "super admin can still observe",
+      "pass": true,
+      "detail": {
+        "expected": 200,
+        "status": 200
+      }
+    },
+    {
+      "name": "authenticated state remains readable after another user logout",
+      "pass": true
+    },
+    {
+      "name": "passwords setup tokens and JWTs absent from server log",
+      "pass": true
+    }
+  ]
+}

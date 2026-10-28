@@ -1,0 +1,10 @@
+
+> neml-badminton-frontend@0.1.0 lint
+> eslint src --max-warnings 0
+
+
+C:\Users\karti\.codex\worktrees\play-neml-upgrade\sports-play-main\frontend\src\app\(authed)\competition\page.tsx
+  109:51  error  Parsing error: ')' expected
+
+✖ 1 problem (1 error, 0 warnings)
+

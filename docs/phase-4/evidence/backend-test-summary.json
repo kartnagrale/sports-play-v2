@@ -1,0 +1,184 @@
+{
+  "Total": 79.0,
+  "Passed": 76.0,
+  "Failures": 0.0,
+  "Errors": 0.0,
+  "Skipped": 3.0,
+  "Suites": [
+    {
+      "Name": "com.neml.badminton.architecture.CompetitionMappingTest",
+      "Tests": 1,
+      "Failures": 0,
+      "Errors": 0,
+      "Skipped": 0
+    },
+    {
+      "Name": "com.neml.badminton.architecture.TenantIsolationArchitectureTest",
+      "Tests": 4,
+      "Failures": 0,
+      "Errors": 0,
+      "Skipped": 0
+    },
+    {
+      "Name": "com.neml.badminton.competition.BadmintonCompetitionEngineTest",
+      "Tests": 3,
+      "Failures": 0,
+      "Errors": 0,
+      "Skipped": 0
+    },
+    {
+      "Name": "com.neml.badminton.competition.CricketCompetitionEngineTest",
+      "Tests": 2,
+      "Failures": 0,
+      "Errors": 0,
+      "Skipped": 0
+    },
+    {
+      "Name": "com.neml.badminton.config.AuthRateLimitFilterTest",
+      "Tests": 1,
+      "Failures": 0,
+      "Errors": 0,
+      "Skipped": 0
+    },
+    {
+      "Name": "com.neml.badminton.config.StompAuthorizationInterceptorTest",
+      "Tests": 6,
+      "Failures": 0,
+      "Errors": 0,
+      "Skipped": 0
+    },
+    {
+      "Name": "com.neml.badminton.controller.ApiExceptionHandlerTest",
+      "Tests": 2,
+      "Failures": 0,
+      "Errors": 0,
+      "Skipped": 0
+    },
+    {
+      "Name": "com.neml.badminton.controller.BrowserAuthSecurityTest",
+      "Tests": 4,
+      "Failures": 0,
+      "Errors": 0,
+      "Skipped": 0
+    },
+    {
+      "Name": "com.neml.badminton.controller.ChampionshipPrincipalTest",
+      "Tests": 4,
+      "Failures": 0,
+      "Errors": 0,
+      "Skipped": 0
+    },
+    {
+      "Name": "com.neml.badminton.security.ChampionshipSecurityTest",
+      "Tests": 4,
+      "Failures": 0,
+      "Errors": 0,
+      "Skipped": 0
+    },
+    {
+      "Name": "com.neml.badminton.security.TokenAuthenticationServiceTest",
+      "Tests": 2,
+      "Failures": 0,
+      "Errors": 0,
+      "Skipped": 0
+    },
+    {
+      "Name": "com.neml.badminton.service.AccountActivationServiceTest",
+      "Tests": 3,
+      "Failures": 0,
+      "Errors": 0,
+      "Skipped": 0
+    },
+    {
+      "Name": "com.neml.badminton.service.AuctionPresentationTest",
+      "Tests": 3,
+      "Failures": 0,
+      "Errors": 0,
+      "Skipped": 0
+    },
+    {
+      "Name": "com.neml.badminton.service.ChampionshipConfigurationInitializationTest",
+      "Tests": 3,
+      "Failures": 0,
+      "Errors": 0,
+      "Skipped": 0
+    },
+    {
+      "Name": "com.neml.badminton.service.CompetitionFixtureGenerationTest",
+      "Tests": 6,
+      "Failures": 0,
+      "Errors": 0,
+      "Skipped": 0
+    },
+    {
+      "Name": "com.neml.badminton.service.CricketScoringRulesTest",
+      "Tests": 4,
+      "Failures": 0,
+      "Errors": 0,
+      "Skipped": 0
+    },
+    {
+      "Name": "com.neml.badminton.service.DatabaseSecurityIntegrationTest",
+      "Tests": 3,
+      "Failures": 0,
+      "Errors": 0,
+      "Skipped": 3
+    },
+    {
+      "Name": "com.neml.badminton.service.NotificationSecrecyTest",
+      "Tests": 1,
+      "Failures": 0,
+      "Errors": 0,
+      "Skipped": 0
+    },
+    {
+      "Name": "com.neml.badminton.service.PlayerImageProcessorTest",
+      "Tests": 4,
+      "Failures": 0,
+      "Errors": 0,
+      "Skipped": 0
+    },
+    {
+      "Name": "com.neml.badminton.service.PlayerImportDatabaseTest",
+      "Tests": 5,
+      "Failures": 0,
+      "Errors": 0,
+      "Skipped": 0
+    },
+    {
+      "Name": "com.neml.badminton.service.PlayerRegistrationServiceTest",
+      "Tests": 1,
+      "Failures": 0,
+      "Errors": 0,
+      "Skipped": 0
+    },
+    {
+      "Name": "com.neml.badminton.service.PlayerWorkbookServiceTest",
+      "Tests": 7,
+      "Failures": 0,
+      "Errors": 0,
+      "Skipped": 0
+    },
+    {
+      "Name": "com.neml.badminton.service.SquadConfirmationServiceTest",
+      "Tests": 2,
+      "Failures": 0,
+      "Errors": 0,
+      "Skipped": 0
+    },
+    {
+      "Name": "com.neml.badminton.service.TemporaryPasswordGeneratorTest",
+      "Tests": 1,
+      "Failures": 0,
+      "Errors": 0,
+      "Skipped": 0
+    },
+    {
+      "Name": "com.neml.badminton.websocket.AuctionBroadcasterTest",
+      "Tests": 3,
+      "Failures": 0,
+      "Errors": 0,
+      "Skipped": 0
+    }
+  ]
+}

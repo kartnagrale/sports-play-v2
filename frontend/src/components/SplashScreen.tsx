@@ -1,5 +1,6 @@
 "use client";
 
+import { Brand } from "./Brand";
 import { useEffect, useRef, useState } from "react";
 import { Gavel, ShieldCheck, Trophy, UsersRound } from "lucide-react";
 
@@ -12,7 +13,7 @@ const steps = [
 export default function SplashScreen({ onComplete }: { onComplete: () => void }) {
   const [leaving, setLeaving] = useState(false);
   const onCompleteRef = useRef(onComplete);
-  onCompleteRef.current = onComplete;
+  useEffect(() => { onCompleteRef.current = onComplete; }, [onComplete]);
 
   useEffect(() => {
     const finish = window.setTimeout(() => setLeaving(true), 650);
@@ -28,7 +29,7 @@ export default function SplashScreen({ onComplete }: { onComplete: () => void })
           <Trophy size={29} />
         </div>
         <div className="h-heading mt-6 text-5xl font-bold tracking-tight md:text-6xl">
-          Play<span className="text-primary">NeML</span>
+          <Brand />
         </div>
         <div className="label-cap mt-3 text-[10px] text-white/45">Multi-championship sports platform</div>
         <div className="mt-8 flex justify-center gap-3">

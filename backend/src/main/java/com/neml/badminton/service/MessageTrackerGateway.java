@@ -21,22 +21,22 @@ public class MessageTrackerGateway {
         this.objectMapper = objectMapper;
     }
 
-    public void queueChampionshipAdmin(User admin, String mobile, String temporaryPassword,
+    public void queueChampionshipAdmin(User admin, String mobile,
                                        Championship championship, String roomCode) {
-        queueUser("CHAMPADMIN", "CHAMPIONSHIP_ADMIN_CREATED", admin, mobile, temporaryPassword,
+        queueUser("CHAMPADMIN", "CHAMPIONSHIP_ADMIN_CREATED", admin, mobile,
                 championship, roomCode, null,
-                "Your PlayNeML championship administrator account");
+                "Your Play-Neml championship administrator account");
     }
 
-    public void queueTeamCaptain(User captain, String mobile, String temporaryPassword,
+    public void queueTeamCaptain(User captain, String mobile,
                                  Championship championship, Team team) {
-        queueUser("TEAMCAPT", "TEAM_CAPTAIN_CREATED", captain, mobile, temporaryPassword,
+        queueUser("TEAMCAPT", "TEAM_CAPTAIN_CREATED", captain, mobile,
                 championship, championship.getRoomCode(), team,
-                "Your PlayNeML team captain account");
+                "Your Play-Neml team captain account");
     }
 
     private void queueUser(String transcode, String template, User user, String mobile,
-                           String temporaryPassword, Championship championship, String roomCode,
+                           Championship championship, String roomCode,
                            Team team, String subject) {
         Map<String, Object> parameters = new LinkedHashMap<>();
         parameters.put("template", template);
@@ -51,8 +51,8 @@ public class MessageTrackerGateway {
         parameters.put("fullName", user.getFullName());
         parameters.put("email", user.getEmail());
         parameters.put("mobileNumber", mobile);
-        parameters.put("temporaryPassword", temporaryPassword);
-        parameters.put("mustChangePassword", true);
+        parameters.put("activationRequired", true);
+        parameters.put("setupInstructions", "Request the expiring setup link from your provisioning administrator");
 
         jdbc.update("""
                 INSERT INTO play_neml.message_tracker (

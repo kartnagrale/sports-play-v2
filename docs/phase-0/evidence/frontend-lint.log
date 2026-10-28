@@ -1,0 +1,22 @@
+
+> neml-badminton-frontend@0.1.0 lint
+> next lint
+
+
+./src/app/(authed)/admin/championship-settings/page.tsx
+31:6  Warning: React Hook useEffect has a missing dependency: 'active'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(authed)/admin/team-management/page.tsx
+20:40  Warning: React Hook useEffect has a missing dependency: 'active'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(authed)/players/page.tsx
+44:6  Warning: React Hook useEffect has a missing dependency: 'active'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/layout.tsx
+20:9  Warning: Custom fonts not added in `pages/_document.js` will only load for a single page. This is discouraged. See: https://nextjs.org/docs/messages/no-page-custom-font  @next/next/no-page-custom-font
+
+./src/components/AppShell.tsx
+49:6  Warning: React Hook useEffect has a missing dependency: 'navigation'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+57:6  Warning: React Hook useMemo has a missing dependency: 'navigation'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+info  - Need to disable some ESLint rules? Learn more here: https://nextjs.org/docs/basic-features/eslint#disabling-rules

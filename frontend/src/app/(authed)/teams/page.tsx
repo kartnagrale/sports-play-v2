@@ -1,140 +1,26 @@
 "use client";
-
-import { useEffect, useState } from "react";
-import { api, TeamDto, PlayerDto, AuctionStateDto } from "@/lib/api";
+import { useState } from "react";
+import { AuctionStateDto, PlayerDto, TeamDto } from "@/lib/api";
+import { useTenantResource } from "@/lib/use-resource";
+import { useAuth } from "@/lib/auth";
+import { useChampionship } from "@/lib/championship";
 import { formatCr } from "@/lib/format";
-import { Users2, Wallet } from "lucide-react";
-
+import { PlayerIdentity, PlayerAvatar } from "@/components/players/PlayerAvatar";
+import { Card, DataTable, EmptyState, ErrorState, MetricCard, PageHeader, SectionHeader, SearchInput, Select, StatusBadge } from "@/components/ui";
+import { PortalLoading } from "@/components/portal/Portal";
 export default function TeamsPage() {
-  const [teams, setTeams] = useState<TeamDto[]>([]);
-  const [players, setPlayers] = useState<PlayerDto[]>([]);
-  const [activeTeam, setActiveTeam] = useState<string | null>(null);
-  const [rules, setRules] = useState({ maxSquadSize: 12, minMale: 9, minFemale: 3 });
-
-  useEffect(() => {
-    (async () => {
-      const [t, p] = await Promise.all([
-        api.get<TeamDto[]>("/teams"),
-        api.get<PlayerDto[]>("/players"),
-      ]);
-      setTeams(t.data);
-      setPlayers(p.data);
-      if (t.data.length) setActiveTeam(t.data[0].id);
-      api.get<AuctionStateDto>("/auction/state")
-        .then(({ data }) => setRules(data)).catch(() => undefined);
-    })();
-  }, []);
-
-  const teamPlayers = players.filter((p) => p.teamId === activeTeam);
-  const active = teams.find((t) => t.id === activeTeam);
-
-  return (
-    <div className="p-10">
-      <div className="mb-8">
-        <div className="label-cap">Franchises</div>
-        <h1 className="h-heading text-5xl font-bold mt-1" data-testid="teams-heading">Teams</h1>
-        <p className="text-white/50 mt-2">Squads, purchases and purse management for all four franchises.</p>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        {teams.map((t) => {
-          const isActive = t.id === activeTeam;
-          const spent = Number(t.purseTotal) - Number(t.purseRemaining);
-          const pct = (spent / Number(t.purseTotal)) * 100;
-          return (
-            <button
-              key={t.id}
-              onClick={() => setActiveTeam(t.id)}
-              data-testid={`team-tab-${t.shortCode}`}
-              className={`text-left rounded-2xl p-5 border transition-colors ${
-                isActive ? "bg-primary/5 border-primary" : "card-elev hover:border-white/20"
-              }`}
-            >
-              <div className="flex items-center gap-3">
-                <div
-                  className="w-11 h-11 rounded-lg flex items-center justify-center h-heading font-bold"
-                  style={{ background: t.primaryColor + "22", color: t.primaryColor, border: `1px solid ${t.primaryColor}55` }}
-                >
-                  {t.shortCode}
-                </div>
-                <div>
-                  <div className="h-heading">{t.name}</div>
-                  <div className="label-cap text-[10px]">{t.totalPlayers}/{rules.maxSquadSize} slots</div>
-                </div>
-                <div className="ml-auto flex items-center justify-center flex-col px-2 py-1 rounded border border-primary/20 bg-primary/5">
-                  <div className="stat-num text-lg leading-none text-primary">{t.matchPoints || 0}</div>
-                  <div className="label-cap text-[8px] mt-0.5">PTS</div>
-                </div>
-              </div>
-              <div className="mt-3">
-                <div className="stat-num text-xl text-primary">{formatCr(Number(t.purseRemaining))}</div>
-                <div className="h-1.5 mt-2 bg-white/5 rounded-full overflow-hidden">
-                  <div className="h-full rounded-full" style={{ width: `${pct}%`, background: t.primaryColor }} />
-                </div>
-              </div>
-            </button>
-          );
-        })}
-      </div>
-
-      {active && (
-        <div className="card-elev rounded-2xl p-6">
-          <div className="flex items-center justify-between flex-wrap gap-4 mb-6">
-            <div>
-              <div className="label-cap">Squad</div>
-              <h2 className="h-heading text-3xl mt-1">{active.name}</h2>
-            </div>
-            <div className="grid grid-cols-3 gap-4">
-              <Stat icon={<Users2 size={14} />} label="Total" value={`${active.totalPlayers}/${rules.maxSquadSize}`} />
-              <Stat icon={<Users2 size={14} />} label="M / F" value={`${active.maleCount}/${rules.minMale} · ${active.femaleCount}/${rules.minFemale}`} />
-              <Stat icon={<Wallet size={14} />} label="Spent" value={formatCr(Number(active.purseTotal) - Number(active.purseRemaining))} />
-            </div>
-          </div>
-
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead className="text-left label-cap text-[10px]">
-                <tr className="border-b border-white/10">
-                  <th className="py-3 pr-4">Player</th>
-                  <th className="py-3 pr-4">Gender</th>
-                  <th className="py-3 pr-4">Skill</th>
-                  <th className="py-3 pr-4">Base</th>
-                  <th className="py-3 pr-4 text-right">Sold Price</th>
-                </tr>
-              </thead>
-              <tbody>
-                {teamPlayers.length === 0 && (
-                  <tr>
-                    <td colSpan={5} className="py-8 text-center text-white/40">
-                      No players bought yet.
-                    </td>
-                  </tr>
-                )}
-                {teamPlayers.map((p) => (
-                  <tr key={p.id} className="border-b border-white/5 hover:bg-white/5" data-testid={`row-player-${p.id}`}>
-                    <td className="py-3 pr-4 font-medium">{p.fullName}</td>
-                    <td className="py-3 pr-4"><span className="chip">{p.gender}</span></td>
-                    <td className="py-3 pr-4 text-white/70">{p.skillLevel}</td>
-                    <td className="py-3 pr-4 text-white/50">{formatCr(Number(p.basePrice))}</td>
-                    <td className="py-3 pr-4 text-right h-heading text-primary">{p.soldPrice ? formatCr(Number(p.soldPrice)) : "—"}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
-
-function Stat({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) {
-  return (
-    <div className="border border-white/10 rounded-lg px-4 py-2 min-w-[110px]">
-      <div className="flex items-center gap-2 text-white/50 label-cap text-[10px]">
-        {icon} {label}
-      </div>
-      <div className="h-heading text-lg mt-1">{value}</div>
-    </div>
-  );
+  const teams = useTenantResource<TeamDto[]>("/teams"); const players = useTenantResource<PlayerDto[]>("/players");
+  const active = useChampionship(s => s.active); const user = useAuth(s => s.user);
+  const rules = useTenantResource<AuctionStateDto>(active?.defaultAuctionId ? `/auctions/${active.defaultAuctionId}/state` : null);
+  const own = user?.championships.find(c => c.championshipId === active?.id)?.teamId;
+  const [selected,setSelected] = useState(""); const [search,setSearch] = useState(""); const [sort,setSort] = useState("name");
+  if (teams.loading || players.loading) return <PortalLoading />;
+  if (teams.error || players.error) return <ErrorState description={teams.error || players.error} onRetry={() => { teams.refresh(); players.refresh(); }} />;
+  const list = teams.data || []; const team = list.find(t => t.id === selected) || list.find(t => t.id === own) || list[0];
+  const roster = (players.data || []).filter(p => p.teamId === team?.id && p.fullName.toLowerCase().includes(search.toLowerCase())).sort((a,b) => sort === "price" ? Number(b.soldPrice || 0) - Number(a.soldPrice || 0) || a.fullName.localeCompare(b.fullName) : a.fullName.localeCompare(b.fullName));
+  return <div className="portal-page"><PageHeader eyebrow="Team directory" title="The teams behind the competition" description="Explore squads, player identities and confirmed auction purchases." />
+    <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4 mb-6">{list.map(t => <button key={t.id} onClick={() => setSelected(t.id)} aria-pressed={team?.id === t.id} className={`team-choice ${team?.id === t.id ? "is-selected" : ""}`} data-testid={`team-tab-${t.shortCode}`}><PlayerAvatar name={t.name} imageUrl={t.logoUrl} shape="square" /><span className="min-w-0"><span className="block font-semibold">{t.name}</span><span className="mt-1 block text-xs text-muted">{t.totalPlayers} players · {t.matchPoints} pts</span></span></button>)}</div>
+    {!team ? <EmptyState title="No teams yet" description="Teams will appear once they are registered for the championship." /> : <><SectionHeader title={team.name} eyebrow={team.id === own ? "Your team" : "Team profile"} actions={<StatusBadge tone="info">{team.shortCode}</StatusBadge>} /><div className="portal-metrics"><MetricCard label="Squad size" value={`${team.totalPlayers}${rules.data ? ` / ${rules.data.maxSquadSize}` : ""}`} /><MetricCard label="Purse remaining" value={formatCr(Number(team.purseRemaining))} /><MetricCard label="Invested in players" value={formatCr(Number(team.purseTotal) - Number(team.purseRemaining))} /><MetricCard label="Match points" value={team.matchPoints} /></div>
+    <div className="portal-toolbar"><SearchInput label="Search roster" placeholder="Search this squad…" value={search} onChange={e => setSearch(e.target.value)} /><Select aria-label="Sort roster" value={sort} onChange={e => setSort(e.target.value)}><option value="name">Player name</option><option value="price">Highest purchase first</option></Select></div><Card className="p-0 overflow-hidden"><DataTable caption={`${team.name} player roster`}><thead><tr>{["Player","Category","Skill","Base price","Purchase price"].map(title => <th key={title} scope="col">{title}</th>)}</tr></thead><tbody>{roster.map(p => <tr key={p.id} data-testid={`row-player-${p.id}`}><td><PlayerIdentity name={p.fullName} imageUrl={p.photoUrl} /></td><td>{p.gender}</td><td>{p.skillLevel || "—"}</td><td>{formatCr(Number(p.basePrice))}</td><td className="font-mono text-primary">{formatCr(Number(p.soldPrice || 0))}</td></tr>)}</tbody></DataTable>{!roster.length && <EmptyState title={search ? "No matching players" : "No players bought yet"} description="Confirmed purchases appear here after the auction." />}</Card></>}
+  </div>;
 }

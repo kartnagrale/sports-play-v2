@@ -1,7 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { api, PlayerDto } from "@/lib/api";
 import { toast } from "sonner";
-import { X } from "lucide-react";
+import { Dialog } from "@/components/ui/Dialog";
 
 interface Props {
   player?: PlayerDto | null;
@@ -17,6 +17,7 @@ export default function PlayerDialog({ player, defaultBasePrice = 2000000, onClo
     basePrice: player?.basePrice ? Number(player.basePrice) : defaultBasePrice,
     skillLevel: player?.skillLevel || "Intermediate",
     auctionOrder: player?.auctionOrder || "",
+    playerReference: player?.playerReference || "",
   });
   const [loading, setLoading] = useState(false);
 
@@ -44,18 +45,12 @@ export default function PlayerDialog({ player, defaultBasePrice = 2000000, onClo
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-      <div className="bg-bg-elev border border-white/10 rounded-2xl p-6 w-full max-w-md shadow-2xl">
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="h-heading text-xl">{player ? "Edit Player" : "Add Player"}</h2>
-          <button onClick={onClose} className="text-white/40 hover:text-white">
-            <X size={20} />
-          </button>
-        </div>
+    <Dialog title={player ? "Edit Player" : "Add Player"} onClose={onClose}>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="label-cap block mb-2">Full Name</label>
+            <label htmlFor="player-field-0" className="field-label">Full Name</label>
             <input
+              id="player-field-0"
               required
               className="input"
               value={formData.fullName}
@@ -64,8 +59,9 @@ export default function PlayerDialog({ player, defaultBasePrice = 2000000, onClo
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="label-cap block mb-2">Gender</label>
+              <label htmlFor="player-field-1" className="field-label">Gender</label>
               <select
+              id="player-field-1"
                 className="input"
                 value={formData.gender}
                 onChange={(e) => setFormData({ ...formData, gender: e.target.value as "MALE" | "FEMALE" })}
@@ -75,8 +71,9 @@ export default function PlayerDialog({ player, defaultBasePrice = 2000000, onClo
               </select>
             </div>
             <div>
-              <label className="label-cap block mb-2">Skill Level</label>
+              <label htmlFor="player-field-2" className="field-label">Skill Level</label>
               <select
+              id="player-field-2"
                 className="input"
                 value={formData.skillLevel}
                 onChange={(e) => setFormData({ ...formData, skillLevel: e.target.value })}
@@ -90,19 +87,22 @@ export default function PlayerDialog({ player, defaultBasePrice = 2000000, onClo
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="label-cap block mb-2">Base Price (₹)</label>
+              <label htmlFor="player-field-3" className="field-label">Base Price (₹)</label>
               <input
+              id="player-field-3"
                 required
                 type="number"
-                step="100000"
+                step="0.01"
+                min="0.01"
                 className="input"
                 value={formData.basePrice}
                 onChange={(e) => setFormData({ ...formData, basePrice: Number(e.target.value) })}
               />
             </div>
             <div>
-              <label className="label-cap block mb-2">Auction Order</label>
+              <label htmlFor="player-field-4" className="field-label">Auction Order</label>
               <input
+              id="player-field-4"
                 type="number"
                 placeholder="Auto"
                 className="input"
@@ -111,6 +111,7 @@ export default function PlayerDialog({ player, defaultBasePrice = 2000000, onClo
               />
             </div>
           </div>
+          <div><label htmlFor="player-reference" className="field-label">Player Reference</label><input id="player-reference" className="input" maxLength={64} pattern="[A-Za-z0-9][A-Za-z0-9_-]{0,63}" value={formData.playerReference} disabled={!!player?.playerReference} onChange={e=>setFormData({...formData,playerReference:e.target.value})}/><p className="mt-1 text-xs text-muted">Optional stable identifier for safe repeat imports. Once assigned, it stays with this player.</p></div>
           <div className="flex justify-end gap-3 mt-6">
             <button type="button" onClick={onClose} className="btn btn-ghost">Cancel</button>
             <button type="submit" disabled={loading} className="btn btn-primary">
@@ -118,7 +119,6 @@ export default function PlayerDialog({ player, defaultBasePrice = 2000000, onClo
             </button>
           </div>
         </form>
-      </div>
-    </div>
+    </Dialog>
   );
 }

@@ -10,7 +10,7 @@ export default function FormatLeadersPage() {
     api.get<FormatLeaderDto[]>("/analytics/format-leaders").then((r) => setLeaders(r.data));
   }, []);
   return (
-    <div className="p-10">
+    <div className="portal-page">
       <div className="mb-8">
         <div className="label-cap">By format</div>
         <h1 className="h-heading text-5xl font-bold mt-1" data-testid="format-leaders-heading">Format Leaders</h1>

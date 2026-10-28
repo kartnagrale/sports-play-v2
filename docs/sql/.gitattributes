@@ -1,0 +1,4 @@
+2026-10-27-phase1-account-security.sql text eol=lf
+2026-10-27-phase1-legacy-credentials.sql text eol=lf
+phase1-apply.psql text eol=lf
+phase1-init.sh text eol=lf

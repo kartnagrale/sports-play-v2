@@ -50,7 +50,7 @@ public class SquadConfirmationService {
         List<Team> championshipTeams = teams.findAllByChampionshipIdOrderByName(championshipId);
         Map<UUID, SquadConfirmation> state = confirmations.findAllByChampionshipId(championshipId).stream()
                 .collect(Collectors.toMap(item -> item.getTeam().getId(), Function.identity()));
-        Map<UUID, List<Player>> roster = players.findAllByChampionshipIdOrderByAuctionOrderAsc(championshipId).stream()
+        Map<UUID, List<Player>> roster = players.findAllByChampionshipIdAndTeamIsNotNull(championshipId).stream()
                 .filter(player -> player.getTeam() != null)
                 .collect(Collectors.groupingBy(player -> player.getTeam().getId()));
 

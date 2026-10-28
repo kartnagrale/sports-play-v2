@@ -30,6 +30,9 @@ next-env.d.ts
 # Production builds
 /build
 backend/target/
+backend/logs/
+frontend/test-results/
+frontend/playwright-report/
 dist/
 dist
 
@@ -99,3 +102,8 @@ frontend/node_modules/@next/swc-linux-arm64-gnu/next-swc.linux-arm64-gnu.node
 credentials.json
 *.key
 .credentials
+/var/player-photos/
+
+# Private demo access logs must not enter published history.
+/docs/phase-*/evidence/demo-seed.log
+/docs/phase-*/evidence/demo-repeat-*.log

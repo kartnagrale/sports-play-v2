@@ -1,0 +1,320 @@
+
+> neml-badminton-frontend@0.1.0 lint
+> eslint src --max-warnings 0
+
+
+C:\Users\karti\.codex\worktrees\play-neml-upgrade\sports-play-main\frontend\src\app\(authed)\admin\championship-settings\page.tsx
+  31:5  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\Users\karti\.codex\worktrees\play-neml-upgrade\sports-play-main\frontend\src\app\(authed)\admin\championship-settings\page.tsx:31:5
+  29 |     if (!championshipId) return;
+  30 |     const controller=new AbortController();
+> 31 |     setLoading(true);
+     |     ^^^^^^^^^^ Avoid calling setState() directly within an effect
+  32 |     api.get<Settings>(`/championships/${championshipId}/settings`,{signal:controller.signal})
+  33 |       .then(({ data }) => {if(!controller.signal.aborted)setForm(data);})
+  34 |       .catch((error) => {if(!controller.signal.aborted)toast.error(error?.response?.data?.message || "Unable to load settings");})  react-hooks/set-state-in-effect
+
+C:\Users\karti\.codex\worktrees\play-neml-upgrade\sports-play-main\frontend\src\app\(authed)\admin\championships\page.tsx
+  35:82  warning  Do not use `window.location.href` to navigate to internal Next.js pages. Use `redirect()` in the render phase, or `useRouter().push()` in Client Components' event handlers instead. See: https://nextjs.org/docs/messages/no-location-assign-relative-destination  @next/next/no-location-assign-relative-destination
+
+C:\Users\karti\.codex\worktrees\play-neml-upgrade\sports-play-main\frontend\src\app\(authed)\admin\team-management\page.tsx
+  26:59  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\Users\karti\.codex\worktrees\play-neml-upgrade\sports-play-main\frontend\src\app\(authed)\admin\team-management\page.tsx:26:59
+  24 |     }catch{if(!signal?.aborted)toast.error("Unable to load teams");}
+  25 |   },[championshipId]);
+> 26 |   useEffect(()=>{ const controller=new AbortController(); load(controller.signal); return ()=>controller.abort(); },[load]);
+     |                                                           ^^^^ Avoid calling setState() directly within an effect
+  27 |   async function submit(event:FormEvent){event.preventDefault();if(!active)return;setSaving(true);try{const {data}=await api.post<Created>(`/championships/${active.id}/admin/teams`,form);setCreated(data);setForm(initial);await load();toast.success("Team captain created; share the setup link securely");}catch(error:any){toast.error(error?.response?.data?.message||"Captain creation failed");}finally{setSaving(false);}}
+  28 |   if(!allowed)return <div className="p-10"><h1 className="h-heading text-3xl">Championship Admin access required</h1></div>;
+  29 |   if(!active)return <div className="p-10 label-cap">Select a championship first</div>;  react-hooks/set-state-in-effect
+
+C:\Users\karti\.codex\worktrees\play-neml-upgrade\sports-play-main\frontend\src\app\(authed)\auction\page.tsx
+  85:7  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\Users\karti\.codex\worktrees\play-neml-upgrade\sports-play-main\frontend\src\app\(authed)\auction\page.tsx:85:7
+  83 |   useEffect(() => {
+  84 |     if (!active?.defaultAuctionId) {
+> 85 |       setState(null);
+     |       ^^^^^^^^ Avoid calling setState() directly within an effect
+  86 |       return;
+  87 |     }
+  88 |     load().catch((err) => {  react-hooks/set-state-in-effect
+
+C:\Users\karti\.codex\worktrees\play-neml-upgrade\sports-play-main\frontend\src\app\(authed)\competition\page.tsx
+  176:5  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\Users\karti\.codex\worktrees\play-neml-upgrade\sports-play-main\frontend\src\app\(authed)\competition\page.tsx:176:5
+  174 |   }, [active]);
+  175 |   useEffect(() => {
+> 176 |     load();
+      |     ^^^^ Avoid calling setState() directly within an effect
+  177 |   }, [load]);
+  178 |
+  179 |   const mutate = async (  react-hooks/set-state-in-effect
+
+C:\Users\karti\.codex\worktrees\play-neml-upgrade\sports-play-main\frontend\src\app\(authed)\dashboard\page.tsx
+  17:18  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\Users\karti\.codex\worktrees\play-neml-upgrade\sports-play-main\frontend\src\app\(authed)\dashboard\page.tsx:17:18
+  15 |     const response=await api.get<DashboardCapabilitiesDto>(`/championships/${active.id}/dashboard`);setData(response.data);
+  16 |   }catch(error){console.warn("dashboard capabilities load failed",error);}finally{setLoading(false);}},[active]);
+> 17 |   useEffect(()=>{load();},[load]);
+     |                  ^^^^ Avoid calling setState() directly within an effect
+  18 |   if(loading)return <div className="grid min-h-[60vh] place-items-center"><Loader2 className="animate-spin text-primary" size={30}/></div>;
+  19 |   if(!data)return <div className="p-10"><div className="card-elev rounded-2xl p-10 text-center text-white/45">Dashboard capabilities are unavailable for this championship.</div></div>;
+  20 |   const phaseProgress=Math.max(0,["CREATION","CONFIGURATION","TEAM_PROVISIONING","PLAYER_REGISTRATION","AUCTION","SQUAD_CONFIRMATION","LEAGUE_STAGE","PLAYOFFS","FINAL","COMPLETED","ARCHIVED"].indexOf(data.currentPhase));  react-hooks/set-state-in-effect
+
+C:\Users\karti\.codex\worktrees\play-neml-upgrade\sports-play-main\frontend\src\app\(authed)\history\page.tsx
+  17:7  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\Users\karti\.codex\worktrees\play-neml-upgrade\sports-play-main\frontend\src\app\(authed)\history\page.tsx:17:7
+  15 |   useEffect(() => {
+  16 |     if (!active?.defaultAuctionId) {
+> 17 |       setLoading(false);
+     |       ^^^^^^^^^^ Avoid calling setState() directly within an effect
+  18 |       return;
+  19 |     }
+  20 |     setLoading(true);  react-hooks/set-state-in-effect
+
+C:\Users\karti\.codex\worktrees\play-neml-upgrade\sports-play-main\frontend\src\app\(authed)\matches\page.tsx
+  26:3  error  Error: Cannot access refs during render
+
+React refs are values that are not needed for rendering. Refs should only be accessed outside of render, such as in event handlers or effects. Accessing a ref value (the `current` property) during render can cause your component not to update as expected (https://react.dev/reference/react/useRef).
+
+C:\Users\karti\.codex\worktrees\play-neml-upgrade\sports-play-main\frontend\src\app\(authed)\matches\page.tsx:26:3
+  24 |   const [squadsReady, setSquadsReady] = useState(false);
+  25 |   const selectedIdRef = useRef<string | null>(null);
+> 26 |   selectedIdRef.current = selectedId;
+     |   ^^^^^^^^^^^^^^^^^^^^^ Cannot update ref during render
+  27 |
+  28 |   const load = useCallback(async () => {
+  29 |     setLoading(true);                                                                                                                                                                                                                                                                    react-hooks/refs
+  50:5  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\Users\karti\.codex\worktrees\play-neml-upgrade\sports-play-main\frontend\src\app\(authed)\matches\page.tsx:50:5
+  48 |
+  49 |   useEffect(() => {
+> 50 |     load();
+     |     ^^^^ Avoid calling setState() directly within an effect
+  51 |   }, [load]);
+  52 |
+  53 |   // Realtime updates: reload matches whenever a MATCH event arrives  react-hooks/set-state-in-effect
+
+C:\Users\karti\.codex\worktrees\play-neml-upgrade\sports-play-main\frontend\src\app\(authed)\players\page.tsx
+  40:5  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\Users\karti\.codex\worktrees\play-neml-upgrade\sports-play-main\frontend\src\app\(authed)\players\page.tsx:40:5
+  38 |   useEffect(() => {
+  39 |     const controller=new AbortController();
+> 40 |     loadPlayers(controller.signal);
+     |     ^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  41 |     if (isAdmin && championshipId) {
+  42 |       api.get<{ playerBasePrice: number }>(`/championships/${championshipId}/settings`,{signal:controller.signal})
+  43 |         .then(({ data }) => {if(!controller.signal.aborted)setDefaultBasePrice(Number(data.playerBasePrice));})  react-hooks/set-state-in-effect
+
+C:\Users\karti\.codex\worktrees\play-neml-upgrade\sports-play-main\frontend\src\app\(authed)\scoreboard\page.tsx
+  26:5  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\Users\karti\.codex\worktrees\play-neml-upgrade\sports-play-main\frontend\src\app\(authed)\scoreboard\page.tsx:26:5
+  24 |
+  25 |   useEffect(() => {
+> 26 |     load(penaltiesOn);
+     |     ^^^^ Avoid calling setState() directly within an effect
+  27 |   }, [load, penaltiesOn]);
+  28 |
+  29 |   useEffect(() => {  react-hooks/set-state-in-effect
+
+C:\Users\karti\.codex\worktrees\play-neml-upgrade\sports-play-main\frontend\src\app\(authed)\squad-confirmation\page.tsx
+  51:21  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\Users\karti\.codex\worktrees\play-neml-upgrade\sports-play-main\frontend\src\app\(authed)\squad-confirmation\page.tsx:51:21
+  49 |   }, [active, captainTeamId]);
+  50 |
+> 51 |   useEffect(() => { load(); }, [load]);
+     |                     ^^^^ Avoid calling setState() directly within an effect
+  52 |
+  53 |   const selected = summary?.teams.find((team) => team.teamId === selectedTeamId) || null;
+  54 |   const roster = useMemo(() => players.filter((player) => player.teamId === selectedTeamId), [players, selectedTeamId]);  react-hooks/set-state-in-effect
+
+C:\Users\karti\.codex\worktrees\play-neml-upgrade\sports-play-main\frontend\src\app\activate\page.tsx
+  14:5  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\Users\karti\.codex\worktrees\play-neml-upgrade\sports-play-main\frontend\src\app\activate\page.tsx:14:5
+  12 |   const [complete,setComplete]=useState(false);
+  13 |   useEffect(()=>{
+> 14 |     setToken(new URLSearchParams(window.location.hash.slice(1)).get("token") || "");
+     |     ^^^^^^^^ Avoid calling setState() directly within an effect
+  15 |     window.history.replaceState(null,"",window.location.pathname);
+  16 |   },[]);
+  17 |   async function submit(event:FormEvent){  react-hooks/set-state-in-effect
+
+C:\Users\karti\.codex\worktrees\play-neml-upgrade\sports-play-main\frontend\src\components\CricketMatchPanel.tsx
+  68:5  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\Users\karti\.codex\worktrees\play-neml-upgrade\sports-play-main\frontend\src\components\CricketMatchPanel.tsx:68:5
+  66 |   }, [base, championshipId]);
+  67 |   useEffect(() => {
+> 68 |     load();
+     |     ^^^^ Avoid calling setState() directly within an effect
+  69 |   }, [load]);
+  70 |   const active = state?.innings.find((i) => i.status === "LIVE"),
+  71 |     battingPlayers = players.filter((p) => p.teamId === active?.battingTeamId),                                                 react-hooks/set-state-in-effect
+  80:5  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\Users\karti\.codex\worktrees\play-neml-upgrade\sports-play-main\frontend\src\components\CricketMatchPanel.tsx:80:5
+  78 |   useEffect(() => {
+  79 |     if (!active?.nextStrikerPlayerId || !active.nextNonStrikerPlayerId) return;
+> 80 |     setBall((current) => ({
+     |     ^^^^^^^ Avoid calling setState() directly within an effect
+  81 |       ...current,
+  82 |       strikerPlayerId: active.nextStrikerPlayerId || "",
+  83 |       nonStrikerPlayerId: active.nextNonStrikerPlayerId || "",  react-hooks/set-state-in-effect
+
+C:\Users\karti\.codex\worktrees\play-neml-upgrade\sports-play-main\frontend\src\components\SplashScreen.tsx
+  15:3  error  Error: Cannot access refs during render
+
+React refs are values that are not needed for rendering. Refs should only be accessed outside of render, such as in event handlers or effects. Accessing a ref value (the `current` property) during render can cause your component not to update as expected (https://react.dev/reference/react/useRef).
+
+C:\Users\karti\.codex\worktrees\play-neml-upgrade\sports-play-main\frontend\src\components\SplashScreen.tsx:15:3
+  13 |   const [leaving, setLeaving] = useState(false);
+  14 |   const onCompleteRef = useRef(onComplete);
+> 15 |   onCompleteRef.current = onComplete;
+     |   ^^^^^^^^^^^^^^^^^^^^^ Cannot update ref during render
+  16 |
+  17 |   useEffect(() => {
+  18 |     const finish = window.setTimeout(() => setLeaving(true), 650);  react-hooks/refs
+
+C:\Users\karti\.codex\worktrees\play-neml-upgrade\sports-play-main\frontend\src\components\auction\BidPanel.tsx
+  23:5   error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\Users\karti\.codex\worktrees\play-neml-upgrade\sports-play-main\frontend\src\components\auction\BidPanel.tsx:23:5
+  21 |
+  22 |   useEffect(() => {
+> 23 |     setAmount(minNext);
+     |     ^^^^^^^^^ Avoid calling setState() directly within an effect
+  24 |   }, [minNext]);
+  25 |
+  26 |   useEffect(() => {                                                                  react-hooks/set-state-in-effect
+  27:21  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\Users\karti\.codex\worktrees\play-neml-upgrade\sports-play-main\frontend\src\components\auction\BidPanel.tsx:27:21
+  25 |
+  26 |   useEffect(() => {
+> 27 |     if (userTeamId) setSelectedTeam(userTeamId);
+     |                     ^^^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  28 |   }, [userTeamId]);
+  29 |
+  30 |   const placeBid = async () => {  react-hooks/set-state-in-effect
+
+C:\Users\karti\.codex\worktrees\play-neml-upgrade\sports-play-main\frontend\src\components\theme-toggle.tsx
+  12:5  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\Users\karti\.codex\worktrees\play-neml-upgrade\sports-play-main\frontend\src\components\theme-toggle.tsx:12:5
+  10 |
+  11 |   React.useEffect(() => {
+> 12 |     setMounted(true);
+     |     ^^^^^^^^^^ Avoid calling setState() directly within an effect
+  13 |   }, []);
+  14 |
+  15 |   if (!mounted) {  react-hooks/set-state-in-effect
+
+✖ 19 problems (18 errors, 1 warning)
+

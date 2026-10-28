@@ -1,0 +1,16 @@
+[
+  {
+    "file": "bulk-1.pdf",
+    "recipient": "Coastal Blazers",
+    "pages": 1,
+    "orientation": "landscape",
+    "qrDestination": "http://localhost:53005/verify?reference=PN-1D015AAC319645DBB2119CB00BD58E35"
+  },
+  {
+    "file": "bulk-2.pdf",
+    "recipient": "Northside Aces",
+    "pages": 1,
+    "orientation": "landscape",
+    "qrDestination": "http://localhost:53005/verify?reference=PN-6EF808FE2D324E3995278EC1D84DF421"
+  }
+]

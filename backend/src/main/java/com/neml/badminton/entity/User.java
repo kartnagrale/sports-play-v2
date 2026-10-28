@@ -24,6 +24,12 @@ public class User {
     @Column(nullable = false)
     private String passwordHash;
 
+    @Column(nullable=false) @Builder.Default
+    private Boolean accountEnabled = true;
+
+    @Column(nullable=false) @Builder.Default
+    private Integer credentialVersion = 0;
+
     @Column(nullable = false)
     private String fullName;
 

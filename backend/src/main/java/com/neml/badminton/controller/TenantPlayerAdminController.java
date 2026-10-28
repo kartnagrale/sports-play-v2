@@ -24,52 +24,55 @@ public class TenantPlayerAdminController {
     private final AuctionStateRepository states; private final BidRepository bids;
     private final org.springframework.jdbc.core.JdbcTemplate jdbc;
     private final SquadConfirmationService squadConfirmations;
+    private final com.neml.badminton.service.PlayerRegistrationService registration;
+    private final com.neml.badminton.service.PlayerPhotoService photos;
 
     public TenantPlayerAdminController(ChampionshipRepository championships, AuctionRepository auctions,
             PlayerRepository players, TournamentSettingsRepository settings, AuctionStateRepository states,
             BidRepository bids, org.springframework.jdbc.core.JdbcTemplate jdbc,
-            SquadConfirmationService squadConfirmations) {
+            SquadConfirmationService squadConfirmations, com.neml.badminton.service.PlayerRegistrationService registration,com.neml.badminton.service.PlayerPhotoService photos) {
         this.championships=championships; this.auctions=auctions; this.players=players; this.settings=settings;
         this.states=states; this.bids=bids; this.jdbc=jdbc;
         this.squadConfirmations=squadConfirmations;
+        this.registration=registration;
+        this.photos=photos;
     }
 
-    public record PlayerRequest(@NotBlank String fullName, @NotNull Gender gender,
-                                @DecimalMin("0.01") BigDecimal basePrice,
-                                String skillLevel, @Min(1) Integer auctionOrder) {}
+    public record PlayerRequest(@NotBlank @Size(max=255) String fullName, @NotNull Gender gender,
+                                @DecimalMin("0.01") @Digits(integer=17,fraction=2) BigDecimal basePrice,
+                                @Size(max=255) String skillLevel, @Min(1) Integer auctionOrder, @Size(max=64) String playerReference) {}
 
     @PostMapping @Transactional
     public PlayerDto create(@PathVariable UUID championshipId, @Valid @RequestBody PlayerRequest req) {
-        squadConfirmations.assertRosterMutable(championshipId);
-        Championship championship=championships.findByIdForUpdate(championshipId).orElseThrow(()->notFound("Championship"));
-        Auction auction=auctions.findAllByChampionshipIdOrderByCreatedAtDesc(championshipId).stream().findFirst()
-                .orElseThrow(()->new ResponseStatusException(HttpStatus.CONFLICT,"Configure the championship before adding players"));
-        TournamentSettings config=settings.findByChampionshipId(championshipId).orElseThrow(()->notFound("Settings"));
-        int next=players.findAllByChampionshipIdOrderByAuctionOrderAsc(championshipId).stream()
-                .mapToInt(p->p.getAuctionOrder()==null?0:p.getAuctionOrder()).max().orElse(0)+1;
-        Player player=Player.builder().championship(championship).auction(auction).fullName(req.fullName().trim())
-                .gender(req.gender()).basePrice(req.basePrice()==null?config.getPlayerBasePrice():req.basePrice())
-                .skillLevel(req.skillLevel()).status(PlayerStatus.AVAILABLE)
-                .auctionOrder(req.auctionOrder()==null?next:req.auctionOrder()).build();
-        championship.setLifecyclePhase(ChampionshipPhase.PLAYER_REGISTRATION);championships.save(championship);
-        return PlayerDto.from(players.save(player));
+        return PlayerDto.from(registration.register(championshipId,java.util.List.of(new com.neml.badminton.service.PlayerRegistrationService.Registration(
+                req.fullName(),req.gender(),req.basePrice(),req.skillLevel(),req.auctionOrder(),req.playerReference()))).get(0));
     }
 
     @PutMapping("/{id}") @Transactional
     public PlayerDto update(@PathVariable UUID championshipId,@PathVariable UUID id,@Valid @RequestBody PlayerRequest req){
+        championships.findByIdForUpdate(championshipId).orElseThrow(()->notFound("Championship"));
         squadConfirmations.assertRosterMutable(championshipId);
         Player player=players.findByIdAndChampionshipId(id,championshipId).orElseThrow(()->notFound("Player"));
         if(player.getStatus()==PlayerStatus.SOLD)throw new ResponseStatusException(HttpStatus.CONFLICT,"Sold players cannot be edited");
+        String reference=com.neml.badminton.service.PlayerRegistrationService.reference(req.playerReference());
+        if(reference!=null){
+            var errors=com.neml.badminton.service.PlayerRegistrationService.validate(new com.neml.badminton.service.PlayerRegistrationService.Registration(req.fullName(),req.gender(),req.basePrice(),req.skillLevel(),req.auctionOrder(),reference));
+            if(!errors.isEmpty())throw new ResponseStatusException(HttpStatus.BAD_REQUEST,String.join("; ",errors));
+            if(player.getPlayerReference()!=null&&!reference.equals(player.getPlayerReference()))throw new ResponseStatusException(HttpStatus.CONFLICT,"A stable Player Reference cannot be changed");
+            player.setPlayerReference(reference);
+        }
         player.setFullName(req.fullName().trim());player.setGender(req.gender());
         if(req.basePrice()!=null)player.setBasePrice(req.basePrice());player.setSkillLevel(req.skillLevel());
         if(req.auctionOrder()!=null)player.setAuctionOrder(req.auctionOrder());return PlayerDto.from(players.save(player));
     }
 
     @DeleteMapping("/{id}") @Transactional
-    public void delete(@PathVariable UUID championshipId,@PathVariable UUID id){
+    public void delete(@PathVariable UUID championshipId,@PathVariable UUID id,@org.springframework.security.core.annotation.AuthenticationPrincipal User actor){
+        championships.findByIdForUpdate(championshipId).orElseThrow(()->notFound("Championship"));
         squadConfirmations.assertRosterMutable(championshipId);
         Player player=players.findByIdAndChampionshipId(id,championshipId).orElseThrow(()->notFound("Player"));
         if(player.getStatus()==PlayerStatus.SOLD)throw new ResponseStatusException(HttpStatus.CONFLICT,"Sold players cannot be deleted");
+        if(player.getPhotoKey()!=null)photos.remove(championshipId,id,actor.getId());
         states.findAllByChampionshipId(championshipId).stream()
                 .filter(s->s.getCurrentPlayer()!=null&&s.getCurrentPlayer().getId().equals(id))
                 .forEach(s->{s.setCurrentPlayer(null);states.save(s);});

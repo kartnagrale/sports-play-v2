@@ -1,0 +1,11 @@
+const {test}=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),Module=require('node:module'),ts=require('typescript'),React=require('react');
+const {renderToStaticMarkup}=require('react-dom/server');
+const file=require('node:path').resolve(__dirname,'../src/components/portal/Portal.tsx');const compiled=new Module(file);const original=compiled.require.bind(compiled);
+compiled.require=name=>name==='@/components/ui'?{Card:({children})=>React.createElement('section',null,children),EmptyState:({title})=>React.createElement('p',null,title),StatusBadge:({children})=>React.createElement('span',null,children)}:name==='@/lib/navigation'?{useNavigation:()=>({screens:[]})}:original(name);
+compiled.paths=module.paths;
+compiled._compile(ts.transpileModule(fs.readFileSync(file,'utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022,jsx:ts.JsxEmit.ReactJSX}}).outputText,file);
+const {Fixtures}=compiled.exports;
+const match={id:'match',stageType:'FINAL',matchNumber:1,teamA:{name:'Aces'},teamB:{name:'Blazers'},status:'COMPLETED',teamAFormatWins:0,teamBFormatWins:0,formats:[],winner:{name:'Aces'}};
+test('completed cricket fixture names its authoritative winner instead of a zero rubber score',()=>{const html=renderToStaticMarkup(React.createElement(Fixtures,{title:'Results',fixtures:[match],empty:'No results'}));assert.match(html,/Aces won/);assert.doesNotMatch(html,/0 – 0/);});
+test('badminton fixture retains its actual rubber score',()=>{const html=renderToStaticMarkup(React.createElement(Fixtures,{title:'Results',fixtures:[{...match,formats:[{}],teamAFormatWins:3,teamBFormatWins:2}],empty:'No results'}));assert.match(html,/3 – 2/);});
+test('completed cricket tie does not fabricate a winning side',()=>{const html=renderToStaticMarkup(React.createElement(Fixtures,{title:'Results',fixtures:[{...match,winner:null}],empty:'No results'}));assert.doesNotMatch(html,/Aces won/);assert.match(html,/Completed/);});

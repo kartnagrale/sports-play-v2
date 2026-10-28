@@ -25,9 +25,10 @@ The normal `application.yml` remains the company-environment configuration. The 
 
 For a new empty local database and schema:
 
-1. Run the backend once with the additional argument `--spring.jpa.hibernate.ddl-auto=update --app.seed.enabled=false` to create the JPA tables.
-2. Execute `docs/sql/2026-08-22-strict-multi-championship.sql` against the `sports_play` database.
-3. Execute `docs/sql/2026-08-22-championship-admin-configuration.sql` against the `sports_play` database.
-4. Remove the one-time arguments and start with the `local` profile. Hibernate then validates the schema and demo data is seeded.
+1. Execute `docs/sql/sports-play-complete-schema.sql` once against the empty database as its owner.
+2. Run `tools/apply-migrations.ps1` using `PGHOST`, `PGPORT`, `PGDATABASE`, `PGUSER`, and a protected password source such as `.pgpass`.
+3. Start the backend with Hibernate `validate`. Essential navigation initializes independently of demo seeding. Enable `DATA_SEED_ENABLED` only for disposable local demonstrations.
+
+For a populated database use the reviewed incremental migration, not this empty-database sequence. Do not use `ddl-auto=update`. See [Phase 1 operations](phase-1/OPERATIONS.md).
 
 Never run the local rebuild sequence against the company database.

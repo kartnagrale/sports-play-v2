@@ -13,8 +13,10 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 public interface AuctionStateRepository extends JpaRepository<AuctionState, UUID> {
+    @Lock(LockModeType.PESSIMISTIC_READ)
     Optional<AuctionState> findByAuctionIdAndChampionshipId(UUID auctionId, UUID championshipId);
     List<AuctionState> findAllByChampionshipId(UUID championshipId);
+    // Increment even when only a bid/player changes (e.g. undo while paused).
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("select s from AuctionState s where s.auction.id = :auctionId and s.championship.id = :championshipId")
     Optional<AuctionState> findByAuctionIdForUpdate(@Param("auctionId") UUID auctionId,

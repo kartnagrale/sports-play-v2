@@ -1,0 +1,72 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] ----------------------< com.neml:sports-platform >----------------------
+[INFO] Building universal-sports-platform 0.0.1-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ sports-platform ---
+[INFO] Copying 2 resources from src\main\resources to target\classes
+[INFO] Copying 1 resource from src\main\resources to target\classes
+[INFO] 
+[INFO] --- compiler:3.11.0:compile (default-compile) @ sports-platform ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ sports-platform ---
+[INFO] skip non existing resourceDirectory C:\Users\karti\.codex\worktrees\play-neml-upgrade\sports-play-main\backend\src\test\resources
+[INFO] 
+[INFO] --- compiler:3.11.0:testCompile (default-testCompile) @ sports-platform ---
+[INFO] Changes detected - recompiling the module! :source
+[INFO] Compiling 13 source files with javac [debug release 17] to target\test-classes
+[INFO] 
+[INFO] --- surefire:3.1.2:test (default-test) @ sports-platform ---
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running com.neml.badminton.config.StompAuthorizationInterceptorTest
+OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 8.147 s -- in com.neml.badminton.config.StompAuthorizationInterceptorTest
+[INFO] Running com.neml.badminton.controller.ChampionshipPrincipalTest
+14:32:27.679 [main] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [com.neml.badminton.controller.ChampionshipPrincipalTest]: ChampionshipPrincipalTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+14:32:28.716 [main] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration com.neml.badminton.NemlBadmintonApplication for test class com.neml.badminton.controller.ChampionshipPrincipalTest
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+ :: Spring Boot ::                (v3.2.5)
+
+2026-10-27T14:32:31.503+05:30 INFO  [background-preinit] [traceId=none] o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.1.Final
+2026-10-27T14:32:31.709+05:30 INFO  [main] [traceId=none] c.n.b.c.ChampionshipPrincipalTest - Starting ChampionshipPrincipalTest using Java 17.0.20.1 with PID 13700 (started by karti in C:\Users\karti\.codex\worktrees\play-neml-upgrade\sports-play-main\backend)
+2026-10-27T14:32:31.714+05:30 INFO  [main] [traceId=none] c.n.b.c.ChampionshipPrincipalTest - No active profile set, falling back to 1 default profile: "default"
+2026-10-27T14:32:39.884+05:30 INFO  [main] [traceId=none] o.s.s.web.DefaultSecurityFilterChain - Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@228958a, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@7cd3860, org.springframework.security.web.context.SecurityContextHolderFilter@57df09a7, org.springframework.security.web.header.HeaderWriterFilter@6e355249, org.springframework.web.filter.CorsFilter@44f23927, org.springframework.security.web.authentication.logout.LogoutFilter@23dff243, com.neml.badminton.security.JwtAuthFilter@5d3634c8, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@81dfdee, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@14b9df65, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@59cde35, org.springframework.security.web.session.SessionManagementFilter@7474196, org.springframework.security.web.access.ExceptionTranslationFilter@323eecf8, org.springframework.security.web.access.intercept.AuthorizationFilter@7b8fcdf2]
+2026-10-27T14:32:41.030+05:30 INFO  [main] [traceId=none] o.s.b.t.m.w.SpringBootMockServletContext - Initializing Spring TestDispatcherServlet ''
+2026-10-27T14:32:41.032+05:30 INFO  [main] [traceId=none] o.s.t.web.servlet.TestDispatcherServlet - Initializing Servlet ''
+2026-10-27T14:32:41.039+05:30 INFO  [main] [traceId=none] o.s.t.web.servlet.TestDispatcherServlet - Completed initialization in 7 ms
+2026-10-27T14:32:41.212+05:30 INFO  [main] [traceId=none] c.n.b.c.ChampionshipPrincipalTest - Started ChampionshipPrincipalTest in 12.077 seconds (process running for 25.576)
+2026-10-27T14:32:42.097+05:30 INFO  [main] [traceId=c3400f81-2aa5-4809-928d-a75a36a15f8e] c.n.b.config.RequestLoggingFilter - Request completed method=GET path=/api/championships status=200 actor=anonymous durationMs=729
+2026-10-27T14:32:42.214+05:30 INFO  [main] [traceId=4c8b1b4c-e352-4d81-9742-6da440e9d7d0] c.n.b.config.RequestLoggingFilter - Request completed method=GET path=/api/championships status=200 actor=anonymous durationMs=14
+2026-10-27T14:32:42.343+05:30 INFO  [main] [traceId=a692a97d-0cec-4788-b8be-5ae7f7bd0950] c.n.b.config.RequestLoggingFilter - Request completed method=GET path=/api/championships/8092c512-9a4f-4eac-8e28-453f43ed164c status=200 actor=anonymous durationMs=79
+2026-10-27T14:32:42.364+05:30 WARN  [main] [traceId=39721771-fee1-45d9-af6c-21ad6389f1ac] c.n.b.controller.ApiExceptionHandler - Request access denied
+2026-10-27T14:32:42.390+05:30 INFO  [main] [traceId=39721771-fee1-45d9-af6c-21ad6389f1ac] c.n.b.config.RequestLoggingFilter - Request completed method=GET path=/api/championships/600814ca-740e-49cb-9175-9db97386ada0 status=403 actor=anonymous durationMs=42
+2026-10-27T14:32:42.440+05:30 WARN  [main] [traceId=9c9671a4-d607-4dbc-9602-b8ca846d50c5] c.n.b.controller.ApiExceptionHandler - Request access denied
+2026-10-27T14:32:42.442+05:30 INFO  [main] [traceId=9c9671a4-d607-4dbc-9602-b8ca846d50c5] c.n.b.config.RequestLoggingFilter - Request completed method=GET path=/api/championships status=403 actor=anonymous durationMs=6
+2026-10-27T14:32:42.477+05:30 INFO  [main] [traceId=5204f8f2-c122-4318-904f-6ec8e26b0530] c.n.b.config.RequestLoggingFilter - Request completed method=GET path=/api/championships status=403 actor=anonymous durationMs=10
+2026-10-27T14:32:42.497+05:30 INFO  [main] [traceId=d4c054cb-f5d4-425a-8199-c092280cff30] c.n.b.config.RequestLoggingFilter - Request completed method=GET path=/api/championships status=403 actor=anonymous durationMs=4
+2026-10-27T14:32:42.507+05:30 INFO  [main] [traceId=9aac332a-9161-489d-86c1-179a21a03527] c.n.b.config.RequestLoggingFilter - Request completed method=GET path=/api/championships status=403 actor=anonymous durationMs=4
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 15.59 s -- in com.neml.badminton.controller.ChampionshipPrincipalTest
+[INFO] 
+[INFO] Results:
+[INFO] 
+[INFO] Tests run: 9, Failures: 0, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  54.107 s
+[INFO] Finished at: 2026-10-27T14:32:43+05:30
+[INFO] ------------------------------------------------------------------------

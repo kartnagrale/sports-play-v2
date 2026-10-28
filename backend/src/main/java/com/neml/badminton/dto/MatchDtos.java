@@ -18,11 +18,11 @@ public class MatchDtos {
         }
     }
 
-    public record PlayerRef(UUID id, String fullName, String gender, UUID teamId) {
+    public record PlayerRef(UUID id, String fullName, String gender, UUID teamId,String photoUrl) {
         public static PlayerRef from(Player p) {
             if (p == null) return null;
             return new PlayerRef(p.getId(), p.getFullName(), p.getGender().name(),
-                    p.getTeam() == null ? null : p.getTeam().getId());
+                    p.getTeam() == null ? null : p.getTeam().getId(),Dtos.PlayerDto.photoUrl(p));
         }
     }
 

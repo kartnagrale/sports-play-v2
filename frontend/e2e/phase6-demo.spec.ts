@@ -1,0 +1,13 @@
+import { test, expect, type Page } from "@playwright/test";
+import fs from "node:fs";
+test.skip(!process.env.PHASE6_DEMO_TESTS,"Run after tools/seed-phase6-demo.mjs");
+const access=()=>JSON.parse(fs.readFileSync("../tmp/phase6-demo-access.json","utf8"));
+async function login(page:Page,account:{email:string;password:string}) {await page.goto("/login");await page.getByLabel("Email",{exact:true}).fill(account.email);await page.getByLabel("Password",{exact:true}).fill(account.password);await page.getByTestId("login-submit").click();await expect(page.getByRole("navigation",{name:"Role-based navigation",exact:true})).toBeVisible();}
+test("Prepared demo archive and live arena remain usable without publishing credentials",async({browser})=>{
+ const data=access();const evidence="../docs/phase-6/evidence";
+ expect(data.archive.certificates).toHaveLength(4);
+ const publicContext=await browser.newContext();try{const publicPage=await publicContext.newPage();for(const certificate of data.archive.certificates){await publicPage.goto(certificate.url);await expect(publicPage.getByText("Valid certificate",{exact:true})).toBeVisible();}}finally{await publicContext.close();}
+ const adminContext=await browser.newContext({viewport:{width:1440,height:960}});try{const page=await adminContext.newPage();await login(page,data.live.admin);await page.goto("/players");await expect(page.locator("tbody tr")).toHaveCount(2);await expect(page.locator("tbody img")).toHaveCount(1);await expect.poll(()=>page.locator("tbody img").evaluate((img:HTMLImageElement)=>img.complete&&img.naturalWidth>0)).toBe(true);await page.screenshot({path:`${evidence}/demo-private-photo-and-default.png`});await page.goto("/auction");await expect(page.getByText("Live connection",{exact:true})).toBeVisible();await expect(page.getByTestId("admin-start")).toBeVisible();await page.screenshot({path:`${evidence}/demo-ready-auction.png`});}finally{await adminContext.close();}
+ const viewerContext=await browser.newContext();try{const page=await viewerContext.newPage();await page.goto("/room/join");await page.getByLabel("Room code",{exact:true}).fill(data.live.roomCode);await page.getByRole("button",{name:"Enter viewer room"}).click();await expect(page.getByRole("navigation",{name:"Role-based navigation",exact:true})).toBeVisible();await page.goto("/auction");await expect(page.getByText("Live connection",{exact:true})).toBeVisible();await expect(page.getByTestId("admin-controls")).toHaveCount(0);await expect(page.getByTestId("bid-panel")).toHaveCount(0);}finally{await viewerContext.close();}
+ fs.writeFileSync(`${evidence}/demo-validation.json`,JSON.stringify({validArchiveCertificates:4,livePlayers:2,privatePhotographs:1,defaultAvatars:1,auctionReady:true,viewerReadOnly:true},null,2));
+});

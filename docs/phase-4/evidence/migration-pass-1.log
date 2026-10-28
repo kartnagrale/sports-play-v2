@@ -1,0 +1,252 @@
+BEGIN
+ pg_advisory_xact_lock 
+-----------------------
+ 
+(1 row)
+
+CREATE TABLE
+ALTER TABLE
+ALTER TABLE
+CREATE TABLE
+CREATE INDEX
+INSERT 0 1
+COMMIT
+BEGIN
+ pg_advisory_xact_lock 
+-----------------------
+ 
+(1 row)
+
+CREATE TABLE
+ALTER TABLE
+ALTER TABLE
+CREATE INDEX
+CREATE TABLE
+INSERT 0 1
+COMMIT
+BEGIN
+ pg_advisory_xact_lock 
+-----------------------
+ 
+(1 row)
+
+CREATE TABLE
+ALTER TABLE
+ALTER TABLE
+CREATE TABLE
+CREATE INDEX
+INSERT 0 1
+COMMIT
+BEGIN
+ pg_advisory_xact_lock 
+-----------------------
+ 
+(1 row)
+
+CREATE TABLE
+ALTER TABLE
+ALTER TABLE
+CREATE INDEX
+CREATE TABLE
+INSERT 0 1
+COMMIT
+BEGIN
+ pg_advisory_xact_lock 
+-----------------------
+ 
+(1 row)
+
+CREATE TABLE
+ALTER TABLE
+ALTER TABLE
+CREATE TABLE
+CREATE INDEX
+INSERT 0 1
+COMMIT
+BEGIN
+ pg_advisory_xact_lock 
+-----------------------
+ 
+(1 row)
+
+CREATE TABLE
+ALTER TABLE
+ALTER TABLE
+CREATE INDEX
+CREATE TABLE
+INSERT 0 1
+COMMIT
+BEGIN
+ pg_advisory_xact_lock 
+-----------------------
+ 
+(1 row)
+
+CREATE TABLE
+ALTER TABLE
+ALTER TABLE
+CREATE TABLE
+CREATE INDEX
+INSERT 0 1
+COMMIT
+BEGIN
+ pg_advisory_xact_lock 
+-----------------------
+ 
+(1 row)
+
+CREATE TABLE
+ALTER TABLE
+ALTER TABLE
+CREATE INDEX
+CREATE TABLE
+INSERT 0 1
+COMMIT
+BEGIN
+ pg_advisory_xact_lock 
+-----------------------
+ 
+(1 row)
+
+CREATE TABLE
+ALTER TABLE
+ALTER TABLE
+CREATE TABLE
+CREATE INDEX
+INSERT 0 1
+COMMIT
+BEGIN
+ pg_advisory_xact_lock 
+-----------------------
+ 
+(1 row)
+
+CREATE TABLE
+ALTER TABLE
+ALTER TABLE
+CREATE INDEX
+CREATE TABLE
+INSERT 0 1
+COMMIT
+BEGIN
+ pg_advisory_xact_lock 
+-----------------------
+ 
+(1 row)
+
+CREATE TABLE
+ALTER TABLE
+ALTER TABLE
+INSERT 0 1
+COMMIT
+BEGIN
+ pg_advisory_xact_lock 
+-----------------------
+ 
+(1 row)
+
+CREATE TABLE
+ALTER TABLE
+ALTER TABLE
+CREATE TABLE
+CREATE INDEX
+INSERT 0 1
+COMMIT
+BEGIN
+ pg_advisory_xact_lock 
+-----------------------
+ 
+(1 row)
+
+CREATE TABLE
+ALTER TABLE
+ALTER TABLE
+CREATE INDEX
+CREATE TABLE
+INSERT 0 1
+COMMIT
+BEGIN
+ pg_advisory_xact_lock 
+-----------------------
+ 
+(1 row)
+
+CREATE TABLE
+ALTER TABLE
+ALTER TABLE
+INSERT 0 1
+COMMIT
+BEGIN
+ pg_advisory_xact_lock 
+-----------------------
+ 
+(1 row)
+
+CREATE TABLE
+ALTER TABLE
+ALTER TABLE
+CREATE TABLE
+CREATE INDEX
+INSERT 0 1
+COMMIT
+BEGIN
+ pg_advisory_xact_lock 
+-----------------------
+ 
+(1 row)
+
+CREATE TABLE
+ALTER TABLE
+ALTER TABLE
+CREATE INDEX
+CREATE TABLE
+INSERT 0 1
+COMMIT
+BEGIN
+ pg_advisory_xact_lock 
+-----------------------
+ 
+(1 row)
+
+CREATE TABLE
+ALTER TABLE
+ALTER TABLE
+INSERT 0 1
+COMMIT
+BEGIN
+ pg_advisory_xact_lock 
+-----------------------
+ 
+(1 row)
+
+CREATE TABLE
+ALTER TABLE
+ALTER TABLE
+CREATE TABLE
+CREATE INDEX
+INSERT 0 1
+COMMIT
+BEGIN
+ pg_advisory_xact_lock 
+-----------------------
+ 
+(1 row)
+
+CREATE TABLE
+ALTER TABLE
+ALTER TABLE
+CREATE INDEX
+CREATE TABLE
+INSERT 0 1
+COMMIT
+BEGIN
+ pg_advisory_xact_lock 
+-----------------------
+ 
+(1 row)
+
+CREATE TABLE
+ALTER TABLE
+ALTER TABLE
+INSERT 0 1
+COMMIT

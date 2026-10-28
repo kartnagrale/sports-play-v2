@@ -3,29 +3,29 @@
 import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { DoorOpen, Eye, LockKeyhole } from "lucide-react";
+import { Eye } from "lucide-react";
 import { api, ChampionshipDto } from "@/lib/api";
 import { useChampionship } from "@/lib/championship";
 import { toast } from "sonner";
+import { AuthLayout } from "@/components/AuthLayout";
+import { Button, Field, Input } from "@/components/ui";
 
 export default function JoinRoomPage() {
-  const router = useRouter(); const setViewer = useChampionship((s) => s.setViewer);
-  const [roomCode,setRoomCode]=useState(""); const [passcode,setPasscode]=useState(""); const [loading,setLoading]=useState(false);
-  async function submit(e:FormEvent){e.preventDefault();setLoading(true);try{
-    const {data}=await api.post<{token:string;championship:ChampionshipDto}>("/championships/join-room",{roomCode,passcode});
-    setViewer(data.championship,data.token);toast.success(`Joined ${data.championship.name} in viewer mode`);router.replace("/dashboard");
-  }catch(err:any){toast.error(err?.response?.data?.message||"Could not join that room");}finally{setLoading(false);}}
-  return <main className="min-h-screen grid place-items-center p-6 bg-bg">
-    <section className="card-elev rounded-3xl p-8 w-full max-w-md border border-white/10">
-      <div className="w-12 h-12 rounded-xl bg-primary/10 text-primary grid place-items-center mb-6"><DoorOpen /></div>
-      <div className="label-cap">Read-only access</div><h1 className="h-heading text-4xl mt-2">Join a championship</h1>
-      <p className="text-white/50 text-sm mt-3">Follow the auction, teams, fixtures, and live scores without an account.</p>
-      <form onSubmit={submit} className="space-y-4 mt-8">
-        <label className="block"><span className="label-cap block mb-2">Room code</span><input className="input uppercase" value={roomCode} onChange={e=>setRoomCode(e.target.value)} placeholder="NEML-BAD1" required /></label>
-        <label className="block"><span className="label-cap block mb-2">Passcode</span><div className="relative"><LockKeyhole className="absolute left-3 top-3 text-white/30" size={16}/><input className="input pl-10" type="password" value={passcode} onChange={e=>setPasscode(e.target.value)} placeholder="Room passcode" /></div></label>
-        <button className="btn btn-primary w-full justify-center py-3" disabled={loading}><Eye size={16}/>{loading?"Joining…":"Enter viewer room"}</button>
-      </form>
-      <Link href="/login" className="block text-center text-xs text-white/50 hover:text-primary mt-6">Championship staff? Sign in</Link>
-    </section>
-  </main>;
+  const router = useRouter(); const setViewer = useChampionship(state => state.setViewer);
+  const [roomCode, setRoomCode] = useState(""); const [passcode, setPasscode] = useState(""); const [loading, setLoading] = useState(false); const [error, setError] = useState("");
+  async function submit(event: FormEvent) {
+    event.preventDefault(); if (loading) return; setLoading(true); setError("");
+    try { const { data } = await api.post<{ token: string; championship: ChampionshipDto }>("/championships/join-room", { roomCode, passcode }); setViewer(data.championship, data.token); toast.success(`Joined ${data.championship.name} in viewer mode`); router.replace("/dashboard"); }
+    catch (err: unknown) { setError((err as { response?: { data?: { message?: string } } }).response?.data?.message || "Could not join that room. Check the room code and passcode."); }
+    finally { setLoading(false); }
+  }
+  return <AuthLayout eyebrow="Spectator access" title="Join a championship" description="Follow the auction, teams, fixtures and live scores. Enter the room code shared by your championship administrator.">
+    <form onSubmit={submit} className="space-y-5" aria-busy={loading}>
+      {error && <p role="alert" className="form-error">{error}</p>}
+      <Field label="Room code">{props => <Input {...props} className="uppercase" value={roomCode} onChange={e => setRoomCode(e.target.value)} placeholder="Championship room code" autoComplete="off" required />}</Field>
+      <Field label="Passcode" hint="Only required for rooms protected by a passcode.">{props => <Input {...props} type="password" value={passcode} onChange={e => setPasscode(e.target.value)} placeholder="Room passcode" autoComplete="off" />}</Field>
+      <Button type="submit" loading={loading} className="w-full"><Eye size={16} />{loading ? "Joining…" : "Enter viewer room"}</Button>
+    </form>
+    <div className="mt-8 border-t border-border pt-6"><p className="text-xs leading-relaxed text-muted">Viewer rooms provide read-only access. Championship staff use their own account.</p><Link href="/login" className="btn btn-ghost mt-4 w-full">Staff sign in</Link></div>
+  </AuthLayout>;
 }

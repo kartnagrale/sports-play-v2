@@ -1,0 +1,3 @@
+evidence/*.log -text
+evidence/*.json -text
+evidence/*.txt -text

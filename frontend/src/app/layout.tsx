@@ -2,11 +2,15 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { Toaster } from "sonner";
 import { ThemeProvider } from "@/components/theme-provider";
-import { ThemeToggle } from "@/components/theme-toggle";
+import { Outfit, JetBrains_Mono } from "next/font/google";
+
+const bodyFont=Outfit({subsets:["latin"],variable:"--font-outfit",display:"swap"});
+const monoFont=JetBrains_Mono({subsets:["latin"],variable:"--font-jetbrains",display:"swap"});
 
 export const metadata: Metadata = {
-  title: "PlayNeml Khelo Corporate",
-  description: "Live auction & tournament management for PlayNeml Khelo Corporate",
+  title: { default: "Play-Neml | Championship workspace", template: "%s | Play-Neml" },
+  description: "One Platform. Every Championship. Manage multi-sport championships, live auctions, teams and scores with Play-Neml.",
+  applicationName: "Play-Neml",
 };
 
 export default function RootLayout({
@@ -16,22 +20,13 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <head>
-        <link
-          href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Outfit:wght@300;400;500;600;700;900&family=JetBrains+Mono:wght@400;500&display=swap"
-          rel="stylesheet"
-        />
-      </head>
-      <body className="grain bg-bg transition-colors duration-300">
+      <body className={`${bodyFont.variable} ${monoFont.variable} bg-bg antialiased`}>
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
-          <div className="absolute top-4 right-4 z-50">
-            <ThemeToggle />
-          </div>
           <div className="relative z-10 min-h-screen">{children}</div>
           <Toaster
             position="top-right"
             toastOptions={{
-              className: "dark:bg-[#1A1D24] dark:border-[rgba(255,255,255,0.1)] dark:text-[#FFFFFF] bg-[#FFFFFF] border-[#E4E4E7] text-[#09090B] font-body",
+              className: "font-body",
             }}
           />
         </ThemeProvider>

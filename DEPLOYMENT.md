@@ -88,3 +88,5 @@ docker compose up -d
 ```
 
 Review database migration scripts before deploying application changes that introduce new entities or columns.
+
+Phase 1 upgrades require the owner-run account-security migration before backend startup. See [Phase 1 operations](docs/phase-1/OPERATIONS.md) for the checksum ledger, optional legacy-credential quarantine and new setup-link contract. These procedures have not been executed against production.

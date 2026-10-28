@@ -1,0 +1,64 @@
+Standard Commons Logging discovery in action with spring-jcl: please remove commons-logging.jar from classpath in order to avoid potential conflicts
+20:58:01.174 [main] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [com.neml.badminton.certificate.CertificateDatabaseTest]: CertificateDatabaseTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+20:58:01.666 [main] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration com.neml.badminton.NemlBadmintonApplication for test class com.neml.badminton.certificate.CertificateDatabaseTest
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::               (v3.5.16)
+
+2026-10-28T20:58:03.482+05:30 INFO  [background-preinit] [traceId=none] o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.3.Final
+2026-10-28T20:58:03.630+05:30 INFO  [main] [traceId=none] c.n.b.c.CertificateDatabaseTest - Starting CertificateDatabaseTest using Java 17.0.20.1 with PID 2280 (started by karti in C:\Users\karti\.codex\worktrees\play-neml-upgrade\sports-play-main\backend)
+2026-10-28T20:58:03.630+05:30 INFO  [main] [traceId=none] c.n.b.c.CertificateDatabaseTest - No active profile set, falling back to 1 default profile: "default"
+2026-10-28T20:58:07.026+05:30 INFO  [main] [traceId=none] o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-10-28T20:58:07.486+05:30 INFO  [main] [traceId=none] o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 422 ms. Found 32 JPA repository interfaces.
+2026-10-28T20:58:09.157+05:30 INFO  [main] [traceId=none] o.hibernate.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-10-28T20:58:09.531+05:30 INFO  [main] [traceId=none] org.hibernate.Version - HHH000412: Hibernate ORM core version 6.6.53.Final
+2026-10-28T20:58:09.728+05:30 INFO  [main] [traceId=none] o.h.c.internal.RegionFactoryInitiator - HHH000026: Second-level cache disabled
+2026-10-28T20:58:11.192+05:30 INFO  [main] [traceId=none] o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-10-28T20:58:11.324+05:30 INFO  [main] [traceId=none] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2026-10-28T20:58:11.826+05:30 INFO  [main] [traceId=none] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@43090195
+2026-10-28T20:58:11.830+05:30 INFO  [main] [traceId=none] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2026-10-28T20:58:12.058+05:30 INFO  [main] [traceId=none] org.hibernate.orm.connections.pooling - HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 15.19
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-10-28T20:58:16.443+05:30 INFO  [main] [traceId=none] o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-10-28T20:58:16.589+05:30 INFO  [main] [traceId=none] o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-10-28T20:58:17.161+05:30 INFO  [main] [traceId=none] o.s.d.j.r.query.QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-10-28T20:58:21.074+05:30 INFO  [main] [traceId=none] o.s.s.c.a.a.c.InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer - Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
+2026-10-28T20:58:22.776+05:30 INFO  [main] [traceId=none] o.s.b.t.m.w.SpringBootMockServletContext - Initializing Spring TestDispatcherServlet ''
+2026-10-28T20:58:22.776+05:30 INFO  [main] [traceId=none] o.s.t.web.servlet.TestDispatcherServlet - Initializing Servlet ''
+2026-10-28T20:58:22.780+05:30 INFO  [main] [traceId=none] o.s.t.web.servlet.TestDispatcherServlet - Completed initialization in 2 ms
+2026-10-28T20:58:22.816+05:30 INFO  [main] [traceId=none] o.s.m.s.b.SimpleBrokerMessageHandler - Starting...
+2026-10-28T20:58:22.816+05:30 INFO  [main] [traceId=none] o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=true, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@162ea06f]]
+2026-10-28T20:58:22.816+05:30 INFO  [main] [traceId=none] o.s.m.s.b.SimpleBrokerMessageHandler - Started.
+2026-10-28T20:58:22.845+05:30 INFO  [main] [traceId=none] c.n.b.c.CertificateDatabaseTest - Started CertificateDatabaseTest in 20.746 seconds (process running for 23.769)
+2026-10-28T20:58:23.425+05:30 INFO  [main] [traceId=none] c.n.b.config.ApplicationLifecycleLogger - Sports-Play ready profiles=default port=8001 logFile=logs/sports-play.log
+2026-10-28T20:58:23.428+05:30 INFO  [main] [traceId=none] c.n.b.config.ApplicationLifecycleLogger - Database ready product=PostgreSQL version=15.19 url=jdbc:postgresql://127.0.0.1:55445/phase5 schema=play_neml
+OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+2026-10-28T20:58:24.533+05:30 INFO  [main] [traceId=0bb0e4fd-d463-49b9-8f65-9956cde5f29c] c.n.b.config.RequestLoggingFilter - Request completed method=GET path=/api/championships/79b36978-0193-4de0-ae19-a649ba523ced/admin/certificates status=401 actor=anonymous durationMs=59
+2026-10-28T20:58:24.927+05:30 INFO  [main] [traceId=67c55b98-4a03-44e5-b833-d0cd231bf79d] c.n.b.config.RequestLoggingFilter - Request completed method=GET path=/api/championships/79b36978-0193-4de0-ae19-a649ba523ced/admin/certificates status=200 actor=anonymous durationMs=359
+2026-10-28T20:58:24.940+05:30 WARN  [main] [traceId=521f494d-a202-4778-bee6-fe909921940c] c.n.b.controller.ApiExceptionHandler - Request access denied
+2026-10-28T20:58:24.949+05:30 INFO  [main] [traceId=521f494d-a202-4778-bee6-fe909921940c] c.n.b.config.RequestLoggingFilter - Request completed method=GET path=/api/championships/ab11a5a9-17b4-4596-ace6-d57102063c4e/admin/certificates status=403 actor=anonymous durationMs=21
+2026-10-28T20:58:24.955+05:30 WARN  [main] [traceId=4b60e5cc-d308-443d-ba2e-ce11dd60aeee] c.n.b.controller.ApiExceptionHandler - Request access denied
+2026-10-28T20:58:24.957+05:30 INFO  [main] [traceId=4b60e5cc-d308-443d-ba2e-ce11dd60aeee] c.n.b.config.RequestLoggingFilter - Request completed method=GET path=/api/championships/79b36978-0193-4de0-ae19-a649ba523ced/admin/certificates status=403 actor=anonymous durationMs=4
+2026-10-28T20:58:24.971+05:30 WARN  [main] [traceId=08820555-5db2-461e-967c-1bfad89cc8f4] c.n.b.controller.ApiExceptionHandler - Request access denied
+2026-10-28T20:58:24.973+05:30 INFO  [main] [traceId=08820555-5db2-461e-967c-1bfad89cc8f4] c.n.b.config.RequestLoggingFilter - Request completed method=GET path=/api/championships/79b36978-0193-4de0-ae19-a649ba523ced/admin/certificates status=403 actor=anonymous durationMs=9
+2026-10-28T20:58:25.230+05:30 WARN  [main] [traceId=18cd8c08-c196-47f4-b23d-b68dbe0001a6] c.n.b.controller.ApiExceptionHandler - Request access denied
+2026-10-28T20:58:25.232+05:30 INFO  [main] [traceId=18cd8c08-c196-47f4-b23d-b68dbe0001a6] c.n.b.config.RequestLoggingFilter - Request completed method=POST path=/api/championships/79b36978-0193-4de0-ae19-a649ba523ced/admin/certificates status=403 actor=anonymous durationMs=184
+2026-10-28T20:58:27.197+05:30 INFO  [main] [traceId=a0817bac-1b76-4b49-b626-ec028b5237a3] c.n.b.config.RequestLoggingFilter - Request completed method=POST path=/api/championships/fc28fc2b-3330-48bf-bf22-3172ad16de61/admin/certificates/batches status=413 actor=anonymous durationMs=1
+2026-10-28T20:58:27.232+05:30 WARN  [main] [traceId=745bcd64-b161-4b71-b58a-5f0cebcb8cd8] c.n.b.controller.ApiExceptionHandler - Request access denied
+2026-10-28T20:58:27.233+05:30 INFO  [main] [traceId=745bcd64-b161-4b71-b58a-5f0cebcb8cd8] c.n.b.config.RequestLoggingFilter - Request completed method=POST path=/api/championships/fc28fc2b-3330-48bf-bf22-3172ad16de61/admin/certificates/batches status=403 actor=anonymous durationMs=29
+2026-10-28T20:58:28.512+05:30 INFO  [main] [traceId=3193f786-2eec-4072-87da-bd46aee1205b] c.n.b.config.RequestLoggingFilter - Request completed method=GET path=/api/certificate-verification/PN-705A1BB4E84549D790134E401FDD2322 status=200 actor=anonymous durationMs=9
+2026-10-28T20:58:28.622+05:30 INFO  [main] [traceId=03864018-7eb1-48b6-9f36-af2611696221] c.n.b.config.RequestLoggingFilter - Request completed method=GET path=/api/certificate-verification/PN-705A1BB4E84549D790134E401FDD2322 status=200 actor=anonymous durationMs=3
+2026-10-28T20:58:28.623+05:30 INFO  [main] [traceId=93c0f0d3-1a5e-4755-ab0b-861942ab1813] c.n.b.config.RequestLoggingFilter - Request completed method=GET path=/api/certificate-verification/not-a-certificate status=200 actor=anonymous durationMs=1
+2026-10-28T20:58:28.650+05:30 INFO  [main] [traceId=9661a759-e7b4-4e6d-b24f-e711cc7a964c] c.n.b.config.RequestLoggingFilter - Request completed method=GET path=/api/certificate-verification/PN-00000000000000000000000000000000 status=200 actor=anonymous durationMs=4

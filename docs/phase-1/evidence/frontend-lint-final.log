@@ -1,0 +1,4 @@
+
+> neml-badminton-frontend@0.1.0 lint
+> eslint src --max-warnings 0
+

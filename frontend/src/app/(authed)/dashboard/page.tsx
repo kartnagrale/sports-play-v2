@@ -1,51 +1,37 @@
 "use client";
+import { DashboardCapabilitiesDto, PlayerDto } from "@/lib/api";
+import { AnalyticsSummary, CountChart, PurseChart } from "@/components/portal/Analytics";
+import { useAuth } from "@/lib/auth";
+import { useChampionship } from "@/lib/championship";
+import { useTenantResource } from "@/lib/use-resource";
 
-import {useCallback,useEffect,useState} from "react";
-import Link from "next/link";
-import {api,DashboardCapabilitiesDto,MatchDto,StandingDto} from "@/lib/api";
-import {useAuth} from "@/lib/auth";
-import {useChampionship} from "@/lib/championship";
-import {AlertTriangle,ArrowRight,CalendarDays,CheckCircle2,Loader2,Trophy,Users} from "lucide-react";
-
-export default function DashboardPage(){
-  const {user}=useAuth();const active=useChampionship(state=>state.active);
-  const [data,setData]=useState<DashboardCapabilitiesDto|null>(null);
-  const [loading,setLoading]=useState(true);
-  const load=useCallback(async()=>{if(!active)return;setLoading(true);try{
-    const response=await api.get<DashboardCapabilitiesDto>(`/championships/${active.id}/dashboard`);setData(response.data);
-  }catch(error){console.warn("dashboard capabilities load failed",error);}finally{setLoading(false);}},[active]);
-  useEffect(()=>{load();},[load]);
-  if(loading)return <div className="grid min-h-[60vh] place-items-center"><Loader2 className="animate-spin text-primary" size={30}/></div>;
-  if(!data)return <div className="p-10"><div className="card-elev rounded-2xl p-10 text-center text-white/45">Dashboard capabilities are unavailable for this championship.</div></div>;
-  const phaseProgress=Math.max(0,["CREATION","CONFIGURATION","TEAM_PROVISIONING","PLAYER_REGISTRATION","AUCTION","SQUAD_CONFIRMATION","LEAGUE_STAGE","PLAYOFFS","FINAL","COMPLETED","ARCHIVED"].indexOf(data.currentPhase));
-  return <div className="p-5 sm:p-10">
-    <div className="mb-8 flex flex-wrap items-end justify-between gap-4"><div><div className="label-cap">{active?.name} · {data.sportCode}</div>
-      <h1 className="h-heading mt-1 text-4xl font-bold sm:text-5xl">Welcome, {user?.fullName?.split(" ")[0]||"Guest"}</h1>
-      <p className="mt-2 text-sm text-white/50">Championship health, lifecycle progress and sport-specific performance.</p></div>
-      {data.permittedActions.length>0&&<Link href="/competition" className="btn btn-primary">Competition control <ArrowRight size={14}/></Link>}</div>
-
-    {data.champion&&<div className="mb-8 rounded-3xl border border-primary/30 bg-primary/[.08] p-7 text-center"><Trophy className="mx-auto text-primary"/><div className="label-cap mt-2">Champion</div><div className="h-heading mt-1 text-3xl text-primary">{data.champion.name}</div><div className="mt-1 text-xs text-white/45">Runner-up · {data.runnerUp?.name}</div></div>}
-
-    <div className="mb-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-      <Kpi icon={<CheckCircle2/>} label="Current phase" value={label(data.currentPhase)} sub={`${Math.round(phaseProgress/10*100)}% lifecycle progress`}/>
-      <Kpi icon={<Users/>} label="Teams & players" value={`${data.teamCount} · ${data.playerCount}`} sub="Championship-isolated records"/>
-      <Kpi icon={<CheckCircle2/>} label="Squads locked" value={`${data.lockedSquads} / ${data.totalSquads}`} sub={data.lockedSquads===data.totalSquads&&data.totalSquads>0?"League gate satisfied":"Phase 2 gate"}/>
-      <Kpi icon={<Trophy/>} label="Current leader" value={data.standings[0]?.team.shortCode||"—"} sub={data.standings[0]?.team.name||"League not started"}/>
-    </div>
-
-    {data.blockersForNextPhase.length>0&&<div className="mb-8 flex items-start gap-3 rounded-2xl border border-warning/25 bg-warning/[.07] p-5"><AlertTriangle className="mt-0.5 shrink-0 text-warning" size={18}/><div><div className="h-heading text-warning">Required before the next phase</div><div className="mt-2 flex flex-wrap gap-2">{data.blockersForNextPhase.map(item=><span className="chip" key={item}>{item}</span>)}</div></div></div>}
-
-    <div className="grid gap-6 xl:grid-cols-2">
-      <section className="card-elev rounded-2xl p-6"><div className="flex items-center justify-between"><div><div className="label-cap">Schedule</div><h2 className="h-heading mt-1 text-2xl">Upcoming fixtures</h2></div><CalendarDays className="text-white/30"/></div>
-        <FixtureList fixtures={data.upcomingFixtures} empty="No upcoming fixtures are scheduled."/></section>
-      <section className="card-elev rounded-2xl p-6"><div className="label-cap">Latest</div><h2 className="h-heading mt-1 text-2xl">Recently completed</h2>
-        <FixtureList fixtures={data.recentFixtures} empty="Completed results will appear here."/></section>
-    </div>
-
-    {data.supportedWidgets.includes("TEAM_MATCH_STANDINGS")&&<section className="mt-8 card-elev overflow-hidden rounded-2xl"><div className="flex items-center justify-between p-6"><div><div className="label-cap">Badminton</div><h2 className="h-heading mt-1 text-2xl">Team match standings</h2></div><Link href="/scoreboard" className="btn btn-ghost">Full table <ArrowRight size={13}/></Link></div><Standings rows={data.standings.slice(0,4)}/></section>}
+import { useMatchUpdates } from "@/lib/use-match-updates";
+import { Card, EmptyState, ErrorState, MetricCard, PageHeader, StatusBadge } from "@/components/ui";
+import { Fixtures, humanize, PortalActions, PortalLoading, StandingsPreview } from "@/components/portal/Portal";
+import { PlayerIdentity } from "@/components/players/PlayerAvatar";
+import { formatCr } from "@/lib/format";
+import { Radio, ShieldCheck, Trophy } from "lucide-react";
+export default function DashboardPage() {
+  const user = useAuth(state => state.user); const active = useChampionship(state => state.active);
+  const access = user?.championships.find(c => c.championshipId === active?.id); const captain = access?.role === "TEAM_CAPTAIN"; const admin = access?.role === "CHAMPIONSHIP_ADMIN";
+  const { data,loading,error,refresh } = useTenantResource<DashboardCapabilitiesDto>("/dashboard");
+  const analytics = useTenantResource<AnalyticsSummary>("/analytics/summary");
+  const roster = useTenantResource<PlayerDto[]>(captain && access?.teamId ? `/teams/${access.teamId}/players` : null);
+  const connection = useMatchUpdates(() => { refresh(); analytics.refresh(); roster.refresh(); });
+  if (loading || analytics.loading || (captain && roster.loading)) return <PortalLoading />;
+  if (error || !data) return <ErrorState description={error || "Choose a championship to open its workspace."} onRetry={refresh} />;
+  const team = analytics.data?.captain?.team;
+  const captainMetrics = analytics.data?.captain;
+  const players = roster.data || [];
+  const upcoming = captain ? captainMetrics?.upcoming || [] : data.upcomingFixtures;
+  const recent = captain ? captainMetrics?.recent || [] : data.recentFixtures;  return <div className="portal-page"><PageHeader eyebrow={`${active?.name} · ${humanize(data.sportCode)}`} title={admin ? "Championship control room" : captain ? team?.name || "Your team workspace" : "Follow every point"} description={admin ? "Your next action, your competition and your championship at a glance." : captain ? "Build your squad. Follow your fixtures. Make every bid count." : "Live competition, upcoming encounters and the race to the top."} actions={<><StatusBadge tone={connection === "live" ? "success" : "warning"}>{connection === "live" ? "Live updates" : "Reconnecting"}</StatusBadge><StatusBadge tone="info">{humanize(data.currentPhase)}</StatusBadge></>} />
+    <div className="portal-hero"><div><p className="label-cap">{captain ? "Team captain" : admin ? "Operations overview" : "Championship live centre"}</p><h2 className="mt-3 text-2xl font-semibold">{data.champion ? `${data.champion.name} take the title` : captain ? `Welcome back, ${user?.fullName.split(" ")[0]}` : admin ? "Keep the competition moving." : "The next chapter is on court."}</h2><p className="mt-3 max-w-xl text-sm text-muted">{data.champion ? `Runner-up · ${data.runnerUp?.name || "—"}` : `Currently in ${humanize(data.currentPhase).toLowerCase()}. Fixtures and results below come from the championship record.`}</p></div><Trophy size={64} strokeWidth={1} className="shrink-0 text-primary" aria-hidden="true" /></div>
+    <div className="portal-metrics">{captain ? <><MetricCard label="Squad" value={team?.totalPlayers ?? "—"} detail={captainMetrics ? humanize(captainMetrics.squadStatus) : "Your registered roster"} /><MetricCard label="Purse remaining" value={team ? formatCr(Number(team.purseRemaining)) : "—"} detail="Server-confirmed balance" /><MetricCard label="Matches won" value={captainMetrics?.won ?? "—"} detail={captainMetrics ? `${captainMetrics.played} played · ${captainMetrics.lost} lost` : "Results pending"} /><MetricCard label="Squad status" value={captainMetrics ? humanize(captainMetrics.squadStatus) : "—"} detail={"Captain submission and administrator lock"} /></> : <><MetricCard label="Teams" value={data.teamCount} detail="Championship contenders" /><MetricCard label="Players" value={data.playerCount} detail="Registered for this championship" /><MetricCard label={admin ? "Squads locked" : "League leader"} value={admin ? `${data.lockedSquads} / ${data.totalSquads}` : data.standings[0]?.team.shortCode || "—"} detail={admin ? "Confirmation progress" : data.standings[0]?.team.name || "Standings pending"} /><MetricCard label="Competition phase" value={humanize(data.currentPhase)} detail={data.configurationComplete ? "Configuration complete" : "Configuration in progress"} /></>}</div>
+    <PortalActions paths={admin ? ["/certificates","/admin/championship-settings","/admin/team-management","/players","/auction","/squad-confirmation","/competition","/matches","/scoreboard","/analysis"] : captain ? ["/auction","/teams","/squad-confirmation","/matches","/analysis"] : ["/auction","/matches","/scoreboard","/teams"]} />
+    {admin && data.blockersForNextPhase.length > 0 && <Card className="mb-6"><h2 className="section-title flex items-center gap-2"><ShieldCheck size={18} className="text-warning" />Before the next phase</h2><ul className="mt-4 grid gap-3 sm:grid-cols-2">{data.blockersForNextPhase.map(item => <li key={item} className="rounded-lg border border-border p-3 text-sm text-muted">{item}</li>)}</ul></Card>}
+    {analytics.error && <ErrorState description={analytics.error} onRetry={analytics.refresh} />}
+    {analytics.data && <div className="mb-6 grid gap-5 xl:grid-cols-2"><CountChart title="Competition progress" values={analytics.data.matches} />{admin && analytics.data.players ? <CountChart title="Player auction distribution" values={analytics.data.players} /> : captainMetrics ? <CountChart title="Your roster composition" values={captainMetrics.composition} /> : <Card><h2 className="section-title">Follow the competition</h2><p className="mt-3 text-sm text-muted">Live scores, fixtures and standings are refreshed from the championship record. Last read {new Date(analytics.data.asOf).toLocaleTimeString()}.</p></Card>}{admin && analytics.data.purses && <PurseChart purses={analytics.data.purses} />}{admin && analytics.data.certificates && <CountChart title="Certificate issuance" values={analytics.data.certificates} description="Issued and revoked records from award history" />}{admin && analytics.data.squads && <CountChart title="Squad confirmation progress" values={analytics.data.squads} />}</div>}
+    <div className="grid gap-5 xl:grid-cols-2"><Fixtures title={captain ? "Your upcoming matches" : "Upcoming fixtures"} fixtures={upcoming} empty="No upcoming fixtures" /><Fixtures title="Recent results" fixtures={recent} empty="No completed results yet" /></div>
+    <div className="mt-6 grid gap-5 xl:grid-cols-2"><StandingsPreview rows={data.standings} />{captain ? <Card><h2 className="section-title">Your roster</h2>{roster.error ? <ErrorState description="Team information could not be loaded." onRetry={roster.refresh} /> : players.length ? <ul className="mt-4 divide-y divide-border">{players.map(p => <li key={p.id} className="py-3"><PlayerIdentity name={p.fullName} imageUrl={p.photoUrl} metadata={p.skillLevel} /></li>)}</ul> : <EmptyState title="Your squad starts here" description="Confirmed auction purchases will appear in your roster." />}</Card> : <Card><Radio className="mb-4 text-primary" /><h2 className="section-title">From auction to final</h2><p className="mt-3 text-sm leading-relaxed text-muted">Follow the auction, explore team rosters and return here as fixtures and results are confirmed.</p><PortalActions paths={["/auction","/history","/top-performers"]} />{admin && <p className="mt-5 border-t border-border pt-4 text-xs text-muted">Excel registration and player photographs are available in Player Management.</p>}</Card>}</div>
   </div>;
 }
-function Kpi({icon,label:caption,value,sub}:{icon:React.ReactNode;label:string;value:string;sub:string}){return <div className="card-elev rounded-2xl p-5"><div className="flex items-center justify-between text-white/35"><span className="label-cap">{caption}</span>{icon}</div><div className="stat-num mt-3 text-2xl">{value}</div><div className="mt-1 text-xs text-white/40">{sub}</div></div>}
-function FixtureList({fixtures,empty}:{fixtures:MatchDto[];empty:string}){return <div className="mt-4 divide-y divide-white/5">{fixtures.length?fixtures.map(f=><div className="flex items-center justify-between gap-4 py-3" key={f.id}><div><div className="label-cap">{label(f.stageType)} · Match {f.matchNumber}</div><div className="h-heading mt-1">{f.teamA.shortCode} <span className="text-white/25">vs</span> {f.teamB.shortCode}</div></div><div className="text-right text-xs text-white/40">{new Date(f.scheduledAt).toLocaleDateString()}<div className="mt-1">{f.venue}</div></div></div>):<p className="py-6 text-sm text-white/40">{empty}</p>}</div>}
-function Standings({rows}:{rows:StandingDto[]}){return <div className="divide-y divide-white/5 border-t border-white/5">{rows.map(row=><div className="grid grid-cols-[3rem_1fr_auto] items-center gap-3 px-6 py-4" key={row.team.id}><span className="stat-num text-xl text-primary">{row.rank}</span><span className="h-heading">{row.team.name}</span><span className="stat-num">{row.totalPoints} pts</span></div>)}</div>}
-function label(value:string){return value.replaceAll("_"," ").toLowerCase().replace(/\b\w/g,c=>c.toUpperCase())}

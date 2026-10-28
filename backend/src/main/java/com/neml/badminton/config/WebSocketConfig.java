@@ -15,9 +15,9 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     private final StompAuthorizationInterceptor authorizationInterceptor;
     private final String[] allowedOrigins;
     public WebSocketConfig(StompAuthorizationInterceptor authorizationInterceptor,
-            @Value("${app.cors.allowed-origins}") String allowedOrigins) {
+            AllowedOrigins allowedOrigins) {
         this.authorizationInterceptor = authorizationInterceptor;
-        this.allowedOrigins = Arrays.stream(allowedOrigins.split(",")).map(String::trim).toArray(String[]::new);
+        this.allowedOrigins = allowedOrigins.values().toArray(String[]::new);
     }
 
     @Override
@@ -29,13 +29,19 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/ws")
-                .setAllowedOriginPatterns(allowedOrigins)
+                .setAllowedOrigins(allowedOrigins)
                 .withSockJS();
         registry.addEndpoint("/ws")
-                .setAllowedOriginPatterns(allowedOrigins);
+                .setAllowedOrigins(allowedOrigins);
     }
 
     @Override public void configureClientInboundChannel(ChannelRegistration registration) {
         registration.interceptors(authorizationInterceptor);
+    }
+    @Override public void configureClientOutboundChannel(ChannelRegistration registration) {
+        registration.interceptors(new org.springframework.messaging.support.ChannelInterceptor(){
+            @Override public org.springframework.messaging.Message<?> preSend(org.springframework.messaging.Message<?> message,
+                    org.springframework.messaging.MessageChannel channel){return authorizationInterceptor.preSendOutbound(message);}
+        });
     }
 }

@@ -6,10 +6,12 @@ services:
       POSTGRES_USER: sports_play
       POSTGRES_PASSWORD: sports_play_local
     ports:
-      - "5432:5432"
+      - "127.0.0.1:5432:5432"
     volumes:
       - sports_play_postgres:/var/lib/postgresql/data
       - ./docs/sql/sports-play-complete-schema.sql:/docker-entrypoint-initdb.d/001-schema.sql:ro
+      - ./docs/sql/phase1-init.sh:/docker-entrypoint-initdb.d/002-phase1.sh:ro
+      - ./docs/sql:/opt/play-neml-migrations:ro
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U sports_play -d sports_play"]
       interval: 5s
@@ -29,7 +31,7 @@ services:
       CORS_ORIGINS: http://localhost:3000
       LOG_PATH: /app/logs
     ports:
-      - "8001:8001"
+      - "127.0.0.1:8001:8001"
     depends_on:
       db:
         condition: service_healthy
@@ -46,7 +48,7 @@ services:
         NEXT_PUBLIC_BACKEND_URL: http://localhost:8001
         NEXT_PUBLIC_WS_URL: http://localhost:8001
     ports:
-      - "3000:3000"
+      - "127.0.0.1:3000:3000"
     depends_on:
       backend:
         condition: service_healthy

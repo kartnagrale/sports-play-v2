@@ -1,0 +1,10 @@
+
+Running 3 tests using 1 worker
+
+(node:10836) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 1 e2e\phase3.spec.ts:38:5 › multi-client live arena: ranks, rapid bids, undo, committed sale, duplicates and reconnect (15.7s)
+  ok 2 e2e\phase3.spec.ts:84:5 › complete team bids survive the 50-row history window; scoped reads and commands remain protected (3.7s)
+  ok 3 e2e\phase3.spec.ts:97:5 › portfolio and operational pages: real metrics, filters, rosters and responsive presentation (8.2s)
+
+  3 passed (31.5s)

@@ -1,0 +1,11 @@
+
+Running 4 tests using 1 worker
+
+(node:1612) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 1 e2e\phase4.spec.ts:27:5 › Excel API: validation, shared manual defaults, atomicity, retries, concurrency and tenant checks (3.2s)
+  ok 2 e2e\phase4.spec.ts:49:5 › Excel browser: invalid preview, correction, confirmation and actual registered players (13.5s)
+  ok 3 e2e\phase4.spec.ts:62:5 › Photograph APIs: private retrieval, content checks, replacement, removal and championship isolation (1.9s)
+  ok 4 e2e\phase4.spec.ts:77:5 › Photograph browser and live auction: preview/save, fallback, viewer access, rankings and SOLD image (13.9s)
+
+  4 passed (37.7s)

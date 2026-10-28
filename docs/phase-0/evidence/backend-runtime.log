@@ -1,0 +1,216 @@
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+ :: Spring Boot ::                (v3.2.5)
+
+2026-10-27T09:24:36.209+05:30 INFO  [background-preinit] [traceId=none] o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.1.Final
+2026-10-27T09:24:36.296+05:30 INFO  [main] [traceId=none] c.n.badminton.NemlBadmintonApplication - Starting NemlBadmintonApplication v0.0.1-SNAPSHOT using Java 17.0.20.1 with PID 18308 (C:\Users\karti\.codex\worktrees\play-neml-upgrade\sports-play-main\backend\target\sports-platform-0.0.1-SNAPSHOT.jar started by karti in C:\Users\karti\.codex\worktrees\play-neml-upgrade\sports-play-main)
+2026-10-27T09:24:36.296+05:30 INFO  [main] [traceId=none] c.n.badminton.NemlBadmintonApplication - No active profile set, falling back to 1 default profile: "default"
+2026-10-27T09:24:38.532+05:30 INFO  [main] [traceId=none] o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-10-27T09:24:38.961+05:30 INFO  [main] [traceId=none] o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 403 ms. Found 31 JPA repository interfaces.
+2026-10-27T09:24:41.227+05:30 INFO  [main] [traceId=none] o.s.b.w.embedded.tomcat.TomcatWebServer - Tomcat initialized with port 58091 (http)
+2026-10-27T09:24:41.261+05:30 INFO  [main] [traceId=none] o.apache.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-58091"]
+2026-10-27T09:24:41.277+05:30 INFO  [main] [traceId=none] o.apache.catalina.core.StandardService - Starting service [Tomcat]
+2026-10-27T09:24:41.279+05:30 INFO  [main] [traceId=none] org.apache.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.20]
+2026-10-27T09:24:41.435+05:30 INFO  [main] [traceId=none] o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2026-10-27T09:24:41.436+05:30 INFO  [main] [traceId=none] o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 4903 ms
+2026-10-27T09:24:42.116+05:30 INFO  [main] [traceId=none] o.hibernate.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-10-27T09:24:42.447+05:30 INFO  [main] [traceId=none] org.hibernate.Version - HHH000412: Hibernate ORM core version 6.4.4.Final
+2026-10-27T09:24:42.586+05:30 INFO  [main] [traceId=none] o.h.c.internal.RegionFactoryInitiator - HHH000026: Second-level cache disabled
+2026-10-27T09:24:43.619+05:30 INFO  [main] [traceId=none] o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-10-27T09:24:43.755+05:30 INFO  [main] [traceId=none] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2026-10-27T09:24:44.641+05:30 INFO  [main] [traceId=none] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@2abedbbd
+2026-10-27T09:24:44.646+05:30 INFO  [main] [traceId=none] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2026-10-27T09:24:50.228+05:30 INFO  [main] [traceId=none] o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-10-27T09:24:50.355+05:30 INFO  [main] [traceId=none] o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-10-27T09:24:51.288+05:30 INFO  [main] [traceId=none] o.s.d.j.r.query.QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-10-27T09:24:55.772+05:30 INFO  [main] [traceId=none] o.s.s.web.DefaultSecurityFilterChain - Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@1bb3448d, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@2409135d, org.springframework.security.web.context.SecurityContextHolderFilter@5bf0779d, org.springframework.security.web.header.HeaderWriterFilter@661f95ca, org.springframework.web.filter.CorsFilter@3c2fdd04, org.springframework.security.web.authentication.logout.LogoutFilter@7b7030b7, com.neml.badminton.security.JwtAuthFilter@79de9f90, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@301680f2, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@2dec35b0, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@46ff06df, org.springframework.security.web.session.SessionManagementFilter@76462bc3, org.springframework.security.web.access.ExceptionTranslationFilter@6a3630d2, org.springframework.security.web.access.intercept.AuthorizationFilter@6cca79e7]
+2026-10-27T09:24:56.411+05:30 INFO  [main] [traceId=none] o.apache.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-58091"]
+2026-10-27T09:24:56.509+05:30 INFO  [main] [traceId=none] o.s.b.w.embedded.tomcat.TomcatWebServer - Tomcat started on port 58091 (http) with context path ''
+2026-10-27T09:24:56.517+05:30 INFO  [main] [traceId=none] o.s.m.s.b.SimpleBrokerMessageHandler - Starting...
+2026-10-27T09:24:56.524+05:30 INFO  [main] [traceId=none] o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=true, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@235e2dec]]
+2026-10-27T09:24:56.525+05:30 INFO  [main] [traceId=none] o.s.m.s.b.SimpleBrokerMessageHandler - Started.
+2026-10-27T09:24:56.574+05:30 INFO  [main] [traceId=none] c.n.badminton.NemlBadmintonApplication - Started NemlBadmintonApplication in 21.513 seconds (process running for 22.397)
+2026-10-27T09:24:56.895+05:30 INFO  [http-nio-58091-exec-2] [traceId=none] o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-10-27T09:24:56.895+05:30 INFO  [http-nio-58091-exec-2] [traceId=none] o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2026-10-27T09:24:56.895+05:30 INFO  [http-nio-58091-exec-2] [traceId=none] o.s.web.servlet.DispatcherServlet - Completed initialization in 0 ms
+2026-10-27T09:24:57.287+05:30 INFO  [main] [traceId=none] c.n.badminton.seed.SuperAdminBootstrap - Super-admin bootstrap created userId=6ab01dea-8940-42b2-bda2-ee3dce42e4de
+2026-10-27T09:24:57.345+05:30 INFO  [main] [traceId=none] c.n.b.config.ApplicationLifecycleLogger - Sports-Play ready profiles=default port=58091 logFile=C:\Users\karti\.codex\worktrees\play-neml-upgrade\sports-play-main\tmp\phase0-logs/sports-play.log
+2026-10-27T09:24:57.349+05:30 INFO  [main] [traceId=none] c.n.b.config.ApplicationLifecycleLogger - Database ready product=PostgreSQL version=15.19 url=jdbc:postgresql://127.0.0.1:55439/phase0 schema=play_neml
+2026-10-27T09:24:57.662+05:30 INFO  [http-nio-58091-exec-5] [traceId=31308fc4-ab0e-4c77-a619-6c667d4f6344] c.n.b.config.RequestLoggingFilter - Request completed method=GET path=/api/auth/me status=401 actor=anonymous durationMs=67
+2026-10-27T09:24:57.678+05:30 INFO  [http-nio-58091-exec-6] [traceId=60ea4f09-442a-49db-a6a3-6389ee699a05] c.n.b.config.RequestLoggingFilter - Request completed method=GET path=/api/championships status=403 actor=anonymous durationMs=3
+2026-10-27T09:24:58.367+05:30 INFO  [http-nio-58091-exec-7] [traceId=4d7e8463-0731-4781-8843-aa7964c4e934] com.neml.badminton.service.AuthService - Authentication succeeded userId=6ab01dea-8940-42b2-bda2-ee3dce42e4de role=SUPER_ADMIN
+2026-10-27T09:24:58.381+05:30 INFO  [http-nio-58091-exec-7] [traceId=4d7e8463-0731-4781-8843-aa7964c4e934] c.n.b.config.RequestLoggingFilter - Request completed method=POST path=/api/auth/login status=200 actor=anonymous durationMs=680
+2026-10-27T09:24:58.701+05:30 INFO  [http-nio-58091-exec-8] [traceId=e339798e-ace6-440d-b1b6-418a044d5ea6] c.n.b.config.RequestLoggingFilter - Request completed method=GET path=/api/navigation status=200 actor=user:6ab01dea-8940-42b2-bda2-ee3dce42e4de durationMs=315
+2026-10-27T09:24:59.594+05:30 INFO  [http-nio-58091-exec-9] [traceId=16020fd7-fa87-4909-b8c1-93696acbfc87] c.n.b.config.RequestLoggingFilter - Request completed method=POST path=/api/championships status=200 actor=user:6ab01dea-8940-42b2-bda2-ee3dce42e4de durationMs=881
+2026-10-27T09:24:59.740+05:30 INFO  [http-nio-58091-exec-10] [traceId=772e7f04-273f-4c8d-83d1-bacc0b63e89b] com.neml.badminton.service.AuthService - Authentication succeeded userId=df5e679b-7de6-4274-a238-452f5fcec34f role=USER
+2026-10-27T09:24:59.742+05:30 INFO  [http-nio-58091-exec-10] [traceId=772e7f04-273f-4c8d-83d1-bacc0b63e89b] c.n.b.config.RequestLoggingFilter - Request completed method=POST path=/api/auth/login status=200 actor=anonymous durationMs=142
+2026-10-27T09:24:59.803+05:30 INFO  [http-nio-58091-exec-1] [traceId=0e8c465e-5dc6-48dd-962c-215db14ed644] c.n.b.config.RequestLoggingFilter - Request completed method=GET path=/api/championships/6fd9e093-f9ed-4c15-b1d2-4e336a772ac5/competition/configuration status=200 actor=user:df5e679b-7de6-4274-a238-452f5fcec34f durationMs=58
+2026-10-27T09:25:00.008+05:30 INFO  [http-nio-58091-exec-2] [traceId=5b6afe57-ec3d-4ddb-b0a8-6599fbf04d9f] c.n.b.config.RequestLoggingFilter - Request completed method=GET path=/api/championships/6fd9e093-f9ed-4c15-b1d2-4e336a772ac5/dashboard status=200 actor=user:df5e679b-7de6-4274-a238-452f5fcec34f durationMs=200
+2026-10-27T09:25:00.168+05:30 INFO  [http-nio-58091-exec-3] [traceId=fdb3ad89-695d-4b8e-bc62-3fb834ed0390] c.n.b.config.RequestLoggingFilter - Request completed method=PUT path=/api/championships/6fd9e093-f9ed-4c15-b1d2-4e336a772ac5/settings status=200 actor=user:df5e679b-7de6-4274-a238-452f5fcec34f durationMs=147
+2026-10-27T09:25:00.259+05:30 INFO  [http-nio-58091-exec-4] [traceId=48198d24-a668-4c0b-b132-430b73531b4c] c.n.b.config.RequestLoggingFilter - Request completed method=POST path=/api/championships/6fd9e093-f9ed-4c15-b1d2-4e336a772ac5/admin/players status=200 actor=user:df5e679b-7de6-4274-a238-452f5fcec34f durationMs=86
+2026-10-27T09:25:00.288+05:30 INFO  [http-nio-58091-exec-5] [traceId=c47c922a-afd4-45b2-9291-cc4ca08b464c] c.n.b.config.RequestLoggingFilter - Request completed method=GET path=/api/championships/6fd9e093-f9ed-4c15-b1d2-4e336a772ac5/players status=200 actor=user:df5e679b-7de6-4274-a238-452f5fcec34f durationMs=27
+2026-10-27T09:25:00.307+05:30 WARN  [http-nio-58091-exec-6] [traceId=2f0fa852-bd1f-43af-8a81-06537e51365c] c.n.b.controller.ApiExceptionHandler - Request access denied
+2026-10-27T09:25:00.310+05:30 INFO  [http-nio-58091-exec-6] [traceId=2f0fa852-bd1f-43af-8a81-06537e51365c] c.n.b.config.RequestLoggingFilter - Request completed method=POST path=/api/championships/6fd9e093-f9ed-4c15-b1d2-4e336a772ac5/admin/players status=403 actor=user:6ab01dea-8940-42b2-bda2-ee3dce42e4de durationMs=16
+2026-10-27T09:25:00.332+05:30 INFO  [http-nio-58091-exec-7] [traceId=9975a71f-8aef-4407-9459-760b62ae98fb] c.n.b.config.RequestLoggingFilter - Request completed method=POST path=/api/championships/join-room status=200 actor=anonymous durationMs=19
+2026-10-27T09:25:00.350+05:30 INFO  [http-nio-58091-exec-8] [traceId=9ec94a49-9f35-40ff-be28-c659d8f1b7c9] c.n.b.config.RequestLoggingFilter - Request completed method=GET path=/api/championships/6fd9e093-f9ed-4c15-b1d2-4e336a772ac5/players status=200 actor=viewer:6fd9e093-f9ed-4c15-b1d2-4e336a772ac5 durationMs=15
+2026-10-27T09:25:00.357+05:30 WARN  [http-nio-58091-exec-9] [traceId=98733210-eb1f-47a4-b3b4-52f43b25d05a] c.n.b.controller.ApiExceptionHandler - Request access denied
+2026-10-27T09:25:00.357+05:30 INFO  [http-nio-58091-exec-9] [traceId=98733210-eb1f-47a4-b3b4-52f43b25d05a] c.n.b.config.RequestLoggingFilter - Request completed method=POST path=/api/championships/6fd9e093-f9ed-4c15-b1d2-4e336a772ac5/admin/players status=403 actor=viewer:6fd9e093-f9ed-4c15-b1d2-4e336a772ac5 durationMs=6
+2026-10-27T09:25:00.638+05:30 INFO  [http-nio-58091-exec-10] [traceId=82bb2045-f315-4deb-846d-ddbb8de2ec58] c.n.b.config.RequestLoggingFilter - Request completed method=POST path=/api/championships status=200 actor=user:6ab01dea-8940-42b2-bda2-ee3dce42e4de durationMs=274
+2026-10-27T09:25:00.763+05:30 INFO  [http-nio-58091-exec-1] [traceId=9fa8b4a4-a2bd-4f95-a92f-1c0b76c7df60] com.neml.badminton.service.AuthService - Authentication succeeded userId=96d6ad5b-d53f-4248-8f32-d644c0c856f7 role=USER
+2026-10-27T09:25:00.766+05:30 INFO  [http-nio-58091-exec-1] [traceId=9fa8b4a4-a2bd-4f95-a92f-1c0b76c7df60] c.n.b.config.RequestLoggingFilter - Request completed method=POST path=/api/auth/login status=200 actor=anonymous durationMs=125
+2026-10-27T09:25:00.793+05:30 INFO  [http-nio-58091-exec-2] [traceId=ea25f50a-1062-4832-8938-05bc67aed188] c.n.b.config.RequestLoggingFilter - Request completed method=GET path=/api/championships/5d0618fc-77e8-4186-9809-94c15f72b4f6/competition/configuration status=200 actor=user:96d6ad5b-d53f-4248-8f32-d644c0c856f7 durationMs=24
+2026-10-27T09:25:00.896+05:30 INFO  [http-nio-58091-exec-3] [traceId=81b60e0d-6dde-4df9-a70d-c53d7fad9760] c.n.b.config.RequestLoggingFilter - Request completed method=GET path=/api/championships/5d0618fc-77e8-4186-9809-94c15f72b4f6/dashboard status=200 actor=user:96d6ad5b-d53f-4248-8f32-d644c0c856f7 durationMs=102
+2026-10-27T09:25:00.955+05:30 INFO  [http-nio-58091-exec-4] [traceId=1ad67757-a0ff-43bd-a872-84354baf5514] c.n.b.config.RequestLoggingFilter - Request completed method=PUT path=/api/championships/5d0618fc-77e8-4186-9809-94c15f72b4f6/settings status=200 actor=user:96d6ad5b-d53f-4248-8f32-d644c0c856f7 durationMs=55
+2026-10-27T09:25:01.002+05:30 INFO  [http-nio-58091-exec-5] [traceId=a0520295-8c5c-4059-8f41-dfff9710b499] c.n.b.config.RequestLoggingFilter - Request completed method=POST path=/api/championships/5d0618fc-77e8-4186-9809-94c15f72b4f6/admin/players status=200 actor=user:96d6ad5b-d53f-4248-8f32-d644c0c856f7 durationMs=44
+2026-10-27T09:25:01.025+05:30 INFO  [http-nio-58091-exec-6] [traceId=02cb41d9-f34d-4c35-8133-5870b91f7a37] c.n.b.config.RequestLoggingFilter - Request completed method=GET path=/api/championships/5d0618fc-77e8-4186-9809-94c15f72b4f6/players status=200 actor=user:96d6ad5b-d53f-4248-8f32-d644c0c856f7 durationMs=19
+2026-10-27T09:25:01.035+05:30 WARN  [http-nio-58091-exec-7] [traceId=8b955980-5565-4aa9-af59-a61ce4591e96] c.n.b.controller.ApiExceptionHandler - Request access denied
+2026-10-27T09:25:01.037+05:30 INFO  [http-nio-58091-exec-7] [traceId=8b955980-5565-4aa9-af59-a61ce4591e96] c.n.b.config.RequestLoggingFilter - Request completed method=POST path=/api/championships/5d0618fc-77e8-4186-9809-94c15f72b4f6/admin/players status=403 actor=user:6ab01dea-8940-42b2-bda2-ee3dce42e4de durationMs=10
+2026-10-27T09:25:01.051+05:30 INFO  [http-nio-58091-exec-8] [traceId=e69779aa-f7ec-4288-bb00-124f76705023] c.n.b.config.RequestLoggingFilter - Request completed method=POST path=/api/championships/join-room status=200 actor=anonymous durationMs=11
+2026-10-27T09:25:01.064+05:30 INFO  [http-nio-58091-exec-9] [traceId=8460e73c-d324-4481-8663-d4d6a961cf68] c.n.b.config.RequestLoggingFilter - Request completed method=GET path=/api/championships/5d0618fc-77e8-4186-9809-94c15f72b4f6/players status=200 actor=viewer:5d0618fc-77e8-4186-9809-94c15f72b4f6 durationMs=10
+2026-10-27T09:25:01.070+05:30 WARN  [http-nio-58091-exec-10] [traceId=48cd640d-d739-46b4-97ab-7919eb992232] c.n.b.controller.ApiExceptionHandler - Request access denied
+2026-10-27T09:25:01.072+05:30 INFO  [http-nio-58091-exec-10] [traceId=48cd640d-d739-46b4-97ab-7919eb992232] c.n.b.config.RequestLoggingFilter - Request completed method=POST path=/api/championships/5d0618fc-77e8-4186-9809-94c15f72b4f6/admin/players status=403 actor=viewer:5d0618fc-77e8-4186-9809-94c15f72b4f6 durationMs=5
+2026-10-27T09:25:01.085+05:30 WARN  [http-nio-58091-exec-1] [traceId=222ed494-5bd6-4004-a9dd-21447cad4b28] c.n.b.controller.ApiExceptionHandler - Request access denied
+2026-10-27T09:25:01.087+05:30 INFO  [http-nio-58091-exec-1] [traceId=222ed494-5bd6-4004-a9dd-21447cad4b28] c.n.b.config.RequestLoggingFilter - Request completed method=GET path=/api/championships/5d0618fc-77e8-4186-9809-94c15f72b4f6/players status=403 actor=user:df5e679b-7de6-4274-a238-452f5fcec34f durationMs=12
+2026-10-27T09:25:01.091+05:30 WARN  [http-nio-58091-exec-2] [traceId=b8047ee1-91a1-4f02-bc9e-1d0949f8ac4b] c.n.b.controller.ApiExceptionHandler - Request access denied
+2026-10-27T09:25:01.091+05:30 INFO  [http-nio-58091-exec-2] [traceId=b8047ee1-91a1-4f02-bc9e-1d0949f8ac4b] c.n.b.config.RequestLoggingFilter - Request completed method=GET path=/api/championships/5d0618fc-77e8-4186-9809-94c15f72b4f6/players status=403 actor=viewer:6fd9e093-f9ed-4c15-b1d2-4e336a772ac5 durationMs=4
+2026-10-27T09:25:01.098+05:30 ERROR [http-nio-58091-exec-3] [traceId=9493a98e-cf29-41ef-8f42-e617adf063f6] c.n.b.controller.ApiExceptionHandler - Unexpected API failure
+java.lang.NullPointerException: Cannot invoke "com.neml.badminton.entity.User.getRole()" because "user" is null
+	at com.neml.badminton.service.ChampionshipService.listFor(ChampionshipService.java:93)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:354)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.invokeJoinpoint(ReflectiveMethodInvocation.java:196)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163)
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:768)
+	at org.springframework.transaction.interceptor.TransactionInterceptor$1.proceedWithInvocation(TransactionInterceptor.java:123)
+	at org.springframework.transaction.interceptor.TransactionAspectSupport.invokeWithinTransaction(TransactionAspectSupport.java:392)
+	at org.springframework.transaction.interceptor.TransactionInterceptor.invoke(TransactionInterceptor.java:119)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:768)
+	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:720)
+	at com.neml.badminton.service.ChampionshipService$$SpringCGLIB$$0.listFor(<generated>)
+	at com.neml.badminton.controller.ChampionshipController.list(ChampionshipController.java:24)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:354)
+	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:716)
+	at com.neml.badminton.controller.ChampionshipController$$SpringCGLIB$$0.list(<generated>)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:255)
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:188)
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:118)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:926)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:831)
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87)
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1089)
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:979)
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014)
+	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:903)
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:564)
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885)
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:206)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:150)
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:175)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:150)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:110)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:175)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:150)
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:108)
+	at org.springframework.security.web.FilterChainProxy.lambda$doFilterInternal$3(FilterChainProxy.java:231)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:365)
+	at org.springframework.security.web.access.intercept.AuthorizationFilter.doFilter(AuthorizationFilter.java:100)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:126)
+	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:120)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.session.SessionManagementFilter.doFilter(SessionManagementFilter.java:131)
+	at org.springframework.security.web.session.SessionManagementFilter.doFilter(SessionManagementFilter.java:85)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.authentication.AnonymousAuthenticationFilter.doFilter(AnonymousAuthenticationFilter.java:100)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter.doFilter(SecurityContextHolderAwareRequestFilter.java:179)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.savedrequest.RequestCacheAwareFilter.doFilter(RequestCacheAwareFilter.java:63)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at com.neml.badminton.security.JwtAuthFilter.doFilterInternal(JwtAuthFilter.java:74)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:107)
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:93)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.web.filter.CorsFilter.doFilterInternal(CorsFilter.java:91)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.header.HeaderWriterFilter.doHeadersAfter(HeaderWriterFilter.java:90)
+	at org.springframework.security.web.header.HeaderWriterFilter.doFilterInternal(HeaderWriterFilter.java:75)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:82)
+	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:69)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter.doFilterInternal(WebAsyncManagerIntegrationFilter.java:62)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.session.DisableEncodeUrlFilter.doFilterInternal(DisableEncodeUrlFilter.java:42)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374)
+	at org.springframework.security.web.FilterChainProxy.doFilterInternal(FilterChainProxy.java:233)
+	at org.springframework.security.web.FilterChainProxy.doFilter(FilterChainProxy.java:191)
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113)
+	at org.springframework.web.servlet.handler.HandlerMappingIntrospector.lambda$createCacheFilter$3(HandlerMappingIntrospector.java:195)
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113)
+	at org.springframework.web.filter.CompositeFilter.doFilter(CompositeFilter.java:74)
+	at org.springframework.security.config.annotation.web.configuration.WebMvcSecurityConfiguration$CompositeFilterChainProxy.doFilter(WebMvcSecurityConfiguration.java:230)
+	at org.springframework.web.filter.DelegatingFilterProxy.invokeDelegate(DelegatingFilterProxy.java:352)
+	at org.springframework.web.filter.DelegatingFilterProxy.doFilter(DelegatingFilterProxy.java:268)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:175)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:150)
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:175)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:150)
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:175)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:150)
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:175)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:150)
+	at com.neml.badminton.config.RequestLoggingFilter.doFilterInternal(RequestLoggingFilter.java:38)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:175)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:150)
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:167)
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90)
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:482)
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:115)
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93)
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74)
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:344)
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:391)
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63)
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:896)
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1736)
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63)
+	at java.base/java.lang.Thread.run(Thread.java:840)
+2026-10-27T09:25:01.098+05:30 INFO  [http-nio-58091-exec-3] [traceId=9493a98e-cf29-41ef-8f42-e617adf063f6] c.n.b.config.RequestLoggingFilter - Request completed method=GET path=/api/championships status=500 actor=viewer:6fd9e093-f9ed-4c15-b1d2-4e336a772ac5 durationMs=12
+2026-10-27T09:25:01.158+05:30 INFO  [http-nio-58091-exec-4] [traceId=c3f7168f-1ad6-445a-8e64-ec714d8d1f7e] c.n.b.config.RequestLoggingFilter - Request completed method=GET path=/ws status=101 actor=anonymous durationMs=39
+2026-10-27T09:25:01.397+05:30 INFO  [http-nio-58091-exec-6] [traceId=5031ead7-327d-40fd-8d3e-80e1db31b860] c.n.b.config.RequestLoggingFilter - Request completed method=GET path=/ws status=101 actor=anonymous durationMs=2

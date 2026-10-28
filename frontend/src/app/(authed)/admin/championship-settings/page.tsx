@@ -17,6 +17,7 @@ const empty: Settings = { auctionName: "", maxSquadSize: 12, purseLimit: 1000000
 export default function ChampionshipSettingsPage() {
   const user = useAuth((state) => state.user);
   const { active, load } = useChampionship();
+  const championshipId=active?.id;
   const [form, setForm] = useState<Settings>(empty);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -25,10 +26,15 @@ export default function ChampionshipSettingsPage() {
   const valid = useMemo(() => form.auctionName.trim() && form.maxSquadSize > 0 && form.minMale + form.minFemale <= form.maxSquadSize && form.purseLimit > 0 && form.playerBasePrice > 0 && form.bidIncrement > 0 && form.timerSeconds >= 5, [form]);
 
   useEffect(() => {
-    if (!active) return;
-    setLoading(true);
-    api.get<Settings>(`/championships/${active.id}/settings`).then(({ data }) => setForm(data)).catch((error) => toast.error(error?.response?.data?.message || "Unable to load settings")).finally(() => setLoading(false));
-  }, [active?.id]);
+    if (!championshipId) return;
+    const controller=new AbortController();
+
+    api.get<Settings>(`/championships/${championshipId}/settings`,{signal:controller.signal})
+      .then(({ data }) => {if(!controller.signal.aborted)setForm(data);})
+      .catch((error) => {if(!controller.signal.aborted)toast.error(error?.response?.data?.message || "Unable to load settings");})
+      .finally(() => {if(!controller.signal.aborted)setLoading(false);});
+    return ()=>controller.abort();
+  }, [championshipId]);
 
   async function save(event: FormEvent) {
     event.preventDefault();
@@ -42,10 +48,10 @@ export default function ChampionshipSettingsPage() {
     finally { setSaving(false); }
   }
 
-  if (!allowed) return <div className="p-10"><h1 className="h-heading text-3xl">Championship Admin access required</h1></div>;
+  if (!allowed) return <div className="portal-page"><h1 className="h-heading text-3xl">Championship Admin access required</h1></div>;
   if (!active || loading) return <div className="p-10 label-cap">Loading championship configuration…</div>;
 
-  return <div className="min-h-screen p-5 md:p-10"><div className="mx-auto max-w-6xl">
+  return <div className="portal-page"><div className="mx-auto max-w-6xl">
     <div className="mb-8 flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between"><div><div className="label-cap text-primary">Championship command centre</div><h1 className="h-heading mt-2 text-4xl font-bold md:text-5xl">Auction & roster settings</h1><p className="mt-3 max-w-2xl text-sm text-white/50">Configure how <span className="text-white">{active.name}</span> will run. Saving a draft creates its auction and activates the workspace.</p></div><span className={`chip ${active.status === "ACTIVE" ? "chip-primary" : ""}`}><CheckCircle2 size={13}/>{active.status}</span></div>
     <form onSubmit={save} className="grid gap-6 lg:grid-cols-[1.1fr_.9fr]">
       <section className="card-elev rounded-2xl p-6 md:p-7"><Header icon={<Settings2 size={19}/>} title="Auction controls" subtitle="Commercial rules used for every bid"/><div className="space-y-4"><Field label="Auction name"><input className="input" required value={form.auctionName} onChange={e=>setForm({...form,auctionName:e.target.value})}/></Field><div className="grid gap-4 sm:grid-cols-2"><Money label="Team purse" value={form.purseLimit} onChange={purseLimit=>setForm({...form,purseLimit})}/><Money label="Player base price" value={form.playerBasePrice} onChange={playerBasePrice=>setForm({...form,playerBasePrice})}/><Money label="Bid increment" value={form.bidIncrement} onChange={bidIncrement=>setForm({...form,bidIncrement})}/><Field label="Bid timer (seconds)"><input className="input" type="number" min={5} value={form.timerSeconds} onChange={e=>setForm({...form,timerSeconds:Number(e.target.value)})}/></Field></div><Field label="Additional rules"><textarea className="input min-h-28 resize-y" value={form.customRules || ""} onChange={e=>setForm({...form,customRules:e.target.value})} placeholder="Tie-breaks, eligibility, special constraints…"/></Field></div></section>

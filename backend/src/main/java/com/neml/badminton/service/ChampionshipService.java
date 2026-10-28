@@ -27,7 +27,7 @@ public class ChampionshipService {
     private final PasswordEncoder encoder;
     private final JwtService jwt;
     private final MessageTrackerGateway messageTracker;
-    private final TemporaryPasswordGenerator passwords;
+    private final AccountActivationService activations;
     private final CompetitionConfigurationRepository competitionConfigurations;
     private final SportEngineRegistry sportEngines;
     private final CricketConfigurationRepository cricketConfigurations;
@@ -39,13 +39,13 @@ public class ChampionshipService {
     public ChampionshipService(ChampionshipRepository championships, ChampionshipRoleRepository roles,
             UserRepository users, AuctionRepository auctions, AuctionStateRepository states,
             TournamentSettingsRepository settings, TeamRepository teams, PasswordEncoder encoder, JwtService jwt,
-            MessageTrackerGateway messageTracker, TemporaryPasswordGenerator passwords,
+            MessageTrackerGateway messageTracker, AccountActivationService activations,
             CompetitionConfigurationRepository competitionConfigurations, SportEngineRegistry sportEngines,
             CricketConfigurationRepository cricketConfigurations,BadmintonConfigurationRepository badmintonConfigurations,ConfigurationSectionService configurationSections,ChampionshipBrandingConfigurationRepository brandingConfigurations,AuctionConfigurationRepository auctionConfigurations) {
         this.championships = championships; this.roles = roles; this.users = users; this.auctions = auctions;
         this.states = states; this.settings = settings; this.teams = teams; this.encoder = encoder; this.jwt = jwt;
         this.messageTracker = messageTracker;
-        this.passwords = passwords;
+        this.activations = activations;
         this.competitionConfigurations = competitionConfigurations;
         this.sportEngines = sportEngines;
         this.cricketConfigurations = cricketConfigurations;
@@ -61,10 +61,9 @@ public class ChampionshipService {
         if (users.existsByEmail(adminEmail)) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "A user with this administrator email already exists");
         }
-        String temporaryPassword = passwords.generate();
         User admin = users.save(User.builder()
                 .email(adminEmail)
-                .passwordHash(encoder.encode(temporaryPassword))
+                .passwordHash(encoder.encode(UUID.randomUUID().toString())).accountEnabled(false)
                 .fullName(req.adminFullName().trim())
                 .role(Role.USER)
                 .build());
@@ -82,14 +81,16 @@ public class ChampionshipService {
         roles.save(ChampionshipRole.builder().user(admin).championship(c)
                 .role(ChampionshipRoleType.CHAMPIONSHIP_ADMIN).build());
         initializeConfigurations(c);
-        messageTracker.queueChampionshipAdmin(admin, req.adminMobile().trim(), temporaryPassword, c, code);
+        var invitation = activations.issue(admin);
+        messageTracker.queueChampionshipAdmin(admin, req.adminMobile().trim(), c, code);
         return new CreateChampionshipResponse(ChampionshipDtos.from(c, null),
                 new ProvisionedAdminDto(admin.getId(), admin.getFullName(), admin.getEmail(),
-                        req.adminMobile().trim(), temporaryPassword, true));
+                        req.adminMobile().trim(), invitation.setupPath(), invitation.expiresAt(), true));
     }
 
     @Transactional
     public List<ChampionshipDto> listFor(User user) {
+        if (user == null) throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Staff access required");
         List<Championship> list = user.getRole() == Role.SUPER_ADMIN ? championships.findAll()
                 : roles.findAllByUserId(user.getId()).stream().map(ChampionshipRole::getChampionship).distinct().toList();
         return list.stream().map(c -> ChampionshipDtos.from(c, defaultAuction(c.getId()))).toList();
@@ -187,8 +188,7 @@ public class ChampionshipService {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "A team with this short code already exists");
         }
         TournamentSettings config = settings.findByChampionshipId(championshipId).orElseThrow(() -> notFound("Tournament settings"));
-        String temporaryPassword = passwords.generate();
-        User captain = users.save(User.builder().email(email).passwordHash(encoder.encode(temporaryPassword))
+        User captain = users.save(User.builder().email(email).passwordHash(encoder.encode(UUID.randomUUID().toString())).accountEnabled(false)
                 .fullName(req.captainFullName().trim()).role(Role.USER).build());
         Team team = teams.save(Team.builder().championship(championship).name(req.teamName().trim())
                 .shortCode(req.shortCode().trim().toUpperCase(Locale.ROOT)).logoUrl(req.logoUrl())
@@ -202,9 +202,10 @@ public class ChampionshipService {
             championship.setLifecyclePhase(ChampionshipPhase.TEAM_PROVISIONING);
             championships.save(championship);
         }
-        messageTracker.queueTeamCaptain(captain, req.captainMobile().trim(), temporaryPassword, championship, team);
+        var invitation = activations.issue(captain);
+        messageTracker.queueTeamCaptain(captain, req.captainMobile().trim(), championship, team);
         return new ProvisionedTeamDto(team.getId(), team.getName(), team.getShortCode(), captain.getId(),
-                captain.getFullName(), captain.getEmail(), req.captainMobile().trim(), temporaryPassword, true);
+                captain.getFullName(), captain.getEmail(), req.captainMobile().trim(), invitation.setupPath(), invitation.expiresAt(), true);
     }
 
     private ChampionshipSettingsDto settingsDto(Championship championship, TournamentSettings config, Auction auction) {
@@ -216,6 +217,17 @@ public class ChampionshipService {
 
     private UUID defaultAuction(UUID championshipId) {
         return auctions.findAllByChampionshipIdOrderByCreatedAtDesc(championshipId).stream().findFirst().map(Auction::getId).orElse(null);
+    }
+
+    @Transactional
+    public AccountActivationService.Invitation reissueSetup(UUID championshipId,UUID userId,User actor){
+        ChampionshipRole membership=roles.findByUserIdAndChampionshipId(userId,championshipId)
+                .orElseThrow(()->notFound("Account"));
+        boolean allowed=actor!=null&&(actor.getRole()==Role.SUPER_ADMIN
+                ?membership.getRole()==ChampionshipRoleType.CHAMPIONSHIP_ADMIN
+                :membership.getRole()==ChampionshipRoleType.TEAM_CAPTAIN);
+        if(!allowed)throw new ResponseStatusException(HttpStatus.FORBIDDEN,"Account setup is not permitted");
+        return activations.issue(membership.getUser());
     }
 
     /** Initializes missing records for new championships and local demo seeds without replacing saved settings. */

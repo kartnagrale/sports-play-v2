@@ -1,0 +1,23 @@
+[
+  {
+    "suite": "com.neml.badminton.certificate.CertificateDatabaseTest",
+    "tests": 12,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  {
+    "suite": "com.neml.badminton.certificate.CertificatePdfTest",
+    "tests": 2,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  {
+    "suite": "com.neml.badminton.certificate.CertificateVerificationTest",
+    "tests": 4,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  }
+]

@@ -1,0 +1,82 @@
+TAP version 13
+# Subtest: initial order is stable; no-bid teams have no fabricated rank
+ok 1 - initial order is stable; no-bid teams have no fabricated rank
+  ---
+  duration_ms: 33.1373
+  type: 'test'
+  ...
+# Subtest: a lower team overtakes both previous bidders
+ok 2 - a lower team overtakes both previous bidders
+  ---
+  duration_ms: 0.6293
+  type: 'test'
+  ...
+# Subtest: equal amounts have deterministic name/id order
+ok 3 - equal amounts have deterministic name/id order
+  ---
+  duration_ms: 0.6728
+  type: 'test'
+  ...
+# Subtest: inactive, previous-player bids excluded, highest valid bid per team selected
+ok 4 - inactive, previous-player bids excluded, highest valid bid per team selected
+  ---
+  duration_ms: 0.5081
+  type: 'test'
+  ...
+# Subtest: new-player context resets ranks
+ok 5 - new-player context resets ranks
+  ---
+  duration_ms: 0.523
+  type: 'test'
+  ...
+# Subtest: rapid state revisions cannot roll backwards
+ok 6 - rapid state revisions cannot roll backwards
+  ---
+  duration_ms: 0.5416
+  type: 'test'
+  ...
+# Subtest: confirmed live sale triggers once before the next snapshot
+ok 7 - confirmed live sale triggers once before the next snapshot
+  ---
+  duration_ms: 0.5629
+  type: 'test'
+  ...
+# Subtest: sale arriving after the HTTP/state response is recognized once
+ok 8 - sale arriving after the HTTP/state response is recognized once
+  ---
+  duration_ms: 0.5721
+  type: 'test'
+  ...
+# Subtest: initial load and reconnection do not replay historical sales
+ok 9 - initial load and reconnection do not replay historical sales
+  ---
+  duration_ms: 1.0328
+  type: 'test'
+  ...
+# Subtest: late previous-player event after new bids is ignored
+ok 10 - late previous-player event after new bids is ignored
+  ---
+  duration_ms: 0.9122
+  type: 'test'
+  ...
+# Subtest: rejected/pending actions without a confirmed event do not create a celebration
+ok 11 - rejected/pending actions without a confirmed event do not create a celebration
+  ---
+  duration_ms: 0.523
+  type: 'test'
+  ...
+# Subtest: undo is authoritative even when the new amount is lower
+ok 12 - undo is authoritative even when the new amount is lower
+  ---
+  duration_ms: 0.3012
+  type: 'test'
+  ...
+1..12
+# tests 12
+# suites 0
+# pass 12
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1246.6204

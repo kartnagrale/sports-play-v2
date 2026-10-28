@@ -1,0 +1,10 @@
+
+Running 3 tests using 1 worker
+
+(node:1964) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 1 e2e\security.spec.ts:7:5 › staff login uses hardened cookie and provisioning activation works (6.1s)
+  ok 2 e2e\security.spec.ts:42:5 › viewer room reload preserves read-only access and authorized socket (2.1s)
+  ok 3 e2e\security.spec.ts:65:5 › anonymous browser socket cannot connect (941ms)
+
+  3 passed (11.7s)

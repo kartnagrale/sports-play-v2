@@ -1,0 +1,748 @@
+{
+  "scannedAt": "2026-10-28T15:30:24.432Z",
+  "source": "https://api.osv.dev/v1/querybatch",
+  "scope": "Resolved Maven compile/runtime/test dependencies; excludes build plugins, JDK and container OS. Matches require reachability triage.",
+  "packages": [
+    {
+      "name": "com.google.zxing:core",
+      "version": "3.5.4",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.apache.pdfbox:pdfbox",
+      "version": "3.0.8",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.apache.pdfbox:pdfbox-io",
+      "version": "3.0.8",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.apache.pdfbox:fontbox",
+      "version": "3.0.8",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "commons-logging:commons-logging",
+      "version": "1.4.0",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.apache.poi:poi-ooxml",
+      "version": "6.0.0",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.apache.poi:poi",
+      "version": "6.0.0",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "commons-codec:commons-codec",
+      "version": "1.18.0",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.apache.commons:commons-math3",
+      "version": "3.6.1",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "com.zaxxer:SparseBitSet",
+      "version": "1.3",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.apache.poi:poi-ooxml-lite",
+      "version": "6.0.0",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.apache.xmlbeans:xmlbeans",
+      "version": "5.4.1",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.apache.commons:commons-compress",
+      "version": "1.28.0",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.apache.commons:commons-lang3",
+      "version": "3.18.0",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "commons-io:commons-io",
+      "version": "2.22.0",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "com.github.virtuald:curvesapi",
+      "version": "1.08",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.apache.logging.log4j:log4j-api",
+      "version": "2.25.5",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.apache.commons:commons-collections4",
+      "version": "4.6.0",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.springframework.boot:spring-boot-starter-web",
+      "version": "3.5.16",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.springframework.boot:spring-boot-starter",
+      "version": "3.5.16",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.springframework.boot:spring-boot",
+      "version": "3.5.16",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.springframework.boot:spring-boot-autoconfigure",
+      "version": "3.5.16",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.springframework.boot:spring-boot-starter-logging",
+      "version": "3.5.16",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "ch.qos.logback:logback-classic",
+      "version": "1.5.34",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "ch.qos.logback:logback-core",
+      "version": "1.5.34",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.apache.logging.log4j:log4j-to-slf4j",
+      "version": "2.25.5",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.slf4j:jul-to-slf4j",
+      "version": "2.0.18",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "jakarta.annotation:jakarta.annotation-api",
+      "version": "2.1.1",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.yaml:snakeyaml",
+      "version": "2.4",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.springframework.boot:spring-boot-starter-json",
+      "version": "3.5.16",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "com.fasterxml.jackson.datatype:jackson-datatype-jdk8",
+      "version": "2.21.8",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "com.fasterxml.jackson.datatype:jackson-datatype-jsr310",
+      "version": "2.21.8",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "com.fasterxml.jackson.module:jackson-module-parameter-names",
+      "version": "2.21.8",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.springframework.boot:spring-boot-starter-tomcat",
+      "version": "3.5.16",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.apache.tomcat.embed:tomcat-embed-core",
+      "version": "10.1.61",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.apache.tomcat.embed:tomcat-embed-websocket",
+      "version": "10.1.61",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.springframework:spring-web",
+      "version": "6.2.19",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.springframework:spring-beans",
+      "version": "6.2.19",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "io.micrometer:micrometer-observation",
+      "version": "1.15.12",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "io.micrometer:micrometer-commons",
+      "version": "1.15.12",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.springframework:spring-webmvc",
+      "version": "6.2.19",
+      "scope": "compile",
+      "vulnerabilities": [
+        {
+          "id": "GHSA-j9f9-w8pj-32f8",
+          "modified": "2026-10-07T13:30:04.802772Z"
+        },
+        {
+          "id": "GHSA-pc63-qcmh-9cmg",
+          "modified": "2026-10-05T23:30:04.884745Z"
+        }
+      ]
+    },
+    {
+      "name": "org.springframework:spring-context",
+      "version": "6.2.19",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.springframework:spring-expression",
+      "version": "6.2.19",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.springframework.boot:spring-boot-starter-data-jpa",
+      "version": "3.5.16",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.springframework.boot:spring-boot-starter-jdbc",
+      "version": "3.5.16",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "com.zaxxer:HikariCP",
+      "version": "6.3.3",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.springframework:spring-jdbc",
+      "version": "6.2.19",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.hibernate.orm:hibernate-core",
+      "version": "6.6.53.Final",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "jakarta.persistence:jakarta.persistence-api",
+      "version": "3.1.0",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "jakarta.transaction:jakarta.transaction-api",
+      "version": "2.0.1",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.jboss.logging:jboss-logging",
+      "version": "3.6.3.Final",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.hibernate.common:hibernate-commons-annotations",
+      "version": "7.0.3.Final",
+      "scope": "runtime",
+      "vulnerabilities": []
+    },
+    {
+      "name": "io.smallrye:jandex",
+      "version": "3.2.0",
+      "scope": "runtime",
+      "vulnerabilities": []
+    },
+    {
+      "name": "com.fasterxml:classmate",
+      "version": "1.7.3",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "net.bytebuddy:byte-buddy",
+      "version": "1.17.8",
+      "scope": "runtime",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.glassfish.jaxb:jaxb-runtime",
+      "version": "4.0.9",
+      "scope": "runtime",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.glassfish.jaxb:jaxb-core",
+      "version": "4.0.9",
+      "scope": "runtime",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.eclipse.angus:angus-activation",
+      "version": "2.0.3",
+      "scope": "runtime",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.glassfish.jaxb:txw2",
+      "version": "4.0.9",
+      "scope": "runtime",
+      "vulnerabilities": []
+    },
+    {
+      "name": "com.sun.istack:istack-commons-runtime",
+      "version": "4.1.2",
+      "scope": "runtime",
+      "vulnerabilities": []
+    },
+    {
+      "name": "jakarta.inject:jakarta.inject-api",
+      "version": "2.0.1",
+      "scope": "runtime",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.antlr:antlr4-runtime",
+      "version": "4.13.2",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.springframework.data:spring-data-jpa",
+      "version": "3.5.13",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.springframework.data:spring-data-commons",
+      "version": "3.5.13",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.springframework:spring-orm",
+      "version": "6.2.19",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.springframework:spring-tx",
+      "version": "6.2.19",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.slf4j:slf4j-api",
+      "version": "2.0.18",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.springframework:spring-aspects",
+      "version": "6.2.19",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.aspectj:aspectjweaver",
+      "version": "1.9.25.1",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.springframework.boot:spring-boot-starter-security",
+      "version": "3.5.16",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.springframework:spring-aop",
+      "version": "6.2.19",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.springframework.security:spring-security-config",
+      "version": "6.5.11",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.springframework.security:spring-security-web",
+      "version": "6.5.11",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.springframework.boot:spring-boot-starter-validation",
+      "version": "3.5.16",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.apache.tomcat.embed:tomcat-embed-el",
+      "version": "10.1.61",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.hibernate.validator:hibernate-validator",
+      "version": "8.0.3.Final",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "jakarta.validation:jakarta.validation-api",
+      "version": "3.0.2",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.springframework.boot:spring-boot-starter-websocket",
+      "version": "3.5.16",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.springframework:spring-messaging",
+      "version": "6.2.19",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.springframework:spring-websocket",
+      "version": "6.2.19",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.postgresql:postgresql",
+      "version": "42.7.14",
+      "scope": "runtime",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.checkerframework:checker-qual",
+      "version": "3.55.1",
+      "scope": "runtime",
+      "vulnerabilities": []
+    },
+    {
+      "name": "io.jsonwebtoken:jjwt-api",
+      "version": "0.12.5",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "io.jsonwebtoken:jjwt-impl",
+      "version": "0.12.5",
+      "scope": "runtime",
+      "vulnerabilities": []
+    },
+    {
+      "name": "io.jsonwebtoken:jjwt-jackson",
+      "version": "0.12.5",
+      "scope": "runtime",
+      "vulnerabilities": []
+    },
+    {
+      "name": "com.fasterxml.jackson.core:jackson-databind",
+      "version": "2.21.8",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "com.fasterxml.jackson.core:jackson-annotations",
+      "version": "2.21",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "com.fasterxml.jackson.core:jackson-core",
+      "version": "2.21.8",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.projectlombok:lombok",
+      "version": "1.18.42",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.springframework.boot:spring-boot-starter-test",
+      "version": "3.5.16",
+      "scope": "test",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.springframework.boot:spring-boot-test",
+      "version": "3.5.16",
+      "scope": "test",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.springframework.boot:spring-boot-test-autoconfigure",
+      "version": "3.5.16",
+      "scope": "test",
+      "vulnerabilities": []
+    },
+    {
+      "name": "com.jayway.jsonpath:json-path",
+      "version": "2.9.0",
+      "scope": "test",
+      "vulnerabilities": []
+    },
+    {
+      "name": "jakarta.xml.bind:jakarta.xml.bind-api",
+      "version": "4.0.5",
+      "scope": "runtime",
+      "vulnerabilities": []
+    },
+    {
+      "name": "jakarta.activation:jakarta.activation-api",
+      "version": "2.1.4",
+      "scope": "runtime",
+      "vulnerabilities": []
+    },
+    {
+      "name": "net.minidev:json-smart",
+      "version": "2.5.2",
+      "scope": "test",
+      "vulnerabilities": []
+    },
+    {
+      "name": "net.minidev:accessors-smart",
+      "version": "2.5.2",
+      "scope": "test",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.ow2.asm:asm",
+      "version": "9.7.1",
+      "scope": "test",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.assertj:assertj-core",
+      "version": "3.27.7",
+      "scope": "test",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.awaitility:awaitility",
+      "version": "4.2.2",
+      "scope": "test",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.hamcrest:hamcrest",
+      "version": "3.0",
+      "scope": "test",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.junit.jupiter:junit-jupiter",
+      "version": "5.12.2",
+      "scope": "test",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.junit.jupiter:junit-jupiter-api",
+      "version": "5.12.2",
+      "scope": "test",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.opentest4j:opentest4j",
+      "version": "1.3.0",
+      "scope": "test",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.junit.platform:junit-platform-commons",
+      "version": "1.12.2",
+      "scope": "test",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.apiguardian:apiguardian-api",
+      "version": "1.1.2",
+      "scope": "test",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.junit.jupiter:junit-jupiter-params",
+      "version": "5.12.2",
+      "scope": "test",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.junit.jupiter:junit-jupiter-engine",
+      "version": "5.12.2",
+      "scope": "test",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.junit.platform:junit-platform-engine",
+      "version": "1.12.2",
+      "scope": "test",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.mockito:mockito-core",
+      "version": "5.17.0",
+      "scope": "test",
+      "vulnerabilities": []
+    },
+    {
+      "name": "net.bytebuddy:byte-buddy-agent",
+      "version": "1.17.8",
+      "scope": "test",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.objenesis:objenesis",
+      "version": "3.3",
+      "scope": "test",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.mockito:mockito-junit-jupiter",
+      "version": "5.17.0",
+      "scope": "test",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.skyscreamer:jsonassert",
+      "version": "1.5.3",
+      "scope": "test",
+      "vulnerabilities": []
+    },
+    {
+      "name": "com.vaadin.external.google:android-json",
+      "version": "0.0.20131108.vaadin1",
+      "scope": "test",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.springframework:spring-core",
+      "version": "6.2.19",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.springframework:spring-jcl",
+      "version": "6.2.19",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.springframework:spring-test",
+      "version": "6.2.19",
+      "scope": "test",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.xmlunit:xmlunit-core",
+      "version": "2.10.4",
+      "scope": "test",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.springframework.security:spring-security-test",
+      "version": "6.5.11",
+      "scope": "test",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.springframework.security:spring-security-core",
+      "version": "6.5.11",
+      "scope": "compile",
+      "vulnerabilities": []
+    },
+    {
+      "name": "org.springframework.security:spring-security-crypto",
+      "version": "6.5.11",
+      "scope": "compile",
+      "vulnerabilities": []
+    }
+  ]
+}

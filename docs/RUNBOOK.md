@@ -1,15 +1,12 @@
-# PlayNeML fresh-environment runbook
+# Play-Neml fresh-environment runbook
 
 All database work is restricted to `play_neml`. The application uses Hibernate `validate`; it does not create or alter tables.
 
 ## 1. Database owner step
 
-Run these scripts in order with a PostgreSQL account that can alter `play_neml`:
+For an empty database, run `docs/sql/sports-play-complete-schema.sql` once as its owner, then run `tools/apply-migrations.ps1` with standard PostgreSQL connection environment variables. Docker Compose performs both steps only when its volume is empty.
 
-1. `docs/sql/2026-08-22-championship-admin-configuration.sql` (already executed in the current environment)
-2. `docs/sql/2026-08-22-strict-multi-championship.sql`
-
-The strict script is transactional. Its final read-only query must report `0` for every violation.
+For a populated database, inspect its actual schema first and apply only the reviewed Phase 1 migration through that wrapper. Never replay the full schema or historical constraint scripts blindly. The wrapper uses a transactional checksum ledger and an advisory lock; repeated applications are skipped and checksum mismatches fail. See [Phase 1 operations](phase-1/OPERATIONS.md), including the opt-in legacy credential quarantine procedure.
 
 ## 2. First super-admin bootstrap
 
@@ -41,7 +38,7 @@ In a second terminal:
 
 ```powershell
 cd frontend
-npm install
+npm ci
 npm run dev
 ```
 
@@ -50,10 +47,10 @@ Open `http://localhost:3000`.
 ## 4. Presentation flow
 
 1. Log in as the bootstrapped super admin.
-2. Create a championship from **Launch Championship**. The generated championship-admin credentials are shown once and queued in `play_neml.message_tracker`.
+2. Create a championship from **Launch Championship**. An expiring administrator setup link is shown once for secure handoff; only a non-secret notice is queued in `play_neml.message_tracker`.
 3. Log out and sign in as that championship admin.
 4. Configure purse, squad composition, player base price, bid increment, and timer.
-5. Create at least two teams/captains. Each captain credential is queued in `message_tracker`.
+5. Create at least two teams/captains. Share each captain’s expiring setup link securely; the queue contains no password or setup token.
 6. Add players and their auction order.
 7. Open separate browser tabs/profiles for captains. Championship and auction context are isolated per tab.
 8. Start the auction; captains can bid only for their assigned team.

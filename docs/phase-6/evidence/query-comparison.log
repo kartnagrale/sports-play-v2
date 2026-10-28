@@ -1,0 +1,53 @@
+                                                                QUERY PLAN
+------------------------------------------------------------------------------------------------------------------------------------------
+ Sort  (cost=98.52..99.45 rows=373 width=177) (actual time=0.629..0.677 rows=498 loops=1)
+   Sort Key: players.auction_order
+   Sort Method: quicksort  Memory: 106kB
+   Buffers: shared hit=17
+   InitPlan 1 (returns $0)
+     ->  Limit  (cost=0.00..10.75 rows=1 width=16) (actual time=0.025..0.026 rows=1 loops=1)
+           Buffers: shared hit=1
+           ->  Seq Scan on championships  (cost=0.00..10.75 rows=1 width=16) (actual time=0.024..0.024 rows=1 loops=1)
+                 Filter: ((name)::text = 'Phase 6 final-warm measurement'::text)
+                 Rows Removed by Filter: 7
+                 Buffers: shared hit=1
+   ->  Bitmap Heap Scan on players  (cost=7.19..71.83 rows=373 width=177) (actual time=0.124..0.358 rows=498 loops=1)
+         Recheck Cond: (championship_id = $0)
+         Filter: ((status)::text = 'AVAILABLE'::text)
+         Rows Removed by Filter: 2
+         Heap Blocks: exact=11
+         Buffers: shared hit=14
+         ->  Bitmap Index Scan on idx_player_championship  (cost=0.00..7.10 rows=376 width=0) (actual time=0.091..0.091 rows=502 loops=1)
+               Index Cond: (championship_id = $0)
+               Buffers: shared hit=3
+ Planning:
+   Buffers: shared hit=267
+ Planning Time: 5.659 ms
+ Execution Time: 0.934 ms
+(24 rows)
+
+                                                                QUERY PLAN
+------------------------------------------------------------------------------------------------------------------------------------------
+ Aggregate  (cost=83.52..83.53 rows=1 width=8) (actual time=0.331..0.333 rows=1 loops=1)
+   Buffers: shared hit=14
+   InitPlan 1 (returns $0)
+     ->  Limit  (cost=0.00..10.75 rows=1 width=16) (actual time=0.013..0.014 rows=1 loops=1)
+           Buffers: shared hit=1
+           ->  Seq Scan on championships  (cost=0.00..10.75 rows=1 width=16) (actual time=0.012..0.012 rows=1 loops=1)
+                 Filter: ((name)::text = 'Phase 6 final-warm measurement'::text)
+                 Rows Removed by Filter: 7
+                 Buffers: shared hit=1
+   ->  Bitmap Heap Scan on players  (cost=7.19..71.83 rows=373 width=0) (actual time=0.073..0.269 rows=498 loops=1)
+         Recheck Cond: (championship_id = $0)
+         Filter: ((status)::text = 'AVAILABLE'::text)
+         Rows Removed by Filter: 2
+         Heap Blocks: exact=11
+         Buffers: shared hit=14
+         ->  Bitmap Index Scan on idx_player_championship  (cost=0.00..7.10 rows=376 width=0) (actual time=0.058..0.058 rows=502 loops=1)
+               Index Cond: (championship_id = $0)
+               Buffers: shared hit=3
+ Planning:
+   Buffers: shared hit=3
+ Planning Time: 0.212 ms
+ Execution Time: 0.486 ms
+(22 rows)

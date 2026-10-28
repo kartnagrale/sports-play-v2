@@ -1,25 +1,4 @@
-export default function ComingSoonPage({
-  title,
-  subtitle,
-}: {
-  title: string;
-  subtitle: string;
-}) {
-  return (
-    <div className="p-10">
-      <div className="mb-8">
-        <div className="label-cap">Section</div>
-        <h1 className="h-heading text-5xl font-bold mt-1">{title}</h1>
-        <p className="text-white/50 mt-2 max-w-xl">{subtitle}</p>
-      </div>
-      <div className="card-elev rounded-2xl p-16 text-center">
-        <div className="label-cap">Phase 2</div>
-        <div className="h-heading text-3xl mt-2 text-white/60">Coming soon</div>
-        <p className="text-white/40 mt-3 max-w-md mx-auto">
-          This module unlocks after league matches begin. For now, focus on the live auction and
-          team squad building.
-        </p>
-      </div>
-    </div>
-  );
+import { Card, EmptyState, PageHeader } from "@/components/ui";
+export default function ComingSoonPage({ title, subtitle }: { title: string; subtitle: string }) {
+  return <div className="portal-page"><PageHeader title={title} description={subtitle} eyebrow="Championship information" /><Card><EmptyState title="No announcement feed is connected" description="This platform does not yet provide an announcements publishing API. Use the fixtures, results and live auction views for current competition information." /></Card></div>;
 }

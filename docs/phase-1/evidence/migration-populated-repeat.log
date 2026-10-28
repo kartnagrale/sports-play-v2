@@ -1,0 +1,9 @@
+BEGIN
+ pg_advisory_xact_lock 
+-----------------------
+ 
+(1 row)
+
+CREATE TABLE
+psql:C:/Users/karti/.codex/worktrees/play-neml-upgrade/sports-play-main/docs/sql/phase1-apply.psql:8: NOTICE:  relation "schema_migrations" already exists, skipping
+COMMIT

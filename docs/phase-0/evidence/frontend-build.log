@@ -1,0 +1,66 @@
+
+> neml-badminton-frontend@0.1.0 build
+> next build
+
+  ▲ Next.js 14.2.15
+
+   Creating an optimized production build ...
+ ✓ Compiled successfully
+   Linting and checking validity of types ...
+
+./src/app/(authed)/admin/championship-settings/page.tsx
+31:6  Warning: React Hook useEffect has a missing dependency: 'active'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(authed)/admin/team-management/page.tsx
+20:40  Warning: React Hook useEffect has a missing dependency: 'active'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/(authed)/players/page.tsx
+44:6  Warning: React Hook useEffect has a missing dependency: 'active'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/app/layout.tsx
+20:9  Warning: Custom fonts not added in `pages/_document.js` will only load for a single page. This is discouraged. See: https://nextjs.org/docs/messages/no-page-custom-font  @next/next/no-page-custom-font
+
+./src/components/AppShell.tsx
+49:6  Warning: React Hook useEffect has a missing dependency: 'navigation'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+57:6  Warning: React Hook useMemo has a missing dependency: 'navigation'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+info  - Need to disable some ESLint rules? Learn more here: https://nextjs.org/docs/basic-features/eslint#disabling-rules
+   Collecting page data ...
+   Generating static pages (0/23) ...
+   Generating static pages (5/23) 
+   Generating static pages (11/23) 
+   Generating static pages (17/23) 
+ ✓ Generating static pages (23/23)
+   Finalizing page optimization ...
+   Collecting build traces ...
+
+Route (app)                              Size     First Load JS
+┌ ○ /                                    2.07 kB         113 kB
+├ ○ /_not-found                          873 B          88.1 kB
+├ ○ /admin/championship-launchpad        6.21 kB         134 kB
+├ ○ /admin/championship-settings         5 kB            126 kB
+├ ○ /admin/championships                 3.71 kB         122 kB
+├ ○ /admin/team-management               5.51 kB         126 kB
+├ ○ /analysis                            3.53 kB         115 kB
+├ ○ /announcements                       138 B          87.3 kB
+├ ○ /auction                             9.33 kB         158 kB
+├ ○ /competition                         10.6 kB         131 kB
+├ ○ /dashboard                           5.13 kB         123 kB
+├ ○ /format-leaders                      2.73 kB         114 kB
+├ ○ /history                             3.55 kB         122 kB
+├ ○ /login                               4.88 kB         126 kB
+├ ○ /matches                             9.55 kB         159 kB
+├ ○ /players                             4.67 kB         125 kB
+├ ○ /room/join                           2.96 kB         131 kB
+├ ○ /scoreboard                          4.63 kB         137 kB
+├ ○ /squad-confirmation                  7.2 kB          135 kB
+├ ○ /teams                               3.52 kB         115 kB
+└ ○ /top-performers                      3.31 kB         115 kB
++ First Load JS shared by all            87.2 kB
+  ├ chunks/117-a01e92956f76ddb1.js       31.6 kB
+  ├ chunks/fd9d1056-7fc3eb19410ee666.js  53.6 kB
+  └ other shared chunks (total)          1.95 kB
+
+
+○  (Static)  prerendered as static content
+

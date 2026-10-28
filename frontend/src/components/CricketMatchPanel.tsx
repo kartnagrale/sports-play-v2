@@ -1,5 +1,5 @@
 "use client";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   api,
   CricketMatchStateDto,
@@ -22,6 +22,7 @@ export function CricketMatchPanel({
   canManage: boolean;
 }) {
   const base = `/championships/${championshipId}/cricket/matches/${match.id}`;
+  const previousBatters=useRef<string|null>(null);
   const [state, setState] = useState<CricketMatchStateDto | null>(null),
     [config, setConfig] = useState<CricketSportConfiguration | null>(null),
     [busy, setBusy] = useState("");
@@ -44,9 +45,8 @@ export function CricketMatchPanel({
     wicket: false,
     dismissalType: "",
   });
-  const load = useCallback(async () => {
-    try {
-      const [c, s] = await Promise.all([
+  const load = useCallback( () => {
+    return Promise.all([
         api.get<CricketSportConfiguration>(
           `/championships/${championshipId}/sport-configuration/cricket`,
         ),
@@ -55,15 +55,23 @@ export function CricketMatchPanel({
           .catch((e) =>
             e?.response?.status === 404 ? { data: null } : Promise.reject(e),
           ),
-      ]);
-      setConfig(c.data);
+      ]).then(([c, s]) => {
+setConfig(c.data);
       setState(s.data);
-    } catch (e: any) {
+      const live=s.data?.innings.find(innings=>innings.status==="LIVE");
+      const pair=live?.nextStrikerPlayerId&&live.nextNonStrikerPlayerId
+        ?`${live.nextStrikerPlayerId}:${live.nextNonStrikerPlayerId}`:null;
+      if(pair!==previousBatters.current&&pair)setBall(current=>({...current,
+        strikerPlayerId:live?.nextStrikerPlayerId || "",nonStrikerPlayerId:live?.nextNonStrikerPlayerId || ""}));
+      previousBatters.current=pair;
+
+}).catch((e: any) => {
+
       toast.error(
         e?.response?.data?.message || "Unable to load cricket scorecard",
       );
-    }
-  }, [base, championshipId]);
+
+});}, [base, championshipId]);
   useEffect(() => {
     load();
   }, [load]);
@@ -75,14 +83,7 @@ export function CricketMatchPanel({
         (p.teamId === match.teamA.id || p.teamId === match.teamB.id) &&
         p.teamId !== active?.battingTeamId,
     );
-  useEffect(() => {
-    if (!active?.nextStrikerPlayerId || !active.nextNonStrikerPlayerId) return;
-    setBall((current) => ({
-      ...current,
-      strikerPlayerId: active.nextStrikerPlayerId || "",
-      nonStrikerPlayerId: active.nextNonStrikerPlayerId || "",
-    }));
-  }, [active?.nextStrikerPlayerId, active?.nextNonStrikerPlayerId]);
+
   const names = useMemo(
     () => Object.fromEntries(players.map((p) => [p.id, p.fullName])),
     [players],

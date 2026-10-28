@@ -1,0 +1,18 @@
+
+> neml-badminton-frontend@0.1.0 typecheck
+> tsc --noEmit
+
+src/app/(authed)/competition/page.tsx(109,52): error TS1005: ')' expected.
+src/app/(authed)/competition/page.tsx(121,8): error TS1005: ',' expected.
+src/app/(authed)/competition/page.tsx(121,10): error TS1005: ';' expected.
+src/app/(authed)/competition/page.tsx(166,2): error TS1128: Declaration or statement expected.
+src/app/(authed)/competition/page.tsx(166,3): error TS1128: Declaration or statement expected.
+src/app/(authed)/competition/page.tsx(166,4): error TS1005: 'try' expected.
+src/app/(authed)/competition/page.tsx(166,10): error TS1003: Identifier expected.
+src/app/(authed)/competition/page.tsx(173,2): error TS1005: ';' expected.
+src/app/(authed)/competition/page.tsx(173,3): error TS1128: Declaration or statement expected.
+src/app/(authed)/competition/page.tsx(173,4): error TS1005: 'try' expected.
+src/app/(authed)/competition/page.tsx(173,11): error TS1005: '{' expected.
+src/app/(authed)/competition/page.tsx(176,4): error TS1128: Declaration or statement expected.
+src/app/(authed)/competition/page.tsx(176,14): error TS1005: ';' expected.
+src/app/(authed)/competition/page.tsx(1912,1): error TS1128: Declaration or statement expected.

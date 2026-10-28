@@ -1,6 +1,8 @@
 node_modules/
 .next/
 .next-local/
+test-results/
+playwright-report/
 *.tsbuildinfo
 .env*
 !.env.local.example

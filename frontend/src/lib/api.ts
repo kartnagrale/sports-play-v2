@@ -7,17 +7,23 @@ export const API_BASE = `${BACKEND_URL}/api`;
 export const WS_BASE = process.env.NEXT_PUBLIC_WS_URL || BACKEND_URL;
 
 // httpOnly cookie is set by the backend on /api/auth/login. `withCredentials: true`
-// ensures axios sends it on every subsequent cross-origin request. No token is
-// ever stored in persistent localStorage or accessible to JS on the client — this defends
-// against XSS token theft.
+// sends it on subsequent requests. Viewer tokens remain tab-local bearer credentials.
 export const api: AxiosInstance = axios.create({
   baseURL: API_BASE,
   timeout: 15000,
   withCredentials: true,
 });
 
-api.interceptors.request.use((config) => {
+let csrfRequest: Promise<string> | null = null;
+api.interceptors.request.use(async (config) => {
   if (typeof window === "undefined") return config;
+  if (!["get", "head", "options"].includes((config.method || "get").toLowerCase())) {
+    // Share only concurrent fetches. Authentication transitions can rotate the
+    // CSRF cookie, so a token must never be cached for the lifetime of the tab.
+    csrfRequest ||= api.get<{ token: string }>("/auth/csrf").then(({ data }) => data.token)
+      .finally(() => { csrfRequest = null; });
+    config.headers["X-XSRF-TOKEN"] = await csrfRequest;
+  }
   config.headers["X-Correlation-ID"] = crypto.randomUUID();
   const viewerToken = sessionStorage.getItem("sports_viewer_token");
   if (viewerToken) config.headers.Authorization = `Bearer ${viewerToken}`;
@@ -156,6 +162,8 @@ export interface TeamDto {
 }
 
 export interface PlayerDto {
+  photoUrl?: string | null;
+  playerReference?: string | null;
   id: string;
   fullName: string;
   gender: "MALE" | "FEMALE";
@@ -169,6 +177,7 @@ export interface PlayerDto {
 }
 
 export interface BidDto {
+  playerPhotoUrl?: string | null;
   id: string;
   playerId: string;
   playerName: string;
@@ -180,6 +189,8 @@ export interface BidDto {
 }
 
 export interface AuctionStateDto {
+  revision: number;
+  teamBids: BidDto[];
   status: "NOT_STARTED" | "RUNNING" | "PAUSED" | "COMPLETED";
   currentPlayer?: PlayerDto | null;
   highestBid?: BidDto | null;
@@ -252,7 +263,7 @@ export interface TeamAnalysisDto {
 }
 
 export interface TopPerformerDto {
-  player: { id: string; fullName: string; gender: string; teamId: string };
+  player: { id: string; fullName: string; gender: string; teamId: string; photoUrl?: string | null };
   team: { id: string; name: string; shortCode: string; primaryColor: string };
   matchesPlayed: number;
   wins: number;

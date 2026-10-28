@@ -1,71 +1,19 @@
 "use client";
-
-import { useEffect, useState } from "react";
-import { api, BidDto } from "@/lib/api";
-import { formatCr } from "@/lib/format";
+import { useState } from "react";
+import { BidDto } from "@/lib/api";
 import { useChampionship } from "@/lib/championship";
+import { useTenantResource } from "@/lib/use-resource";
+import { formatCr } from "@/lib/format";
+import { Card, DataTable, EmptyState, ErrorState, PageHeader, SearchInput, Select, StatusBadge } from "@/components/ui";
+import { PortalLoading } from "@/components/portal/Portal";
+import { PlayerIdentity } from "@/components/players/PlayerAvatar";
 import AuctionUnavailable from "@/components/auction/AuctionUnavailable";
-
 export default function AuctionHistoryPage() {
-  const { active, hydrated } = useChampionship();
-  const [bids, setBids] = useState<BidDto[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (!active?.defaultAuctionId) {
-      setLoading(false);
-      return;
-    }
-    setLoading(true);
-    setError(null);
-    api.get<BidDto[]>("/auction/history")
-      .then((response) => setBids(response.data))
-      .catch((requestError) => {
-        console.warn("auction history load failed", requestError);
-        setError(requestError?.response?.data?.message || requestError?.message || "Unable to load auction history");
-      })
-      .finally(() => setLoading(false));
-  }, [active?.defaultAuctionId]);
-
-  if (hydrated && active && !active.defaultAuctionId) return <AuctionUnavailable />;
-  if (loading) return <div className="p-10 text-white/40 h-heading uppercase tracking-widest">Loading auction history...</div>;
-  if (error) return <div className="grid min-h-[75vh] place-items-center p-8 text-center"><div className="card-elev max-w-lg rounded-3xl p-9"><div className="label-cap text-danger">History unavailable</div><h1 className="h-heading mt-2 text-3xl">Unable to load auction history</h1><p className="mt-3 text-sm text-white/50">{error}</p></div></div>;
-
-  return (
-    <div className="p-10">
-      <div className="mb-8">
-        <div className="label-cap">Archive</div>
-        <h1 className="h-heading text-5xl font-bold mt-1">Auction History</h1>
-        <p className="text-white/50 mt-2">Every bid in chronological order across all players.</p>
-      </div>
-      <div className="card-elev rounded-2xl p-6">
-        <table className="w-full text-sm">
-          <thead className="text-left label-cap text-[10px]">
-            <tr className="border-b border-white/10">
-              <th className="py-3 pr-4">Time</th>
-              <th className="py-3 pr-4">Player</th>
-              <th className="py-3 pr-4">Team</th>
-              <th className="py-3 pr-4">Status</th>
-              <th className="py-3 pr-4 text-right">Amount</th>
-            </tr>
-          </thead>
-          <tbody>
-            {bids.length === 0 && (
-              <tr><td colSpan={5} className="py-8 text-center text-white/40">No bids yet.</td></tr>
-            )}
-            {bids.map((b) => (
-              <tr key={b.id} className={`border-b border-white/5 ${!b.active ? "opacity-40 line-through" : ""}`}>
-                <td className="py-3 pr-4 text-white/50">{new Date(b.createdAt).toLocaleString()}</td>
-                <td className="py-3 pr-4">{b.playerName}</td>
-                <td className="py-3 pr-4 h-heading text-primary">{b.teamName}</td>
-                <td className="py-3 pr-4"><span className={`chip ${b.active ? "chip-primary" : ""}`}>{b.active ? "Active" : "Undone"}</span></td>
-                <td className="py-3 pr-4 text-right h-heading">{formatCr(Number(b.amount))}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  );
+  const active=useChampionship(s=>s.active); const history=useTenantResource<BidDto[]>(active?.defaultAuctionId ? `/auctions/${active.defaultAuctionId}/history` : null);
+  const [search,setSearch]=useState("");const [status,setStatus]=useState("ALL");const [sort,setSort]=useState("recent");
+  if(active&&!active.defaultAuctionId)return <AuctionUnavailable/>;
+  if(history.loading)return <PortalLoading/>;
+  if(history.error)return <ErrorState description={history.error} onRetry={history.refresh}/>;
+  const visible=(history.data || []).filter(b=>`${b.playerName} ${b.teamName}`.toLowerCase().includes(search.toLowerCase())&&(status==="ALL"||(status==="ACTIVE"?b.active:!b.active))).sort((a,b)=>sort==="amount"?Number(b.amount)-Number(a.amount)||Date.parse(b.createdAt)-Date.parse(a.createdAt):Date.parse(b.createdAt)-Date.parse(a.createdAt));
+  return <div className="portal-page"><PageHeader title="Auction history" eyebrow="Confirmed activity" description="The latest 50 recorded bids, including undone bids. Results stay linked to their player and team."/><div className="portal-toolbar"><SearchInput label="Search auction history" placeholder="Find a player or team…" value={search} onChange={e=>setSearch(e.target.value)}/><Select aria-label="Bid status" value={status} onChange={e=>setStatus(e.target.value)}><option value="ALL">All recorded bids</option><option value="ACTIVE">Valid bids</option><option value="UNDONE">Undone bids</option></Select><Select aria-label="Sort bids" value={sort} onChange={e=>setSort(e.target.value)}><option value="recent">Most recent</option><option value="amount">Highest amount</option></Select></div><Card className="p-0 overflow-hidden"><DataTable caption="Recorded auction bids"><thead><tr>{["Player","Team","Time","Status","Amount"].map(label=><th scope="col" key={label}>{label}</th>)}</tr></thead><tbody>{visible.map(b=><tr key={b.id}><td><PlayerIdentity name={b.playerName} imageUrl={b.playerPhotoUrl}/></td><td>{b.teamName}</td><td className="text-muted">{new Date(b.createdAt).toLocaleString()}</td><td><StatusBadge tone={b.active?"success":"neutral"}>{b.active?"Valid bid":"Undone"}</StatusBadge></td><td className={`font-mono ${b.active?"text-primary":"text-muted line-through"}`}>{formatCr(Number(b.amount))}</td></tr>)}</tbody></DataTable>{!visible.length&&<EmptyState title="No matching bidding activity" description="Confirmed bids appear here after a team enters the auction."/>}</Card></div>;
 }
