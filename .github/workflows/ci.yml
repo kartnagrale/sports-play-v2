@@ -1,5 +1,10 @@
 name: Play-Neml verification
 on: [push, pull_request]
+permissions:
+  contents: read
+concurrency:
+  group: verify-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   verify:
     runs-on: ubuntu-latest
@@ -12,7 +17,7 @@ jobs:
           POSTGRES_DB: phase1
         ports: ['55441:5432']
         options: >-
-          --health-cmd "pg_isready -U phase1 -d phase1"
+          --health-cmd "pg_isready -h 127.0.0.1 -U phase1 -d phase1"
           --health-interval 5s --health-timeout 5s --health-retries 20
     env:
       PGHOST: 127.0.0.1
@@ -22,6 +27,14 @@ jobs:
       PGPASSWORD: phase1-ci-only
       PHASE1_DB_URL: jdbc:postgresql://127.0.0.1:55441/phase1?currentSchema=play_neml
       PHASE1_DB_PASSWORD: phase1-ci-only
+      DB_URL: jdbc:postgresql://127.0.0.1:55441/phase1?currentSchema=play_neml
+      DB_USER: phase1
+      DB_PASSWORD: phase1-ci-only
+      JWT_SECRET: isolated-ci-only-not-a-deployment-secret-0000000000000000000000000000
+      PHASE4_DATABASE_TESTS: 'true'
+      PHASE5_DATABASE_TESTS: 'true'
+      PHASE6_DATABASE_TESTS: 'true'
+      PLAYER_PHOTO_DIR: /tmp/playneml-ci-photos
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
@@ -36,9 +49,13 @@ jobs:
           cache-dependency-path: frontend/package-lock.json
       - name: Initialize disposable database
         run: psql -X -v ON_ERROR_STOP=1 -f docs/sql/sports-play-complete-schema.sql
-      - name: Apply tracked migration
+      - name: Apply all six tracked migrations
         shell: pwsh
-        run: ./tools/apply-migrations.ps1
+        run: |
+          ./tools/apply-migrations.ps1
+          foreach ($migration in @('2026-10-28-phase4-player-import','2026-10-28-phase4-player-photo','2026-10-28-phase5-certificates','2026-10-28-phase5-certificate-navigation','2026-10-28-phase5-certificate-batches')) {
+            ./tools/apply-migrations.ps1 -Migration $migration
+          }
       - name: Backend including PostgreSQL integration tests
         working-directory: backend
         run: ./mvnw -B verify
@@ -50,3 +67,48 @@ jobs:
           npm run typecheck
           npm run build
           npm audit --audit-level=high
+      - name: Review resolved Maven advisories (fails on unresolved findings)
+        run: |
+          mkdir -p tmp
+          cd backend
+          ./mvnw -q dependency:tree -DoutputFile=../tmp/dependency-tree.txt
+          cd ..
+          node tools/audit-maven.mjs tmp/dependency-tree.txt tmp/maven-osv.json
+  image-security:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - service: backend
+            context: backend
+            dockerfile: backend/Dockerfile
+          - service: frontend
+            context: frontend
+            dockerfile: frontend/Dockerfile
+          - service: database
+            context: .
+            dockerfile: docker/database/Dockerfile
+          - service: gateway
+            context: docker/gateway
+            dockerfile: docker/gateway/Dockerfile
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build runtime image without publishing
+        run: docker build -f '${{ matrix.dockerfile }}' -t playneml-scan '${{ matrix.context }}'
+      - name: Scan OS and application packages, including unfixed findings
+        run: |
+          docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy@sha256:790fd66d1697395d8693d1acaa1ea702406a20f109b6fc7bac8db623eca6c06c image --timeout 15m --scanners vuln --severity HIGH,CRITICAL --exit-code 1 playneml-scan
+  new-commit-secrets:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Scan new reachable blobs
+        env:
+          SCAN_BASE: ${{ github.event.pull_request.base.sha || github.event.before }}
+        run: node tools/scan-release-secrets.mjs "$SCAN_BASE"
