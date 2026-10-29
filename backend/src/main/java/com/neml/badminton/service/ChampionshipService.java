@@ -35,13 +35,15 @@ public class ChampionshipService {
     private final ConfigurationSectionService configurationSections;
     private final ChampionshipBrandingConfigurationRepository brandingConfigurations;
     private final AuctionConfigurationRepository auctionConfigurations;
+    private final AuctionPolicyGuard policyGuard;
+    private final RosterQuotaRuleRepository quotaRules;
 
     public ChampionshipService(ChampionshipRepository championships, ChampionshipRoleRepository roles,
             UserRepository users, AuctionRepository auctions, AuctionStateRepository states,
             TournamentSettingsRepository settings, TeamRepository teams, PasswordEncoder encoder, JwtService jwt,
             MessageTrackerGateway messageTracker, AccountActivationService activations,
             CompetitionConfigurationRepository competitionConfigurations, SportEngineRegistry sportEngines,
-            CricketConfigurationRepository cricketConfigurations,BadmintonConfigurationRepository badmintonConfigurations,ConfigurationSectionService configurationSections,ChampionshipBrandingConfigurationRepository brandingConfigurations,AuctionConfigurationRepository auctionConfigurations) {
+            CricketConfigurationRepository cricketConfigurations,BadmintonConfigurationRepository badmintonConfigurations,ConfigurationSectionService configurationSections,ChampionshipBrandingConfigurationRepository brandingConfigurations,AuctionConfigurationRepository auctionConfigurations, AuctionPolicyGuard policyGuard, RosterQuotaRuleRepository quotaRules) {
         this.championships = championships; this.roles = roles; this.users = users; this.auctions = auctions;
         this.states = states; this.settings = settings; this.teams = teams; this.encoder = encoder; this.jwt = jwt;
         this.messageTracker = messageTracker;
@@ -51,7 +53,7 @@ public class ChampionshipService {
         this.cricketConfigurations = cricketConfigurations;
         this.badmintonConfigurations = badmintonConfigurations;
         this.configurationSections=configurationSections;
-        this.brandingConfigurations=brandingConfigurations;this.auctionConfigurations=auctionConfigurations;
+        this.brandingConfigurations=brandingConfigurations;this.auctionConfigurations=auctionConfigurations;this.policyGuard=policyGuard;this.quotaRules=quotaRules;
     }
 
     @Transactional
@@ -133,7 +135,9 @@ public class ChampionshipService {
 
     @Transactional
     public ChampionshipSettingsDto configure(UUID championshipId, ConfigureChampionshipRequest req) {
-        Championship championship = championships.findByIdForUpdate(championshipId).orElseThrow(() -> notFound("Championship"));
+        Championship championship = policyGuard.lockEditable(championshipId);
+        AuctionConfiguration policy = auctionConfigurations.findLatestForUpdate(championshipId).orElseThrow(() -> notFound("Auction configuration"));
+        if (!policy.getConfigurationVersion().equals(req.expectedVersion())) throw new ResponseStatusException(HttpStatus.CONFLICT, "Configuration version conflict: reload before saving");
         if (req.minMale() + req.minFemale() > req.maxSquadSize()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Male and female minimums cannot exceed squad size");
         }
@@ -153,6 +157,24 @@ public class ChampionshipService {
         config.setPlayerBasePrice(req.playerBasePrice()); config.setBidIncrement(req.bidIncrement());
         config.setTimerSeconds(req.timerSeconds()); config.setCustomRules(blank(req.customRules()) ? "{}" : req.customRules());
         settings.save(config);
+        CompetitionConfiguration competition=competitionConfigurations.findByChampionshipIdForUpdate(championshipId).orElseThrow(() -> notFound("Competition configuration"));
+        if(req.maxSquadSize()<competition.getPlayingSideSize()) throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"maxSquadSize must accommodate the configured playing side");
+        competition.setMaximumRosterSize(req.maxSquadSize());
+        competition.setMinimumRosterSize(Math.min(competition.getMinimumRosterSize(),req.maxSquadSize()));
+        competition.setConfigurationVersion(competition.getConfigurationVersion()+1);
+        competitionConfigurations.save(competition);
+        policy.setConfigurationVersion(policy.getConfigurationVersion()+1);
+        policy.setTeamBudget(req.purseLimit());policy.setMinimumBid(req.playerBasePrice());policy.setBidIncrement(req.bidIncrement());
+        policy.setMinimumRosterSize(competition.getMinimumRosterSize());policy.setMaximumRosterSize(req.maxSquadSize());policy.setTimerSeconds(req.timerSeconds());
+        auctionConfigurations.save(policy);
+        // Keep non-gender quota rules; replace the squad gender rules in a new version.
+        List<RosterQuotaRule> current=quotaRules.findAllByChampionshipIdOrderByRuleCode(championshipId);
+        int quotaVersion=quotaRules.findLatestConfigurationVersion(championshipId)+1;
+        List<RosterQuotaRule> next=new ArrayList<>();
+        for(RosterQuotaRule r:current) if(!("GENDER".equals(r.getCategoryType())&&"SQUAD".equals(r.getAppliesTo())))
+            next.add(RosterQuotaRule.builder().championship(championship).configurationVersion(quotaVersion).sportCode(championship.getSportType()).ruleCode(r.getRuleCode()).categoryType(r.getCategoryType()).categoryValue(r.getCategoryValue()).minimumCount(r.getMinimumCount()).maximumCount(r.getMaximumCount()).appliesTo(r.getAppliesTo()).enabled(r.getEnabled()).validationMessage(r.getValidationMessage()).build());
+        for(Gender gender:Gender.values()) next.add(RosterQuotaRule.builder().championship(championship).configurationVersion(quotaVersion).sportCode(championship.getSportType()).ruleCode("SQUAD_"+gender).categoryType("GENDER").categoryValue(gender.name()).minimumCount(gender==Gender.FEMALE?req.minFemale():req.minMale()).appliesTo("SQUAD").enabled(true).build());
+        quotaRules.saveAll(next);
         existingTeams.forEach(team -> { team.setPurseTotal(req.purseLimit()); team.setPurseRemaining(req.purseLimit()); });
         teams.saveAll(existingTeams);
         Auction auction = auctions.findAllByChampionshipIdOrderByCreatedAtDesc(championshipId).stream().findFirst()
@@ -212,7 +234,7 @@ public class ChampionshipService {
         return new ChampionshipSettingsDto(championship.getId(), championship.getStatus(),
                 auction == null ? "Main Auction" : auction.getName(), config.getMaxSquadSize(), config.getPurseLimit(),
                 config.getMinMale(), config.getMinFemale(), config.getPlayerBasePrice(), config.getBidIncrement(),
-                config.getTimerSeconds(), config.getCustomRules(), auction == null ? null : auction.getId());
+                config.getTimerSeconds(), config.getCustomRules(), auction == null ? null : auction.getId(), auctionConfigurations.findFirstByChampionshipIdOrderByConfigurationVersionDesc(championship.getId()).orElseThrow(() -> notFound("Auction configuration")).getConfigurationVersion());
     }
 
     private UUID defaultAuction(UUID championshipId) {

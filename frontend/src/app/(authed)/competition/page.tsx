@@ -282,6 +282,7 @@ setOverview(competition.data);
       await api.put(
         `/championships/${active.id}/sport-configuration/quotas`,
         quotas,
+        {headers:{"If-Match":String(auctionConfig?.version)}},
       );
       toast.success("Roster quota rules saved");
       await load();

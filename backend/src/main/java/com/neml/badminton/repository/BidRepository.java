@@ -11,6 +11,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 public interface BidRepository extends JpaRepository<Bid, UUID> {
+    boolean existsByChampionshipId(UUID championshipId);
     List<Bid> findAllByPlayerAndChampionshipIdOrderByCreatedAtDesc(Player player, UUID championshipId);
     List<Bid> findTop50ByAuctionIdAndChampionshipIdOrderBySequenceNoDesc(UUID auctionId, UUID championshipId);
     Optional<Bid> findFirstByAuctionIdAndChampionshipIdAndPlayerAndActiveTrueOrderBySequenceNoDesc(UUID auctionId, UUID championshipId, Player player);
