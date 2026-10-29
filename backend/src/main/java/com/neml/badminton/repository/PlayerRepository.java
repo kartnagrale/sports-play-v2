@@ -10,6 +10,7 @@ import java.util.UUID;
 public interface PlayerRepository extends JpaRepository<Player, UUID> {
     int countByAuctionIdAndChampionshipIdAndStatus(UUID auctionId,UUID championshipId,PlayerStatus status);
     java.util.Optional<Player> findFirstByAuctionIdAndChampionshipIdAndStatusOrderByAuctionOrderAsc(UUID auctionId,UUID championshipId,PlayerStatus status);
+    java.util.Optional<Player> findByChampionshipIdAndCaptainUserId(UUID championshipId,UUID captainUserId);
     long countByChampionshipId(UUID championshipId);
     List<Player> findAllByChampionshipIdAndTeamIsNotNull(UUID championshipId);
     List<Player> findAllByChampionshipIdAndTeamIdOrderByAuctionOrderAsc(UUID championshipId,UUID teamId);

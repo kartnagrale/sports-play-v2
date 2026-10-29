@@ -24,7 +24,7 @@ public class Dtos {
 
     public record PlayerDto(UUID id, String fullName, Gender gender, BigDecimal basePrice,
                             BigDecimal soldPrice, PlayerStatus status, UUID teamId, String teamName,
-                            String skillLevel, Integer auctionOrder, String playerReference, String photoUrl) {
+                            String skillLevel, Integer auctionOrder, String playerReference, String photoUrl,UUID captainUserId) {
         public static String photoUrl(Player p){return p.getPhotoKey()==null?null:"/championships/"+p.getChampionship().getId()+"/players/"+p.getId()+"/photo?version="+p.getPhotoKey();}
         public static PlayerDto from(Player p) {
             return new PlayerDto(
@@ -32,7 +32,7 @@ public class Dtos {
                     p.getSoldPrice(), p.getStatus(),
                     p.getTeam() == null ? null : p.getTeam().getId(),
                     p.getTeam() == null ? null : p.getTeam().getName(),
-                    p.getSkillLevel(), p.getAuctionOrder(), p.getPlayerReference(),photoUrl(p)
+                    p.getSkillLevel(), p.getAuctionOrder(), p.getPlayerReference(),photoUrl(p),p.getCaptainUserId()
             );
         }
     }
@@ -52,10 +52,11 @@ public class Dtos {
                                   java.time.Instant bidDeadline, Integer timerSeconds,
                                   BigDecimal bidIncrement, Integer maxSquadSize,
                                   Integer minMale, Integer minFemale,
-                                  Long revision, List<BidDto> teamBids) {}
+                                  Long revision, List<BidDto> teamBids,BigDecimal minimumBid,BigDecimal maximumBid,Integer maximumPremiumPurchases,
+                                  List<com.neml.badminton.service.AuctionRuleEvaluator.TeamEligibility> teamEligibility) {}
 
     public record PlaceBidRequest(@NotNull UUID playerId, @NotNull UUID teamId,
-                                  @NotNull @DecimalMin(value = "0.01") BigDecimal amount) {}
+                                  @NotNull @DecimalMin(value = "0.01") @Digits(integer=12,fraction=2) BigDecimal amount) {}
 
     public record SellRequest(UUID playerId, UUID teamId, BigDecimal amount) {}
 
@@ -63,5 +64,5 @@ public class Dtos {
 
     public record SetStatusRequest(@NotNull AuctionStatus status) {}
 
-    public record UpdateBasePriceRequest(@NotNull @DecimalMin(value = "0.01") BigDecimal basePrice) {}
+    public record UpdateBasePriceRequest(@NotNull @DecimalMin(value = "0.01") @Digits(integer=12,fraction=2) BigDecimal basePrice) {}
 }

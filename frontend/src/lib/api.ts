@@ -169,7 +169,8 @@ export interface PlayerDto {
   gender: "MALE" | "FEMALE";
   basePrice: number;
   soldPrice?: number | null;
-  status: "AVAILABLE" | "ON_BLOCK" | "SOLD" | "UNSOLD";
+  status: "AVAILABLE" | "ON_BLOCK" | "SOLD" | "UNSOLD" | "PREASSIGNED";
+  captainUserId?: string | null;
   teamId?: string | null;
   teamName?: string | null;
   skillLevel?: string;
@@ -188,7 +189,13 @@ export interface BidDto {
   active: boolean;
 }
 
+export interface TeamAuctionEligibility {
+  teamId:string;premiumPurchases:number;premiumLimit?:number|null;squadSlotsRemaining:number;
+  femalePlayers:number;minimumFemale:number;malePlayers:number;minimumMale:number;
+  maximumAffordableBid:number;unavailableReason?:string|null;
+}
 export interface AuctionStateDto {
+  minimumBid?:number;maximumBid?:number|null;maximumPremiumPurchases?:number|null;teamEligibility?:TeamAuctionEligibility[];
   revision: number;
   teamBids: BidDto[];
   status: "NOT_STARTED" | "RUNNING" | "PAUSED" | "COMPLETED";
@@ -583,6 +590,7 @@ export interface BrandingConfiguration {
   publicVisibility: boolean;
 }
 export interface AuctionConfiguration {
+  maximumBid?:number|null;maximumPremiumPurchases?:number|null;captainPreassignmentRequired?:boolean;
   version: number;
   status: string;
   enabled: boolean;

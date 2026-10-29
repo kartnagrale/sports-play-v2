@@ -1016,6 +1016,7 @@ setOverview(competition.data);
         </section>
       )}
 
+      {active?.sportType.toUpperCase()==="CRICKET"&&form&&<div className="card-elev mb-5 rounded-xl p-4"><button className="btn btn-secondary" type="button" onClick={()=>setForm({...form,presetCode:"CUSTOM_CHAMPIONSHIP",configuredTeamCount:4,minimumTeamCount:4,maximumTeamCount:4,minimumRosterSize:11,maximumRosterSize:11,playingSideSize:11,maximumSubstitutes:0,roundRobinMode:"SINGLE",numberOfLegs:1,playoffFormat:"TOP_TWO_FINAL",qualifyingTeamCount:2,pointsPerWin:2,pointsPerLoss:0})}>Fill proposed four-team NPL cricket format</button><p className="mt-2 text-sm text-muted">Save the competition form above: six league matches, then one top-two final. Win 2 / loss 0 are examples; tie and no-result points remain configurable. Configure Cricket with eleven players per side.</p></div>}
       {auctionConfig && (
         <section className="mt-8 card-elev rounded-2xl p-6">
           <div className="flex items-center justify-between">
@@ -1029,6 +1030,7 @@ setOverview(competition.data);
               v{auctionConfig.version} · {auctionConfig.status}
             </span>
           </div>
+          <div className="my-4 grid gap-4 sm:grid-cols-2"><label className="block text-sm">Maximum bid (₹, optional)<input className="input mt-2" type="number" min="0.01" step="0.01" value={auctionConfig.maximumBid??""} onChange={e=>setAuctionConfig({...auctionConfig,maximumBid:e.target.value===""?null:Number(e.target.value)})}/></label><label className="block text-sm">Purchases allowed at maximum bid<input className="input mt-2" type="number" min="0" step="1" value={auctionConfig.maximumPremiumPurchases??""} onChange={e=>setAuctionConfig({...auctionConfig,maximumPremiumPurchases:e.target.value===""?null:Number(e.target.value)})}/></label><label className="flex items-center gap-2 text-sm"><input type="checkbox" checked={!!auctionConfig.captainPreassignmentRequired} onChange={e=>setAuctionConfig({...auctionConfig,captainPreassignmentRequired:e.target.checked})}/>Require preassigned captains</label></div>
           <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             <Field label="Auction type">
               <select
@@ -1836,6 +1838,7 @@ setOverview(competition.data);
           <span className="chip">{overview.fixtures.length} total</span>
         </div>
         {overview.fixtures.length ? (
+
           <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
             {overview.fixtures.map((f) => (
               <Fixture key={f.id} fixture={f} />

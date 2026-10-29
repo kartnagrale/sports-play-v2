@@ -37,13 +37,14 @@ public class ChampionshipService {
     private final AuctionConfigurationRepository auctionConfigurations;
     private final AuctionPolicyGuard policyGuard;
     private final RosterQuotaRuleRepository quotaRules;
+    private final PlayerRepository players;
 
     public ChampionshipService(ChampionshipRepository championships, ChampionshipRoleRepository roles,
             UserRepository users, AuctionRepository auctions, AuctionStateRepository states,
             TournamentSettingsRepository settings, TeamRepository teams, PasswordEncoder encoder, JwtService jwt,
             MessageTrackerGateway messageTracker, AccountActivationService activations,
             CompetitionConfigurationRepository competitionConfigurations, SportEngineRegistry sportEngines,
-            CricketConfigurationRepository cricketConfigurations,BadmintonConfigurationRepository badmintonConfigurations,ConfigurationSectionService configurationSections,ChampionshipBrandingConfigurationRepository brandingConfigurations,AuctionConfigurationRepository auctionConfigurations, AuctionPolicyGuard policyGuard, RosterQuotaRuleRepository quotaRules) {
+            CricketConfigurationRepository cricketConfigurations,BadmintonConfigurationRepository badmintonConfigurations,ConfigurationSectionService configurationSections,ChampionshipBrandingConfigurationRepository brandingConfigurations,AuctionConfigurationRepository auctionConfigurations, AuctionPolicyGuard policyGuard, RosterQuotaRuleRepository quotaRules, PlayerRepository players) {
         this.championships = championships; this.roles = roles; this.users = users; this.auctions = auctions;
         this.states = states; this.settings = settings; this.teams = teams; this.encoder = encoder; this.jwt = jwt;
         this.messageTracker = messageTracker;
@@ -53,7 +54,7 @@ public class ChampionshipService {
         this.cricketConfigurations = cricketConfigurations;
         this.badmintonConfigurations = badmintonConfigurations;
         this.configurationSections=configurationSections;
-        this.brandingConfigurations=brandingConfigurations;this.auctionConfigurations=auctionConfigurations;this.policyGuard=policyGuard;this.quotaRules=quotaRules;
+        this.brandingConfigurations=brandingConfigurations;this.auctionConfigurations=auctionConfigurations;this.policyGuard=policyGuard;this.quotaRules=quotaRules;this.players=players;
     }
 
     @Transactional
@@ -138,6 +139,9 @@ public class ChampionshipService {
         Championship championship = policyGuard.lockEditable(championshipId);
         AuctionConfiguration policy = auctionConfigurations.findLatestForUpdate(championshipId).orElseThrow(() -> notFound("Auction configuration"));
         if (!policy.getConfigurationVersion().equals(req.expectedVersion())) throw new ResponseStatusException(HttpStatus.CONFLICT, "Configuration version conflict: reload before saving");
+        if(req.maximumBid()!=null&&req.maximumBid().compareTo(req.playerBasePrice())<0) throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"maximumBid must be at least playerBasePrice");
+        if(req.maximumPremiumPurchases()!=null&&req.maximumBid()==null) throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"maximumPremiumPurchases requires maximumBid");
+        if(req.maximumBid()!=null&&players.findAllByChampionshipIdOrderByAuctionOrderAsc(championshipId).stream().anyMatch(p->p.getAuction()!=null&&p.getBasePrice().compareTo(req.maximumBid())>0)) throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"An existing player base price exceeds maximumBid; correct player prices first");
         if (req.minMale() + req.minFemale() > req.maxSquadSize()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Male and female minimums cannot exceed squad size");
         }
@@ -164,6 +168,7 @@ public class ChampionshipService {
         competition.setConfigurationVersion(competition.getConfigurationVersion()+1);
         competitionConfigurations.save(competition);
         policy.setConfigurationVersion(policy.getConfigurationVersion()+1);
+        policy.setCaptainPreassignmentRequired(Boolean.TRUE.equals(req.captainPreassignmentRequired()));policy.setMaximumBid(req.maximumBid());policy.setMaximumPremiumPurchases(req.maximumPremiumPurchases());
         policy.setTeamBudget(req.purseLimit());policy.setMinimumBid(req.playerBasePrice());policy.setBidIncrement(req.bidIncrement());
         policy.setMinimumRosterSize(competition.getMinimumRosterSize());policy.setMaximumRosterSize(req.maxSquadSize());policy.setTimerSeconds(req.timerSeconds());
         auctionConfigurations.save(policy);
@@ -234,7 +239,7 @@ public class ChampionshipService {
         return new ChampionshipSettingsDto(championship.getId(), championship.getStatus(),
                 auction == null ? "Main Auction" : auction.getName(), config.getMaxSquadSize(), config.getPurseLimit(),
                 config.getMinMale(), config.getMinFemale(), config.getPlayerBasePrice(), config.getBidIncrement(),
-                config.getTimerSeconds(), config.getCustomRules(), auction == null ? null : auction.getId(), auctionConfigurations.findFirstByChampionshipIdOrderByConfigurationVersionDesc(championship.getId()).orElseThrow(() -> notFound("Auction configuration")).getConfigurationVersion());
+                config.getTimerSeconds(), config.getCustomRules(), auction == null ? null : auction.getId(), auctionConfigurations.findFirstByChampionshipIdOrderByConfigurationVersionDesc(championship.getId()).orElseThrow(() -> notFound("Auction configuration")).getConfigurationVersion(), auctionConfigurations.findFirstByChampionshipIdOrderByConfigurationVersionDesc(championship.getId()).orElseThrow().getMaximumBid(), auctionConfigurations.findFirstByChampionshipIdOrderByConfigurationVersionDesc(championship.getId()).orElseThrow().getMaximumPremiumPurchases(), auctionConfigurations.findFirstByChampionshipIdOrderByConfigurationVersionDesc(championship.getId()).orElseThrow().getCaptainPreassignmentRequired());
     }
 
     private UUID defaultAuction(UUID championshipId) {

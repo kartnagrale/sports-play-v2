@@ -56,6 +56,12 @@ public class Player {
 
     @Column(length = 64)
     private String playerReference;
+    @Column(name="captain_user_id")
+    private UUID captainUserId;
+    @Transient
+    public boolean isRosterEligible() {
+        return status == PlayerStatus.SOLD || (status == PlayerStatus.PREASSIGNED && captainUserId != null && team != null && auction == null && soldPrice == null);
+    }
     private UUID photoKey;
     private Integer photoSize;
     private java.time.Instant photoUpdatedAt;

@@ -4,5 +4,6 @@ public enum PlayerStatus {
     AVAILABLE,
     ON_BLOCK,
     SOLD,
+    PREASSIGNED,
     UNSOLD
 }

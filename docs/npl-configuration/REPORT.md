@@ -38,7 +38,7 @@ Malformed JSON responses identify a bounded field name without echoing the input
 value, request body, parser internals, or confidential data. Invalid changes roll
 back transactionally.
 
-## Verification (in progress)
+## Verification
 
 - Targeted backend contract, parsing, initialization, fixture and locking tests: 17 passed.
 - Frontend settings model: 3 passed, including empty keyboard drafts and payload whitelist.
@@ -48,13 +48,72 @@ back transactionally.
 - Rebuilt backend on disposable PostgreSQL through Docker gateway: valid save,
   reload, cross-screen stale version rejection, policy synchronization, and invalid
   transaction rollback passed.
-- Production frontend image build: pending at this checkpoint.
+- Production frontend, backend and database images: rebuilt successfully. Containers healthy.
+- Full backend suite: 116 discovered, 94 passed, 22 database-gated tests skipped, no failures/errors.
+- Real gateway integration: four independent captain sessions, preassignment replay and authorization, 40-player XLSX import, 44 identities, bid ceiling, premium cap, losing/undone bids, concurrent bids/sales, 40 purchases, 11-member squad confirmation, and purse reconciliation passed.
+- Cricket integration: six unique league pairings, three matches per team, completed delivery scoring, accumulated points, finite NRR, two qualifiers, no semifinals, one final, champion/runner-up, and all 44 participant identities eligible for certificates passed.
+- The cricket integration uses a custom one-over format and entirely synthetic disposable data. Scores come from actual delivery requests; no historical results or direct database result edits are used.
 
-## Remaining feature stages
+## Captain player preassignment
 
-Captain preassignment, configurable bid ceiling/premium purchase cap, purchase
-reservation changes, expanded quota/readiness UX, and complete NPL cricket and
-certificate regression verification remain pending at this checkpoint.
+An authorized championship admin can link an available existing player (preserving
+photos and identity) or create a player for the team's actual captain login. The
+new PREASSIGNED status has no auction, sale price, bid, or purse deduction. It is
+eligible for squad confirmation and the cricket playing XI. Repeat identical
+requests return the same identity. Championship-scoped database uniqueness and a
+composite captain-membership foreign key prevent duplicate/team-crossing
+assignments. Assignment events are audited. Excel reference matches skip existing
+captains; ambiguous captain-name duplicates are flagged instead of creating players.
+
+## Maximum bids and premium purchases
+
+AuctionConfiguration owns optional maximumBid and maximumPremiumPurchases, plus a
+captainPreassignmentRequired readiness flag. Both configuration screens expose
+these fields. A proposal button fills 100,000 / 5,000 / 15,000 / 4 premium / 11 squad /
+0 male minimum / 3 female minimum / 1,000 increment. These remain editable values;
+no behavior depends on the championship name. The increment and example 2/0 points
+are proposals, not historical claims.
+
+One evaluator enforces bid and sale eligibility. Premium counts query committed
+SOLD players whose sale price equals the configured ceiling; captains and other
+bid history do not count. Opening-price edits, manual registration, workbook
+confirmation, and configuration saves reject inconsistent above-ceiling prices.
+Championship and auction-state locks serialize bids/sales, including across auctions.
+Sale deduction occurs only in the existing committed-sale transaction.
+
+## Purse and gender quotas
+
+Reserve = configured minimum player bid × max(0, required roster size − current
+roster count − candidate purchase). The actual roster includes preassigned
+captains. Four 15,000 purchases and six 5,000 purchases cost 90,000; all four test
+teams retained 10,000. Pending, losing, rejected and undone bids never deduct purse.
+Gender feasibility uses remaining slots versus remaining gender deficits; a zero
+male minimum imposes no male quota. Captains count according to their player gender.
+Squad confirmation validates the final configured size and quotas again.
+
+## Admin and auction interfaces
+
+Team Management lists captain-to-player assignments and supports association with
+existing registered players. Auction and Teams display maximum bid, increment,
+premium counts, remaining squad slots, female progress and authoritative blocking
+reasons. Illegal controls are disabled; server checks remain authoritative. Existing
+bid ranking, sale animation, state revision and reconnection components are retained.
+Competition includes an explicit editable four-team custom cricket proposal: roster
+11/11, XI 11, single round robin, top-two final, two qualifiers, example win/loss 2/0.
+
+## Migration
+
+`2026-10-29-npl-auction-rules.sql` adds optional auction constraints and captain
+identity metadata, extends player status, and adds captain integrity/uniqueness/FK
+constraints. Historical purchases and tables remain intact. It is registered in the
+existing checksum migration driver and database image's explicit context allowlist.
+The isolated database was upgraded in place from the original image successfully.
+
+## Remaining verification
+
+Actual browser submission/keyboard editing, visual light/dark/mobile checks and
+browser reconnection journeys remain blocked by local browser policy. Additional
+photo/restart, WebSocket and certificate correction checks are being finalized.
 
 ## Existing installation update procedure
 
@@ -86,5 +145,6 @@ authorized by this implementation. GitHub main has not changed.
 
 ## Local commits
 
-The Stage A checkpoint commit is the commit containing this report's initial
-version. Final commit IDs and remaining verification will be recorded after checks.
+Stage A: `981306ed26c15539b2584dfd42cca7073123e7e0`.
+The feature checkpoint is the next commit containing this updated report.
+Final verification commit IDs will be recorded after remaining checks.

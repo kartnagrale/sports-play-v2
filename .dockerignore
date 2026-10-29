@@ -21,3 +21,5 @@ docs/sql/**
 !docs/sql/2026-10-28-phase5-certificates.sql
 !docs/sql/2026-10-28-phase5-certificate-navigation.sql
 !docs/sql/2026-10-28-phase5-certificate-batches.sql
+
+!docs/sql/2026-10-29-npl-auction-rules.sql

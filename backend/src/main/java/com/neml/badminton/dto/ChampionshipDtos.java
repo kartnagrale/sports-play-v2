@@ -19,12 +19,12 @@ public class ChampionshipDtos {
                                                @NotNull @DecimalMin("0.01") @Digits(integer=12, fraction=2) BigDecimal playerBasePrice,
                                                @NotNull @DecimalMin("0.01") @Digits(integer=12, fraction=2) BigDecimal bidIncrement,
                                                @NotNull @Min(5) @Max(300) Integer timerSeconds,
-                                               String customRules, @NotNull @Min(1) Integer expectedVersion) {}
+                                               String customRules, @Positive @Digits(integer=12,fraction=2) BigDecimal maximumBid, @Min(0) Integer maximumPremiumPurchases, Boolean captainPreassignmentRequired, @NotNull @Min(1) Integer expectedVersion) {}
     public record ChampionshipSettingsDto(UUID championshipId, ChampionshipStatus status,
                                           String auctionName, Integer maxSquadSize,
                                           BigDecimal purseLimit, Integer minMale, Integer minFemale,
                                           BigDecimal playerBasePrice, BigDecimal bidIncrement,
-                                          Integer timerSeconds, String customRules, UUID auctionId, Integer version) {}
+                                          Integer timerSeconds, String customRules, UUID auctionId, Integer version, BigDecimal maximumBid, Integer maximumPremiumPurchases, Boolean captainPreassignmentRequired) {}
     public record CreateTeamCaptainRequest(@NotBlank String teamName, @NotBlank @Size(max=12) String shortCode,
                                            String primaryColor, String logoUrl,
                                            @NotBlank String captainFullName,
