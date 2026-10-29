@@ -1,3 +1,4 @@
+import {fixtureWrite} from "./configuration-fixture";
 import {test,expect,request,type APIRequestContext,type Page,type WebSocketRoute} from "@playwright/test";
 import crypto from "node:crypto";
 import fs from "node:fs";
@@ -9,7 +10,8 @@ let platform:APIRequestContext,admin:APIRequestContext,foreign:APIRequestContext
 const account={email:`import-${crypto.randomUUID()}@example.invalid`,password:crypto.randomUUID()};
 const foreignAccount={email:`foreign-${crypto.randomUUID()}@example.invalid`,password:crypto.randomUUID()},passcode=crypto.randomUUID();
 async function command(client:APIRequestContext,path:string,data?:unknown,status=200,method="POST"){
- const csrf=await(await client.get(api+"/auth/csrf")).json();const response=await client.fetch(api+path,{method,headers:{"X-XSRF-TOKEN":csrf.token},data});expect(response.status(),`${method} ${path}: ${await response.text()}`).toBe(status);return status===204?null:response.json();
+ const prepared=await fixtureWrite(client,api,path,method,data,2);data=prepared.data;
+ const csrf=await(await client.get(api+"/auth/csrf")).json();const response=await client.fetch(api+path,{method,headers:{...prepared.headers,"X-XSRF-TOKEN":csrf.token},data});expect(response.status(),`${method} ${path}: ${await response.text()}`).toBe(status);return status===204?null:response.json();
 }
 async function upload(file:string,client=admin,champ=cid,status=200){const csrf=await(await client.get(api+"/auth/csrf")).json();const response=await client.post(api+`/championships/${champ}/admin/players/imports`,{headers:{"X-XSRF-TOKEN":csrf.token},multipart:{file:{name:file,mimeType:"application/octet-stream",buffer:fs.readFileSync(fixtures+file)}}});expect(response.status(),await response.text()).toBe(status);return response.status()===401?null:response.json();}
 const base=()=>`/championships/${cid}/admin/players`;

@@ -57,14 +57,14 @@ public class TenantAuctionService {
     @Transactional public AuctionStateDto pause(UUID cid,UUID aid){return changeStatus(cid,aid,AuctionStatus.PAUSED);}
     @Transactional public AuctionStateDto resume(UUID cid,UUID aid){
         squadConfirmations.assertRosterMutable(cid);
-        Auction a=auction(cid,aid);AuctionState s=locked(cid,aid);if(s.getStatus()==AuctionStatus.COMPLETED)bad("Completed auctions cannot be resumed");
+        Auction a=auction(cid,aid);AuctionState s=locked(cid,aid);ruleEvaluator.assertReady(cid,teams.findAllByChampionshipIdOrderByName(cid));if(s.getStatus()==AuctionStatus.COMPLETED)bad("Completed auctions cannot be resumed");
         if(s.getCurrentPlayer()==null)selectNext(a,s);if(s.getCurrentPlayer()==null)bad("No available players remain");
         s.setStatus(AuctionStatus.RUNNING);a.setStatus(AuctionStatus.RUNNING);deadline(s);save(a,s);return publish(cid,aid,snapshot(cid,a,s));
     }
     @Transactional public AuctionStateDto status(UUID cid,UUID aid,AuctionStatus status){if(status==null)bad("Auction status is required");return changeStatus(cid,aid,status);}
     private AuctionStateDto changeStatus(UUID cid,UUID aid,AuctionStatus status){
         squadConfirmations.assertRosterMutable(cid);
-        Auction a=auction(cid,aid);AuctionState s=locked(cid,aid);s.setStatus(status);a.setStatus(status);
+        Auction a=auction(cid,aid);AuctionState s=locked(cid,aid);if(status==AuctionStatus.RUNNING)ruleEvaluator.assertReady(cid,teams.findAllByChampionshipIdOrderByName(cid));s.setStatus(status);a.setStatus(status);
         if(status==AuctionStatus.RUNNING)deadline(s);else s.setBidDeadline(null);save(a,s);return publish(cid,aid,snapshot(cid,a,s));
     }
 
@@ -132,7 +132,7 @@ public class TenantAuctionService {
     @Transactional public PlayerDto basePrice(UUID cid,UUID aid,UUID playerId,BigDecimal amount){
         squadConfirmations.assertRosterMutable(cid);
         auction(cid,aid);locked(cid,aid);if(amount==null||amount.signum()<=0||amount.stripTrailingZeros().scale()>2)bad("Base price must be positive with at most two decimal places");if(ruleEvaluator.rules(cid).maximumBid()!=null&&amount.compareTo(ruleEvaluator.rules(cid).maximumBid())>0)bad("Base price exceeds the configured maximum bid");Player p=players.findByIdAndChampionshipId(playerId,cid).orElseThrow(()->notFound("Player"));
-        if(p.getAuction()==null||!p.getAuction().getId().equals(aid)||p.getStatus()==PlayerStatus.SOLD)bad("Player cannot be edited in this auction");p.setBasePrice(amount);return PlayerDto.from(players.save(p));
+        if(p.getAuction()==null||!p.getAuction().getId().equals(aid)||p.getStatus()==PlayerStatus.SOLD)bad("Player cannot be edited in this auction");if(bids.findFirstByAuctionIdAndChampionshipIdAndPlayerAndActiveTrueOrderBySequenceNoDesc(aid,cid,p).isPresent())bad("Opening price is locked while active bids exist");p.setBasePrice(amount);return PlayerDto.from(players.save(p));
     }
     @Transactional public Map<String,Object> coinToss(UUID cid,UUID aid,List<UUID> teamIds){
         auction(cid,aid);if(teamIds==null||teamIds.size()<2)bad("At least two teams are required");List<Team> candidates=teamIds.stream().distinct().map(id->teams.findByIdAndChampionshipId(id,cid).orElseThrow(()->notFound("Team"))).toList();

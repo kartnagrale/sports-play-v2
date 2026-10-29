@@ -3,23 +3,7 @@ import assert from 'node:assert/strict';
 import {writeFileSync} from 'node:fs';
 const base=process.env.NPL_TEST_URL || 'http://localhost:18090/api';
 if (!/^http:\/\/(localhost|127\.0\.0\.1):18090\/api$/.test(base)) throw Error('Disposable NPL stack only');
-class Session {
-  cookies=new Map();
-  async request(path,method='GET',body,expected=200) {
-    const headers={Cookie:[...this.cookies].map(([k,v])=>`${k}=${v}`).join('; ')};
-    if (method!=='GET') {
-      const csrf=await this.request('/auth/csrf');
-      headers.Cookie=[...this.cookies].map(([k,v])=>`${k}=${v}`).join('; ');
-      headers['X-XSRF-TOKEN']=csrf.token;
-      headers['Content-Type']='application/json';
-    }
-    const res=await fetch(base+path,{method,headers,body:body===undefined?undefined:JSON.stringify(body)});
-    for(const cookie of res.headers.getSetCookie()){ const [name,value]=cookie.split(';')[0].split('=');this.cookies.set(name,value); }
-    const text=await res.text();const data=text?JSON.parse(text):null;
-    assert.equal(res.status,expected,`${method} ${path}: ${JSON.stringify(data)}`);
-    return data;
-  }
-}
+import {Session} from './npl-api-client.mjs';
 const root=new Session();
 await root.request('/auth/login','POST',{email:process.env.NPL_TEST_EMAIL,password:process.env.NPL_TEST_PASSWORD});
 const created=await root.request('/championships','POST',{name:'NPL disposable settings test',sportType:'CRICKET',adminFullName:'Settings Test Admin',adminEmail:`settings-${Date.now()}@example.invalid`,adminMobile:'9999999999'});
@@ -51,6 +35,19 @@ if(process.env.NPL_REPRODUCE==='true') {
   const latest=await admin.request(path);
   await admin.request(path,'PUT',{...values,maxSquadSize:5,expectedVersion:latest.version},400);
   assert.equal((await admin.request(path)).purseLimit,110000,'invalid transaction rolls back all changes');
-  console.log('PASS settings PUT, reload, stale versions across screens, synchronized policy, transaction rollback.');
+  const revision=(await admin.request(path)).version;
+  const attempts=await Promise.all([100000,105000].map(purseLimit=>admin.raw(path,'PUT',{...values,expectedVersion:revision,purseLimit})));
+  assert.deepEqual(attempts.map(r=>r.status).sort(),[200,409]);
+  const winner=await attempts.find(r=>r.status===200).json();
+  assert.equal((await admin.request(path)).purseLimit,winner.purseLimit);
+  const quotaPath=`/championships/${cid}/sport-configuration/quotas`;
+  const quotaResponse=await admin.raw(quotaPath);assert.equal(quotaResponse.status,200);
+  const quotaVersion=quotaResponse.headers.get('etag')?.replaceAll('"','');assert(quotaVersion,'quota snapshot revision header');
+  const quotaRules=await quotaResponse.json();
+  await admin.request(quotaPath,'PUT',quotaRules,200,{'If-Match':quotaVersion});
+  await admin.request(quotaPath,'PUT',quotaRules,409,{'If-Match':quotaVersion});
+  await admin.request(path,'PUT',{...values,expectedVersion:winner.version},409);
+  const synced=await admin.request(path);assert.equal(synced.minFemale,3);assert.equal(synced.minMale,0);
+  console.log('PASS settings PUT/reload, cross-screen versions, simultaneous saves, quota snapshot/If-Match, synchronization and rollback.');
 }
 if(process.env.NPL_TEST_STATE)writeFileSync(process.env.NPL_TEST_STATE,JSON.stringify({cid,email:created.admin.email,password,cookies:[...admin.cookies]}));

@@ -39,7 +39,8 @@ public class AuctionRuleEvaluator {
         BigDecimal affordable=team.getPurseRemaining().subtract(r.minimumBid().multiply(BigDecimal.valueOf(Math.max(0,r.requiredPlayers()-roster.size()-1))));
         if(r.maximumBid()!=null)affordable=affordable.min(r.maximumBid());
         if(r.maximumBid()!=null&&r.maximumPremiumPurchases()!=null&&premium>=r.maximumPremiumPurchases())affordable=affordable.min(r.maximumBid().subtract(new BigDecimal("0.01")));
-        String reason=candidate==null?"No active player":AuctionBidRules.unavailable(r,male,female,premium,candidate.getGender(),amount,team.getPurseRemaining());
+        boolean captainRequired=Boolean.TRUE.equals(policies.findFirstByChampionshipIdOrderByConfigurationVersionDesc(cid).orElseThrow().getCaptainPreassignmentRequired());
+        String reason=captainRequired&&roster.stream().noneMatch(p->p.getStatus()==PlayerStatus.PREASSIGNED&&p.isRosterEligible())?"Captain must be assigned to the team roster":candidate==null?"No active player":AuctionBidRules.unavailable(r,male,female,premium,candidate.getGender(),amount,team.getPurseRemaining());
         return new TeamEligibility(team.getId(),premium,r.maximumPremiumPurchases(),Math.max(0,r.maximumPlayers()-roster.size()),female,r.minimumFemale(),male,r.minimumMale(),affordable.max(BigDecimal.ZERO),reason);
     }
 }

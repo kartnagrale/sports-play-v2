@@ -2,6 +2,7 @@
 import assert from 'node:assert/strict';
 import {readFileSync,writeFileSync} from 'node:fs';
 import {Session,createTestChampionship} from './npl-api-client.mjs';
+import {observeAuction} from './npl-websocket.mjs';
 const root=new Session();
 await root.request('/auth/login','POST',{email:process.env.NPL_TEST_EMAIL,password:process.env.NPL_TEST_PASSWORD});
 const {admin,cid}=await createTestChampionship(root);
@@ -20,6 +21,7 @@ const {version,status,...cricketFields}=cricket;
 await admin.request(base+'/sport-configuration/cricket','PUT',{...cricketFields,expectedVersion:version,presetCode:'CUSTOM',playersPerSide:11,oversPerInnings:1,maximumOversPerBowler:1,powerplayRanges:'1-1',tiePolicy:'TIE'});
 const aid=configured.auctionId,auction=`${base}/auctions/${aid}`;
 await admin.request(auction+'/admin/start','POST',undefined,409);
+await admin.request(auction+'/admin/set-status','POST',{status:'RUNNING'},409);
 const captains=[],captainPlayers=[];
 for(let n=0;n<4;n++){
   const created=await admin.request(base+'/admin/teams','POST',{teamName:`Test Team ${n}`,shortCode:`NT${n}`,captainFullName:`Test Captain ${n}`,captainEmail:`captain-${crypto.randomUUID()}@example.invalid`,captainMobile:'9999999999'});
@@ -44,7 +46,13 @@ const duplicate=await preview('captain-duplicate.xlsx');assert(duplicate.invalid
 const imported=await preview('forty-players.xlsx');assert.equal(imported.invalid,0,JSON.stringify(imported.rows));
 const confirmed=await admin.request(`${base}/admin/players/imports/${imported.importId}/confirm`,'POST',{checksum:imported.checksum,allowUnreferenced:false});assert.equal(confirmed.imported,40);
 const all=await admin.request(base+'/players');assert.equal(all.length,44);assert.equal(all.filter(p=>p.status==='AVAILABLE').length,40);
+const editable=all.find(p=>p.status==='AVAILABLE');
+await admin.request(`${base}/admin/players/${editable.id}`,'PUT',{fullName:editable.fullName,gender:editable.gender,basePrice:16000},400);
+await admin.request(`${auction}/admin/players/${editable.id}/base-price`,'PUT',{basePrice:16000},400);
+await admin.request(`${base}/admin/players/${captainPlayers[0].id}`,'PUT',{fullName:captainPlayers[0].fullName,gender:'FEMALE'},409);
+await admin.request(`${base}/admin/players/${captainPlayers[0].id}`,'DELETE',undefined,409);
 console.log('PASS configuration, 4 captain sessions, preassignment/idempotency/authorization, Excel 40 import, 44 identities and untouched purses.');
+const observers=await Promise.all([observeAuction(admin,cid,aid),observeAuction(captains[0].session,cid,aid)]);
 let state=await admin.request(auction+'/admin/start','POST');
 await admin.request(base+'/settings','PUT',{...settings,expectedVersion:(await admin.request(base+'/settings')).version},409);
 const before=state.teams.map(t=>t.purseRemaining);
@@ -55,6 +63,12 @@ for(let team=0;team<4;team++)for(let n=0;n<10;n++){
   const player=all.find(p=>p.playerReference===`EMP-${team}-${n}`);
   if(state.currentPlayer.id!==player.id)state=await admin.request(auction+'/admin/set-current','POST',{playerId:player.id});
   const amount=n<4?15000:5000;
+  if(team===0&&n===7){
+    const male=all.find(p=>p.playerReference==='EMP-1-0');
+    await admin.request(auction+'/admin/set-current','POST',{playerId:male.id});
+    const invalid=await captains[0].session.request(auction+'/bid','POST',{playerId:male.id,teamId:captains[0].teamId,amount:5000},400);assert.match(invalid.message,/gender/);
+    await admin.request(auction+'/admin/set-current','POST',{playerId:player.id});
+  }
   if(team===0&&n===0){
     await captains[1].session.request(auction+'/bid','POST',{playerId:player.id,teamId:captains[1].teamId,amount:5000});
     const bids=await Promise.all([0,1].map(()=>captains[0].session.raw(auction+'/bid','POST',{playerId:player.id,teamId:captains[0].teamId,amount})));
@@ -71,6 +85,12 @@ for(let team=0;team<4;team++)for(let n=0;n<10;n++){
   }else await admin.request(auction+'/admin/sell','POST');
 }
 state=await admin.request(auction+'/state');assert.equal(state.status,'COMPLETED');
+for(const observer of observers){
+  await observer.waitFor(e=>e.type==='STATE'&&e.data.status==='COMPLETED');
+  assert.equal(new Set(observer.messages.filter(e=>e.type==='PLAYER_SOLD').map(e=>e.data.saleId)).size,40);
+  const revisions=observer.messages.filter(e=>e.type==='STATE').map(e=>e.data.revision);assert(revisions.every((r,i)=>i===0||r>=revisions[i-1]));
+  observer.close();
+}
 assert(state.teams.every(t=>t.totalPlayers===11&&t.purseRemaining===10000));
 assert(state.teamEligibility.every(t=>t.premiumPurchases===4&&t.femalePlayers>=3&&t.squadSlotsRemaining===0));
 for(const c of captains)await c.session.request(`${base}/squad-confirmations/teams/${c.teamId}/confirm`,'POST',{});
@@ -101,6 +121,7 @@ async function score(match){
 for(const match of overview.fixtures)await score(match);
 const standings=await admin.request(base+'/analytics/standings?penalties=false');
 assert.deepEqual(standings.map(s=>s.totalPoints),[6,4,2,0]);assert(standings.every(s=>s.played===3&&Number.isFinite(s.netRunRate)));
+for(const [index,expected] of [30,54/7,-54/7,-30].entries())assert(Math.abs(standings[index].netRunRate-Math.round(expected*1000)/1000)<0.0000001,'NRR uses actual runs and legal balls');
 overview=await admin.request(base+'/admin/competition/playoffs/generate','POST');
 assert.equal(overview.fixtures.length,7);assert.equal(overview.fixtures.filter(f=>f.stageType==='SEMI_FINAL').length,0);
 const final=overview.fixtures.find(f=>f.stageType==='FINAL');assert(final);

@@ -10,7 +10,8 @@ class AuctionPolicyGuardTest {
     AuctionRepository auctions=mock(AuctionRepository.class);
     TeamRepository teams=mock(TeamRepository.class);
     BidRepository bids=mock(BidRepository.class);
-    AuctionPolicyGuard guard=new AuctionPolicyGuard(championships,auctions,teams,bids);
+    ConfigurationSectionStateRepository sections=mock(ConfigurationSectionStateRepository.class);
+    AuctionPolicyGuard guard=new AuctionPolicyGuard(championships,auctions,teams,bids,sections);
     UUID cid=UUID.randomUUID();
     @Test void evenUndoneHistoricalBidsPreventReconfigurationAfterReset(){
         when(championships.findByIdForUpdate(cid)).thenReturn(Optional.of(new Championship()));
@@ -20,5 +21,11 @@ class AuctionPolicyGuardTest {
     @Test void untouchedChampionshipIsEditableUnderSharedLock(){
         Championship c=new Championship();when(championships.findByIdForUpdate(cid)).thenReturn(Optional.of(c));
         assertThat(guard.lockEditable(cid)).isSameAs(c);verify(championships).findByIdForUpdate(cid);
+    }
+    @Test void persistedAuctionSectionLockSurvivesStatusResetAndMissingBidHistory(){
+        when(championships.findByIdForUpdate(cid)).thenReturn(Optional.of(new Championship()));
+        when(sections.findByChampionshipIdAndSectionCode(cid,"AUCTION")).thenReturn(Optional.of(
+                ConfigurationSectionState.builder().status(ConfigurationStatus.LOCKED).build()));
+        assertThatThrownBy(()->guard.lockEditable(cid)).hasMessageContaining("locked after the first auction action");
     }
 }

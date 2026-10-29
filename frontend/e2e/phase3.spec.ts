@@ -1,3 +1,4 @@
+import {fixtureWrite} from "./configuration-fixture";
 import { test,expect,request,type APIRequestContext,type Page,type WebSocketRoute } from "@playwright/test";
 import crypto from "node:crypto";
 import fs from "node:fs";
@@ -10,8 +11,9 @@ const password=crypto.randomUUID(); const adminAccount={email:`arena-admin-${cry
 let staff:APIRequestContext,owner:APIRequestContext,cid:string,aid:string,room:string,players:any[]=[];
 const captains:{account:{email:string;password:string};team:any;client:APIRequestContext}[]=[];
 async function command(client:APIRequestContext,path:string,data?:unknown,expected=200,method="POST") {
+ const prepared=await fixtureWrite(client,api,path,method,data,3);data=prepared.data;
   const csrf=await (await client.get(api+"/auth/csrf")).json();
-  const response=await client.fetch(api+path,{method,headers:{"X-XSRF-TOKEN":csrf.token},data});
+  const response=await client.fetch(api+path,{method,headers:{...prepared.headers,"X-XSRF-TOKEN":csrf.token},data});
   expect(response.status(),method+" "+path).toBe(expected);return expected===204?null:response.json();
 }
 const auction=()=>`/championships/${cid}/auctions/${aid}`;

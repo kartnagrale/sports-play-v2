@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useEffect, useMemo, useState } from "react";
+import SetupReadiness from "@/components/championship/SetupReadiness";
 import { api } from "@/lib/api";
 import { useAuth } from "@/lib/auth";
 import { useChampionship } from "@/lib/championship";
@@ -58,6 +59,7 @@ export default function ChampionshipSettingsPage() {
       <section className="card-elev rounded-2xl p-6 md:p-7"><Header icon={<Users2 size={19}/>} title="Squad composition" subtitle="Roster guardrails enforced during sale"/><div className="space-y-4"><Field label="Maximum squad size"><input className="input" type="number" required min={1} step={1} value={form.maxSquadSize} onChange={e=>setForm({...form,maxSquadSize:inputNumber(e.target.value)})}/></Field><div className="grid grid-cols-2 gap-4"><Field label="Minimum male"><input className="input" type="number" required min={0} step={1} value={form.minMale} onChange={e=>setForm({...form,minMale:inputNumber(e.target.value)})}/></Field><Field label="Minimum female"><input className="input" type="number" required min={0} step={1} value={form.minFemale} onChange={e=>setForm({...form,minFemale:inputNumber(e.target.value)})}/></Field></div><div className={`rounded-xl border p-4 text-sm ${Number(form.minMale)+Number(form.minFemale)<=Number(form.maxSquadSize)?"border-primary/20 bg-primary/5 text-white/60":"border-danger/40 bg-danger/10 text-danger"}`}><div className="flex items-center gap-2 font-medium"><ShieldCheck size={16}/>Roster validation</div><p className="mt-2 text-xs leading-5">Required composition uses {Number(form.minMale) + Number(form.minFemale)} of {form.maxSquadSize} available slots.</p></div><div className="grid grid-cols-2 gap-3"><Metric icon={<BadgeIndianRupee size={15}/>} label="Opening price" value={`₹${Number(form.playerBasePrice).toLocaleString("en-IN")}`}/><Metric icon={<Clock3 size={15}/>} label="Bid window" value={`${form.timerSeconds}s`}/></div></div></section>
       <div className="lg:col-span-2 flex flex-col gap-3 rounded-2xl border border-white/10 bg-white/[.02] p-5 sm:flex-row sm:items-center sm:justify-between"><p className="max-w-2xl text-xs leading-5 text-white/45">Auction and roster rules lock after the first auction action. Amounts are in rupees. Saving also synchronizes Auction Policy and Roster Policy.</p><span role="status" className="text-sm text-danger">{validationError}</span><button className="btn btn-primary px-7 py-3" disabled={!valid || saving}><Save size={16}/>{saving?"Saving…":"Save & activate"}</button></div>
     </form>
+    <SetupReadiness key={String(form.version)} championshipId={active.id}/>
   </div></div>;
 }
 

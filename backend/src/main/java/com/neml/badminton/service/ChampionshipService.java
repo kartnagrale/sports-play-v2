@@ -127,8 +127,9 @@ public class ChampionshipService {
         roles.save(r);
     }
 
+    @Transactional
     public ChampionshipSettingsDto settings(UUID championshipId) {
-        Championship championship = championships.findById(championshipId).orElseThrow(() -> notFound("Championship"));
+        Championship championship = championships.findByIdForUpdate(championshipId).orElseThrow(() -> notFound("Championship"));
         TournamentSettings config = settings.findByChampionshipId(championshipId).orElseThrow(() -> notFound("Tournament settings"));
         Auction auction = auctions.findAllByChampionshipIdOrderByCreatedAtDesc(championshipId).stream().findFirst().orElse(null);
         return settingsDto(championship, config, auction);
@@ -142,7 +143,7 @@ public class ChampionshipService {
         if(req.maximumBid()!=null&&req.maximumBid().compareTo(req.playerBasePrice())<0) throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"maximumBid must be at least playerBasePrice");
         if(req.maximumPremiumPurchases()!=null&&req.maximumBid()==null) throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"maximumPremiumPurchases requires maximumBid");
         if(req.maximumBid()!=null&&players.findAllByChampionshipIdOrderByAuctionOrderAsc(championshipId).stream().anyMatch(p->p.getAuction()!=null&&p.getBasePrice().compareTo(req.maximumBid())>0)) throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"An existing player base price exceeds maximumBid; correct player prices first");
-        if (req.minMale() + req.minFemale() > req.maxSquadSize()) {
+        if ((long)req.minMale() + req.minFemale() > req.maxSquadSize()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Male and female minimums cannot exceed squad size");
         }
         TournamentSettings config = settings.findByChampionshipId(championshipId).orElseThrow(() -> notFound("Tournament settings"));
@@ -236,10 +237,11 @@ public class ChampionshipService {
     }
 
     private ChampionshipSettingsDto settingsDto(Championship championship, TournamentSettings config, Auction auction) {
+        AuctionConfiguration policy=auctionConfigurations.findFirstByChampionshipIdOrderByConfigurationVersionDesc(championship.getId()).orElseThrow(() -> notFound("Auction configuration"));
         return new ChampionshipSettingsDto(championship.getId(), championship.getStatus(),
                 auction == null ? "Main Auction" : auction.getName(), config.getMaxSquadSize(), config.getPurseLimit(),
                 config.getMinMale(), config.getMinFemale(), config.getPlayerBasePrice(), config.getBidIncrement(),
-                config.getTimerSeconds(), config.getCustomRules(), auction == null ? null : auction.getId(), auctionConfigurations.findFirstByChampionshipIdOrderByConfigurationVersionDesc(championship.getId()).orElseThrow(() -> notFound("Auction configuration")).getConfigurationVersion(), auctionConfigurations.findFirstByChampionshipIdOrderByConfigurationVersionDesc(championship.getId()).orElseThrow().getMaximumBid(), auctionConfigurations.findFirstByChampionshipIdOrderByConfigurationVersionDesc(championship.getId()).orElseThrow().getMaximumPremiumPurchases(), auctionConfigurations.findFirstByChampionshipIdOrderByConfigurationVersionDesc(championship.getId()).orElseThrow().getCaptainPreassignmentRequired());
+                config.getTimerSeconds(), config.getCustomRules(), auction == null ? null : auction.getId(), policy.getConfigurationVersion(), policy.getMaximumBid(), policy.getMaximumPremiumPurchases(), policy.getCaptainPreassignmentRequired());
     }
 
     private UUID defaultAuction(UUID championshipId) {

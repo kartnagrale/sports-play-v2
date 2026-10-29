@@ -1,3 +1,4 @@
+import {fixtureWrite} from "./configuration-fixture";
 import { test, expect, request, type APIRequestContext, type Page } from "@playwright/test";
 import crypto from "node:crypto";
 import fs from "node:fs";
@@ -11,7 +12,8 @@ let platform:APIRequestContext,admin:APIRequestContext,captain:APIRequestContext
 let account={email:`cert-${crypto.randomUUID()}@example.invalid`,password:crypto.randomUUID()};
 let teamList:any[]=[],playerList:any[]=[];let issued:any;let captainAccount:{email:string;password:string};let foreignSetup:string;const foreignAccount={email:`foreign-${crypto.randomUUID()}@example.invalid`,password:crypto.randomUUID()};
 async function command(client:APIRequestContext,path:string,data?:unknown,status=200,method="POST") {
- const csrf=await(await client.get(api+"/auth/csrf")).json();const response=await client.fetch(api+path,{method,headers:{"X-XSRF-TOKEN":csrf.token},data});
+ const prepared=await fixtureWrite(client,api,path,method,data,2);data=prepared.data;
+ const csrf=await(await client.get(api+"/auth/csrf")).json();const response=await client.fetch(api+path,{method,headers:{...prepared.headers,"X-XSRF-TOKEN":csrf.token},data});
  expect(response.status(),`${method} ${path}: ${await response.text()}`).toBe(status);return status===204||status===401?null:response.json();
 }
 const path=()=>`/championships/${cid}`;

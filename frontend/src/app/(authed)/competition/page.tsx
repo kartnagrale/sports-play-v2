@@ -86,6 +86,7 @@ export default function CompetitionPage() {
   const [branding, setBranding] = useState<BrandingConfiguration | null>(null);
   const [auctionConfig, setAuctionConfig] =
     useState<AuctionConfiguration | null>(null);
+  const [quotaVersion,setQuotaVersion]=useState<string>("");
   const [quotas, setQuotas] = useState<QuotaRuleDto[]>([]);
 
   const load = useCallback( () => {
@@ -125,6 +126,7 @@ setOverview(competition.data);
       setBranding(brandingResponse.data);
       setAuctionConfig(auctionResponse.data);
       setQuotas(quotaResponse.data);
+      setQuotaVersion(String(quotaResponse.headers.etag||"").replaceAll('"',""));
       const c = competition.data.configuration;
       setForm({
         expectedConfigurationVersion: c.configurationVersion,
@@ -282,7 +284,7 @@ setOverview(competition.data);
       await api.put(
         `/championships/${active.id}/sport-configuration/quotas`,
         quotas,
-        {headers:{"If-Match":String(auctionConfig?.version)}},
+        {headers:{"If-Match":quotaVersion}},
       );
       toast.success("Roster quota rules saved");
       await load();
