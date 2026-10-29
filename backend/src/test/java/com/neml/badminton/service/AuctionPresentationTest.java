@@ -20,10 +20,12 @@ class AuctionPresentationTest {
     final UUID cid=UUID.randomUUID(), aid=UUID.randomUUID();
     final Auction auction=mock(Auction.class);
     final AuctionState state=mock(AuctionState.class);
+    final AuctionRuleEvaluator evaluator=mock(AuctionRuleEvaluator.class);
     final TenantAuctionService service=new TenantAuctionService(auctions,states,players,teams,bids,settings,
             mock(AuctionBroadcaster.class),mock(TransactionTemplate.class),mock(SquadConfirmationService.class),
-            mock(ChampionshipRepository.class),mock(ConfigurationSectionService.class),mock(jakarta.persistence.EntityManager.class));
+            mock(ChampionshipRepository.class),mock(ConfigurationSectionService.class),mock(jakarta.persistence.EntityManager.class),evaluator);
     void prepare() {
+        when(evaluator.rules(cid)).thenReturn(new AuctionBidRules.Rules(11,11,0,3,BigDecimal.valueOf(5000),BigDecimal.valueOf(15000),4));
         when(auctions.findByIdAndChampionshipId(aid,cid)).thenReturn(Optional.of(auction));
         when(states.findByAuctionIdAndChampionshipId(aid,cid)).thenReturn(Optional.of(state));
         when(settings.findByChampionshipId(cid)).thenReturn(Optional.of(mock(TournamentSettings.class)));

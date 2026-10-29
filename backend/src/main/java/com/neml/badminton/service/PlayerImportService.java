@@ -82,6 +82,7 @@ public class PlayerImportService {
         Map<String,Long> counts=new HashMap<>();rows.forEach(r->{if(r.player().playerReference()!=null)counts.merge(r.player().playerReference(),1L,Long::sum);});
         List<Row> result=new ArrayList<>();
         for(Row row:rows){var r=row.player();List<String> errors=new ArrayList<>(row.errors());boolean duplicate=r.playerReference()!=null&&registered.contains(r.playerReference());
+            if(!duplicate&&existing.stream().anyMatch(p->p.getStatus()==com.neml.badminton.entity.PlayerStatus.PREASSIGNED&&p.getFullName().trim().equalsIgnoreCase(r.fullName().trim())))errors.add("Possible preassigned captain duplicate: use the existing captain Player Reference");
             if(r.playerReference()!=null&&counts.get(r.playerReference())>1)errors.add("Duplicate Player Reference in workbook");
             if(!duplicate&&r.auctionOrder()!=null&&!orders.add(r.auctionOrder()))errors.add("Auction Order is already assigned");
             result.add(new Row(row.rowNumber(),r,errors,duplicate));}

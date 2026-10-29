@@ -196,7 +196,7 @@ public class SquadConfirmationService {
         if (roster.size()<minimum||roster.size()>maximum) issues.add("Squad must contain between " + minimum+" and "+maximum+" players");
         if (male < rules.getMinMale()) issues.add("Squad requires at least " + rules.getMinMale() + " male players");
         if (female < rules.getMinFemale()) issues.add("Squad requires at least " + rules.getMinFemale() + " female players");
-        if (roster.stream().anyMatch(player -> player.getStatus() != PlayerStatus.SOLD)) issues.add("Every squad player must have SOLD status");
+        if (roster.stream().anyMatch(player -> !player.isRosterEligible())) issues.add("Every squad member must be purchased or a legitimate preassigned captain");
         for(RosterQuotaRule quota:quotaRules.findAllByChampionshipIdAndEnabledTrue(championshipId)){
             if(!"SQUAD".equalsIgnoreCase(quota.getAppliesTo())) continue;
             long count=switch(quota.getCategoryType().toUpperCase(Locale.ROOT)){

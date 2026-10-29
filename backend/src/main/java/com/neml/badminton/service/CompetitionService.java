@@ -116,6 +116,14 @@ public class CompetitionService {
         c.setConfigurationStatus(ConfigurationStatus.DRAFT);
         c.setConfigurationVersion(c.getConfigurationVersion()+1);
         configs.save(c);
+        AuctionConfiguration auctionPolicy=auctionConfigurations.findLatestForUpdate(cid).orElseThrow(()->notFound("Auction configuration"));
+        if(!Objects.equals(before.minimumRosterSize(),c.getMinimumRosterSize())||!Objects.equals(before.maximumRosterSize(),c.getMaximumRosterSize())) {
+            if(auctions.findAllByChampionshipIdOrderByCreatedAtDesc(cid).stream().anyMatch(a->a.getStatus()!=AuctionStatus.NOT_STARTED)) conflict("Roster rules are locked after the first auction action");
+            auctionPolicy.setMinimumRosterSize(c.getMinimumRosterSize());auctionPolicy.setMaximumRosterSize(c.getMaximumRosterSize());auctionPolicy.setConfigurationVersion(auctionPolicy.getConfigurationVersion()+1);auctionConfigurations.save(auctionPolicy);
+            TournamentSettings operational=settings.findByChampionshipId(cid).orElseThrow(()->notFound("Tournament settings"));
+            if(operational.getMinMale()+operational.getMinFemale()>c.getMaximumRosterSize()) conflict("Gender minimums exceed the proposed roster size; update roster quotas first");
+            operational.setMaxSquadSize(c.getMaximumRosterSize());settings.save(operational);
+        }
         CompetitionConfigurationDto after=CompetitionDtos.from(c);
         audit(championship,null,actor,"COMPETITION_CONFIGURED",c.getConfigurationVersion(),Map.of("before",before,"after",after));
         if(!Objects.equals(before.presetCode(),after.presetCode()))audit(championship,null,actor,"CONFIGURATION_PRESET_APPLIED",c.getConfigurationVersion(),Map.of("before",Optional.ofNullable(before.presetCode()).orElse(""),"after",Optional.ofNullable(after.presetCode()).orElse("")));

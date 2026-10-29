@@ -1,3 +1,4 @@
+import {fixtureWrite} from "./configuration-fixture";
 import { test, expect, request, type APIRequestContext, type Page } from "@playwright/test";
 import crypto from "node:crypto";
 import fs from "node:fs";
@@ -15,8 +16,9 @@ const accounts = {
   captain: { email: `captain-${crypto.randomUUID()}@example.invalid`, password: crypto.randomUUID() },
 };
 async function mutate(context: APIRequestContext, method: string, path: string, data?: unknown, status = 200) {
+  const prepared=await fixtureWrite(context,backend,path,method,data,4);data=prepared.data;
   const csrf = await (await context.get(backend + "/auth/csrf")).json();
-  const response = await context.fetch(backend + path, { method, headers: { "X-XSRF-TOKEN": csrf.token }, data });
+  const response = await context.fetch(backend + path, { method, headers: { ...prepared.headers, "X-XSRF-TOKEN": csrf.token }, data });
   expect(response.status(), `${method} ${path}`).toBe(status);
   return status === 204 ? null : response.json();
 }

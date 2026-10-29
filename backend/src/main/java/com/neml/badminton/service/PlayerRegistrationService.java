@@ -19,9 +19,10 @@ public class PlayerRegistrationService {
     private final PlayerRepository players;
     private final TournamentSettingsRepository settings;
     private final SquadConfirmationService squads;
+    private final AuctionConfigurationRepository policies;
     public PlayerRegistrationService(ChampionshipRepository championships, AuctionRepository auctions,
-            PlayerRepository players, TournamentSettingsRepository settings, SquadConfirmationService squads) {
-        this.championships=championships;this.auctions=auctions;this.players=players;this.settings=settings;this.squads=squads;
+            PlayerRepository players, TournamentSettingsRepository settings, SquadConfirmationService squads,AuctionConfigurationRepository policies) {
+        this.championships=championships;this.auctions=auctions;this.players=players;this.settings=settings;this.squads=squads;this.policies=policies;
     }
     public static String reference(String value) {
         return value==null||value.isBlank()?null:value.trim().toUpperCase(Locale.ROOT);
@@ -49,12 +50,15 @@ public class PlayerRegistrationService {
         Championship c=lockMutable(cid);
         Auction auction=auctions.findAllByChampionshipIdOrderByCreatedAtDesc(cid).stream().findFirst().orElseThrow(()->new ResponseStatusException(HttpStatus.CONFLICT,"Configure the championship before adding players"));
         TournamentSettings config=settings.findByChampionshipId(cid).orElseThrow(()->new ResponseStatusException(HttpStatus.CONFLICT,"Championship settings not found"));
+        BigDecimal ceiling=policies.findFirstByChampionshipIdOrderByConfigurationVersionDesc(cid).map(AuctionConfiguration::getMaximumBid).orElse(null);
         List<Player> existing=players.findAllByChampionshipIdOrderByAuctionOrderAsc(cid);
         Set<Integer> orders=new HashSet<>(); Set<String> references=new HashSet<>();
         existing.forEach(p->{if(p.getAuction()!=null&&auction.getId().equals(p.getAuction().getId())&&p.getAuctionOrder()!=null) orders.add(p.getAuctionOrder());if(p.getPlayerReference()!=null)references.add(p.getPlayerReference());});
         // Reserve explicit orders first so auto assignment cannot collide with a later row.
         for(Registration r:rows) {
+            if(ceiling!=null&&(r.basePrice()==null?config.getPlayerBasePrice():r.basePrice()).compareTo(ceiling)>0) conflict("Player Base Price exceeds the configured maximum bid");
             List<String> errors=validate(r);if(!errors.isEmpty()) throw new ResponseStatusException(HttpStatus.BAD_REQUEST,String.join("; ",errors));
+            if(existing.stream().anyMatch(p->p.getStatus()==PlayerStatus.PREASSIGNED&&p.getFullName().trim().equalsIgnoreCase(r.fullName().trim()))) conflict("Possible preassigned captain duplicate: use the captain's existing Player Reference");
             if(r.auctionOrder()!=null&&!orders.add(r.auctionOrder())) conflict("Auction Order is already assigned");
             if(reference(r.playerReference())!=null&&!references.add(reference(r.playerReference()))) conflict("Player Reference is already registered");
         }

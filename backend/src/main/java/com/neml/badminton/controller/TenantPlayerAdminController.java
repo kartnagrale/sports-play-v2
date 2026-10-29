@@ -26,16 +26,17 @@ public class TenantPlayerAdminController {
     private final SquadConfirmationService squadConfirmations;
     private final com.neml.badminton.service.PlayerRegistrationService registration;
     private final com.neml.badminton.service.PlayerPhotoService photos;
+    private final AuctionConfigurationRepository auctionPolicies;
 
     public TenantPlayerAdminController(ChampionshipRepository championships, AuctionRepository auctions,
             PlayerRepository players, TournamentSettingsRepository settings, AuctionStateRepository states,
             BidRepository bids, org.springframework.jdbc.core.JdbcTemplate jdbc,
-            SquadConfirmationService squadConfirmations, com.neml.badminton.service.PlayerRegistrationService registration,com.neml.badminton.service.PlayerPhotoService photos) {
+            SquadConfirmationService squadConfirmations, com.neml.badminton.service.PlayerRegistrationService registration,com.neml.badminton.service.PlayerPhotoService photos,AuctionConfigurationRepository auctionPolicies) {
         this.championships=championships; this.auctions=auctions; this.players=players; this.settings=settings;
         this.states=states; this.bids=bids; this.jdbc=jdbc;
         this.squadConfirmations=squadConfirmations;
         this.registration=registration;
-        this.photos=photos;
+        this.photos=photos;this.auctionPolicies=auctionPolicies;
     }
 
     public record PlayerRequest(@NotBlank @Size(max=255) String fullName, @NotNull Gender gender,
@@ -54,6 +55,12 @@ public class TenantPlayerAdminController {
         squadConfirmations.assertRosterMutable(championshipId);
         Player player=players.findByIdAndChampionshipId(id,championshipId).orElseThrow(()->notFound("Player"));
         if(player.getStatus()==PlayerStatus.SOLD)throw new ResponseStatusException(HttpStatus.CONFLICT,"Sold players cannot be edited");
+        if(player.getStatus()==PlayerStatus.PREASSIGNED&&(req.gender()!=player.getGender()||req.auctionOrder()!=null))throw new ResponseStatusException(HttpStatus.CONFLICT,"Preassigned captain gender and auction exclusion are locked; name, skill and photograph remain editable");
+        if(req.basePrice()!=null){
+            BigDecimal ceiling=auctionPolicies.findFirstByChampionshipIdOrderByConfigurationVersionDesc(championshipId).map(AuctionConfiguration::getMaximumBid).orElse(null);
+            if(ceiling!=null&&req.basePrice().compareTo(ceiling)>0)throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Player Base Price exceeds the configured maximum bid");
+            if(player.getAuction()!=null&&req.basePrice().compareTo(player.getBasePrice())!=0&&bids.findFirstByAuctionIdAndChampionshipIdAndPlayerAndActiveTrueOrderBySequenceNoDesc(player.getAuction().getId(),championshipId,player).isPresent())throw new ResponseStatusException(HttpStatus.CONFLICT,"Opening price is locked while active bids exist");
+        }
         String reference=com.neml.badminton.service.PlayerRegistrationService.reference(req.playerReference());
         if(reference!=null){
             var errors=com.neml.badminton.service.PlayerRegistrationService.validate(new com.neml.badminton.service.PlayerRegistrationService.Registration(req.fullName(),req.gender(),req.basePrice(),req.skillLevel(),req.auctionOrder(),reference));
@@ -71,7 +78,7 @@ public class TenantPlayerAdminController {
         championships.findByIdForUpdate(championshipId).orElseThrow(()->notFound("Championship"));
         squadConfirmations.assertRosterMutable(championshipId);
         Player player=players.findByIdAndChampionshipId(id,championshipId).orElseThrow(()->notFound("Player"));
-        if(player.getStatus()==PlayerStatus.SOLD)throw new ResponseStatusException(HttpStatus.CONFLICT,"Sold players cannot be deleted");
+        if(player.getStatus()==PlayerStatus.SOLD||player.getStatus()==PlayerStatus.PREASSIGNED)throw new ResponseStatusException(HttpStatus.CONFLICT,"Purchased players and preassigned captains cannot be deleted");
         if(player.getPhotoKey()!=null)photos.remove(championshipId,id,actor.getId());
         states.findAllByChampionshipId(championshipId).stream()
                 .filter(s->s.getCurrentPlayer()!=null&&s.getCurrentPlayer().getId().equals(id))

@@ -20,7 +20,18 @@ public class ApiExceptionHandler {
             org.springframework.web.bind.MissingServletRequestParameterException.class,
             org.springframework.web.method.annotation.MethodArgumentTypeMismatchException.class,
             org.springframework.http.converter.HttpMessageNotReadableException.class})
-    public ResponseEntity<Map<String,Object>> malformedRequest(Exception e){return ResponseEntity.badRequest().body(body("Required request fields are missing or invalid"));}
+    public ResponseEntity<Map<String,Object>> malformedRequest(Exception e){String message="Required request fields are missing or invalid";
+        Throwable cause=e;
+        while(cause!=null){
+            if(cause instanceof com.fasterxml.jackson.databind.JsonMappingException mapping && !mapping.getPath().isEmpty()) {
+                String field=mapping.getPath().get(0).getFieldName();
+                // Response DTO fields are bounded application identifiers, never the input value.
+                if(field!=null && field.matches("[A-Za-z][A-Za-z0-9_]{0,63}")) message="Invalid field '"+field+"': check its name and value type";
+                break;
+            }
+            cause=cause.getCause();
+        }
+        return ResponseEntity.badRequest().body(body(message));}
 
     @ExceptionHandler({org.springframework.dao.OptimisticLockingFailureException.class,
             org.springframework.dao.DataIntegrityViolationException.class})
