@@ -1,8 +1,17 @@
-node_modules/
-.next/
-.next-local/
-test-results/
-playwright-report/
-*.tsbuildinfo
-.env*
-!.env.local.example
+# Allow only production build inputs; no env, demo, photos, evidence or old .next.
+**
+!package.json
+!package-lock.json
+!next.config.js
+!tsconfig.json
+!postcss.config.js
+!tailwind.config.js
+!src/
+!src/**
+src/**/.env*
+src/**/*.log
+src/**/credentials*
+src/**/player-photos/**
+**/*.key
+**/*.pem
+**/*.env

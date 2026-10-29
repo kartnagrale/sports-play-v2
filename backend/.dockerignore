@@ -1,3 +1,15 @@
-target/
-.idea/
-*.iml
+# Tests, target, logs, env and private storage never enter the build context.
+**
+!pom.xml
+!src/
+src/**
+!src/main/
+!src/main/**
+src/main/**/.env*
+src/main/**/*.log
+src/main/**/credentials*
+src/main/**/player-photos/**
+src/main/resources/application-local.yml
+**/*.key
+**/*.pem
+**/*.env

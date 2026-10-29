@@ -3,7 +3,8 @@ import crypto from "node:crypto";
 import fs from "node:fs";
 import { inflateRawSync } from "node:zlib";
 const api=process.env.PHASE6_API_URL||"http://localhost:58096/api";
-const evidence="../docs/phase-6/evidence";
+const web=process.env.PHASE1_WEB_URL||"http://localhost:53006";
+const evidence=process.env.UI_EVIDENCE||"../docs/phase-6/evidence";
 test.skip(!process.env.PHASE6_API_URL,"Use the disposable Phase 6 runner");
 test.describe.configure({mode:"serial"});test.setTimeout(180000);
 let platform:APIRequestContext,admin:APIRequestContext,captain:APIRequestContext,cid:string,aid:string,otherCid:string,finalId:string,roomCode:string;
@@ -93,7 +94,7 @@ test("Bulk team participation issues unique PDFs and public verification tracks 
  fs.writeFileSync(`${evidence}/bulk-archive-validation.json`,JSON.stringify({batchId:batch.id,count:2,names,zipBytes:archive.length,repeatedDownloadIdentical:true,recipients:batch.certificates.map((c:any)=>({name:c.certificate.recipient.name,reference:c.certificate.reference}))},null,2));
  await page.screenshot({path:`${evidence}/bulk-success.png`});await dialog.getByRole("button",{name:"Done",exact:true}).click();
  const history=await(await admin.get(api+cert())).json();expect(history.items.filter((row:any)=>batch.certificates.some((c:any)=>c.certificate.id===row.certificate.id))).toHaveLength(2);
- const item=batch.certificates[0];expect(item.certificate.verificationUrl).toBe(`http://localhost:53006/verify?reference=${item.certificate.reference}`);
+ const item=batch.certificates[0];expect(item.certificate.verificationUrl).toBe(`${web}/verify?reference=${item.certificate.reference}`);
  const publicContext=await browser.newContext();const publicPage=await publicContext.newPage();
  try{await publicPage.goto(item.certificate.verificationUrl);await expect(publicPage.getByText("Valid certificate",{exact:true})).toBeVisible();await publicPage.screenshot({path:`${evidence}/verification-valid.png`});
  const publicResult=await(await publicContext.request.get(api+"/certificate-verification/"+item.certificate.reference)).json();expect(Object.keys(publicResult).sort()).toEqual(["status","reference","recipient","championship","sport","category","issueDate"].sort());

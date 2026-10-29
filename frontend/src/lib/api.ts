@@ -1,10 +1,10 @@
 import axios, { AxiosInstance } from "axios";
 
 const BACKEND_URL =
-  process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8001";
+  process.env.NEXT_PUBLIC_BACKEND_URL ?? "http://localhost:8001";
 
 export const API_BASE = `${BACKEND_URL}/api`;
-export const WS_BASE = process.env.NEXT_PUBLIC_WS_URL || BACKEND_URL;
+export const WS_BASE = process.env.NEXT_PUBLIC_WS_URL ?? BACKEND_URL;
 
 // httpOnly cookie is set by the backend on /api/auth/login. `withCredentials: true`
 // sends it on subsequent requests. Viewer tokens remain tab-local bearer credentials.

@@ -1,0 +1,128 @@
+{
+  "phase": "6.5",
+  "date": "2026-10-29",
+  "timezone": "Asia/Calcutta",
+  "branch": "feature/dockerization",
+  "base": "bd710dbc36955f81bea155eea67bfe061f92463d",
+  "status": "complete",
+  "environment": {
+    "dockerDesktop": "4.87.0",
+    "dockerEngine": "29.7.2",
+    "compose": "5.4.0",
+    "powershell": "7.6.5",
+    "nodeContainer": "22.23.4",
+    "javaContainer": "17.0.20.1",
+    "postgresContainer": "15.19",
+    "nginxContainer": "1.30.6",
+    "next": "16.4.3",
+    "springBoot": "3.5.16"
+  },
+  "builds": {
+    "applicationImages": 4,
+    "frontendProductionBuild": true,
+    "backendPackage": true,
+    "baseImagesPinnedByDigest": true,
+    "missingSecretsRejected": true
+  },
+  "frontend": {
+    "lint": true,
+    "typecheck": true,
+    "modelTestsPassed": 18,
+    "modelTestsFailed": 0,
+    "browserDistinctJourneysPassed": 9,
+    "browserEvidence": "3 auction/portal passes retained; 6 affected journeys passed after origin assertion correction"
+  },
+  "contexts": {
+    "database": {
+      "files": 13,
+      "bytes": 97938,
+      "privateCanariesExcluded": true
+    },
+    "backend": {
+      "files": 174,
+      "bytes": 1322189,
+      "privateCanariesExcluded": true
+    },
+    "frontend": {
+      "files": 74,
+      "bytes": 680358,
+      "privateCanariesExcluded": true
+    },
+    "gateway": {
+      "files": 1,
+      "bytes": 1247,
+      "privateCanariesExcluded": true
+    }
+  },
+  "containerChecks": {
+    "security": {
+      "onlyLoopbackGatewayPublished": true,
+      "internalNetworks": true,
+      "nonRootReadOnlyApplicationContainers": true,
+      "noRuntimeSecretsInImages": true,
+      "missingAndInvalidCsrfRejected": true,
+      "httpOnlySameSiteCookies": true,
+      "foreignCorsAndWebSocketOriginsRejected": true,
+      "privatePhotosRequireAuthentication": true,
+      "noPublicStorageRoute": true,
+      "restrictedDatabaseRole": true,
+      "migrationCount": 6
+    },
+    "migrations": {
+      "freshSix": true,
+      "repeatedWithoutDuplication": true,
+      "populatedEarlierSchemaUpgraded": true,
+      "sentinelPreserved": true,
+      "tamperedChecksumRejected": true
+    },
+    "restartPersistence": {
+      "allTablesAndRowsUnchanged": true,
+      "tableCount": 43,
+      "photoCount": 2,
+      "photoBytesUnchanged": true,
+      "validAndRevokedCertificatesPreserved": true,
+      "pdfStillDownloads": true
+    },
+    "recreatedBackendPersistence": {
+      "allTablesAndRowsUnchanged": true,
+      "tableCount": 43,
+      "photoCount": 2,
+      "photoBytesUnchanged": true,
+      "validAndRevokedCertificatesPreserved": true,
+      "pdfStillDownloads": true
+    },
+    "recreatedStackPersistence": {
+      "allTablesAndRowsUnchanged": true,
+      "tableCount": 43,
+      "photoCount": 2,
+      "photoBytesUnchanged": true,
+      "validAndRevokedCertificatesPreserved": true,
+      "pdfStillDownloads": true
+    },
+    "backup": {
+      "customDumpCopiedWithoutShellRedirection": true,
+      "restoreIntoSeparateEmptyDatabase": true,
+      "allRestoredTableHashesMatch": true,
+      "privatePhotoBackupHashesMatch": true
+    },
+    "secureCookie": {
+      "secureFlagVerifiedWithProductionSetting": true,
+      "tlsTransportTested": false
+    }
+  },
+  "isolation": {
+    "preExistingContainersRetained": 40,
+    "preExistingVolumesRetained": 40,
+    "testStackStopped": true,
+    "testNamedVolumesRetained": 2,
+    "existingUserDatabasesModified": false
+  },
+  "securityBlockers": [
+    "CVE-2026-47890",
+    "CVE-2026-47884"
+  ],
+  "productionApproved": false,
+  "pushed": false,
+  "merged": false,
+  "phase7Started": false
+}

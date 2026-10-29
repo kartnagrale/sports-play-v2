@@ -99,6 +99,7 @@ frontend/node_modules/@next/swc-linux-arm64-gnu/next-swc.linux-arm64-gnu.node
 .env.*
 *.env
 !frontend/.env.local.example
+!.env.docker.example
 credentials.json
 *.key
 .credentials

@@ -1,43 +1,28 @@
-# Sports-Play Platform
+# Play-Neml
 
 Sports-Play is a multi-tenant, multi-sport platform for championship provisioning, live player auctions, squad confirmation, league and playoff generation, cricket and badminton scoring, standings, and analytics.
 
-- Frontend: Next.js 14, React, TypeScript, Tailwind
-- Backend: Spring Boot 3.2.5, Java 17, Spring Security, JPA, WebSockets
+- Frontend: Next.js 16, React 19, Node 22, TypeScript, Tailwind
+- Backend: Spring Boot 3.5, Java 17, Spring Security, JPA, WebSockets
 - Database: PostgreSQL 15+, isolated in the `play_neml` schema
 
-## Fastest local setup: Docker
+## Docker setup (Phase 6.5)
 
-Requirements: Docker Desktop or Docker Engine with the Compose plugin.
+Use Linux containers in Docker Desktop/Engine with Compose. Follow the [container operations guide](docs/phase-6.5/OPERATIONS.md) to create a protected external configuration from [.env.docker.example](.env.docker.example), supply independent random secrets, configure the exact browser origin/TLS settings and bootstrap the initial administrator.
 
-```bash
-git clone https://github.com/kartnagrale/sports-play-v2.git
-cd sports-play-v2
-git checkout feature/multi-portal
-docker compose up --build
+```powershell
+$config = 'C:/private/playneml.env'
+$project = 'playneml-staging'
+docker compose --env-file $config -p $project config --quiet
+docker compose --env-file $config -p $project build --pull
+docker compose --env-file $config -p $project up -d --wait --wait-timeout 240
 ```
 
-Open:
+Only the loopback gateway publishes a port (8080 by default), behind your trusted TLS proxy. Browser API/WebSocket calls share that origin. The database and private photo volumes persist across restart, recreation and down. Demo seeding is disabled; all Docker credentials must be supplied.
 
-- Frontend: http://localhost:3000
-- Backend health: http://localhost:8001/api/health
-- PostgreSQL: localhost:5432, database `sports_play`
+Run ./tools/verify-dockerization.ps1 for isolated verification. See the operations guide for safe commands, upgrades, matched database/photo backups and recovery. Never remove volumes or prune existing data.
 
-The first database start runs `docs/sql/sports-play-complete-schema.sql` and the tracked Phase 1 account-security migration. The backend waits for PostgreSQL, validates the complete schema, and seeds local demonstration data. Database data persists in the `sports_play_postgres` Docker volume.
-
-To rebuild application images after pulling changes:
-
-```bash
-docker compose up --build
-```
-
-To stop the stack without deleting data:
-
-```bash
-docker compose down
-```
-
-Retain database volumes when stopping or upgrading. Rehearse reviewed migrations on an isolated copy before changing a populated database.
+**CVE-2026-47890 and CVE-2026-47884 remain unresolved production security blockers.** Containerization is not production deployment approval; Phase 7 has not begun.
 
 ## Manual local setup
 
@@ -99,7 +84,7 @@ On Windows Command Prompt, use `copy .env.local.example .env.local`. The fronten
 
 ## Local demonstration access
 
-These accounts exist only when `DATA_SEED_ENABLED=true` (the default in the local profile and Docker Compose).
+These legacy accounts apply only to the manual local profile with demo seeding. Docker disables seeding and uses supplied bootstrap credentials. See the separately retained [Phase 6 demo runbook](docs/phase-6/DEMO-RUNBOOK.md) for its isolated environment.
 
 | Role | Email | Password |
 |---|---|---|
@@ -135,7 +120,7 @@ npm run build
 Docker configuration validation:
 
 ```bash
-docker compose config
+docker compose --env-file <private-config-file> -p <unique-project> config --quiet
 ```
 
 ## Production configuration

@@ -1,0 +1,23 @@
+# Root context is only for the database image. Deny everything by default.
+**
+!docker/
+docker/**
+!docker/database/
+docker/database/**
+!docker/database/Dockerfile
+!docker/database/init.sh
+!docker/database/migrate.sh
+!docker/database/grants.psql
+!docs/
+docs/**
+!docs/sql/
+docs/sql/**
+!docs/sql/sports-play-complete-schema.sql
+!docs/sql/phase1-init.sh
+!docs/sql/phase1-apply.psql
+!docs/sql/2026-10-27-phase1-account-security.sql
+!docs/sql/2026-10-28-phase4-player-import.sql
+!docs/sql/2026-10-28-phase4-player-photo.sql
+!docs/sql/2026-10-28-phase5-certificates.sql
+!docs/sql/2026-10-28-phase5-certificate-navigation.sql
+!docs/sql/2026-10-28-phase5-certificate-batches.sql
