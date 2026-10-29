@@ -114,19 +114,19 @@ if(mode==='security'){
  assert.equal(sql("select rolsuper or rolcreatedb or rolcreaterole from pg_roles where rolname='sports_play_app'"),'f');
  assert.equal(sql("select has_schema_privilege('sports_play_app','play_neml','CREATE')"),'f');
  assert.equal(sql("select has_table_privilege('sports_play_app','play_neml.schema_migrations','UPDATE')"),'f');
- assert.equal(sql('select count(*) from play_neml.schema_migrations'),'6');
+ assert.equal(sql('select count(*) from play_neml.schema_migrations'),'7');
  const currentCertificates=(await(await admin.get(base+root+'/admin/certificates')).json()).items;
  if(!currentCertificates.some(x=>x.status==='ISSUED')){
   const approval=await command(admin,root+'/admin/certificates/approvals',{justification:'Container persistence verification after final score review'});
   const eligible=await(await admin.get(base+root+'/admin/certificates/eligibility?category=PARTICIPATION&recipientType=PLAYER')).json();
   await command(admin,root+'/admin/certificates',{requestId:crypto.randomUUID(),approvalId:approval.id,category:'PARTICIPATION',recipientType:'PLAYER',recipientId:eligible.recipients[0].id});
  }
- summary.security={onlyLoopbackGatewayPublished:true,internalNetworks:true,nonRootReadOnlyApplicationContainers:true,noRuntimeSecretsInImages:true,missingAndInvalidCsrfRejected:true,httpOnlySameSiteCookies:true,foreignCorsAndWebSocketOriginsRejected:true,privatePhotosRequireAuthentication:true,noPublicStorageRoute:true,restrictedDatabaseRole:true,migrationCount:6};
+ summary.security={onlyLoopbackGatewayPublished:true,internalNetworks:true,nonRootReadOnlyApplicationContainers:true,noRuntimeSecretsInImages:true,missingAndInvalidCsrfRejected:true,httpOnlySameSiteCookies:true,foreignCorsAndWebSocketOriginsRejected:true,privatePhotosRequireAuthentication:true,noPublicStorageRoute:true,restrictedDatabaseRole:true,migrationCount:7};
  await Promise.all([anonymous.dispose(),staff.dispose(),admin.dispose()]);
 }else if(mode==='migrations'){
- assert.equal(sql('select count(*) from play_neml.schema_migrations'),'6');
+ assert.equal(sql('select count(*) from play_neml.schema_migrations'),'7');
  docker('run','--rm','--no-deps','migrate');
- assert.equal(sql('select count(*) from play_neml.schema_migrations'),'6');
+ assert.equal(sql('select count(*) from play_neml.schema_migrations'),'7');
  const name='upgrade_'+crypto.randomBytes(4).toString('hex');
  const script=`set -eu
  createdb -U "$POSTGRES_USER" ${name}
@@ -136,7 +136,7 @@ if(mode==='security'){
  psql -X -U "$POSTGRES_USER" -d ${name} -v ON_ERROR_STOP=1 -c "create table play_neml.docker_sentinel (value text); insert into play_neml.docker_sentinel values ('preserved');"
  POSTGRES_DB=${name} sh /opt/play-neml-migrations/phase1-init.sh
  POSTGRES_DB=${name} sh /opt/play-neml-migrations/phase1-init.sh
- test "$(psql -X -U "$POSTGRES_USER" -d ${name} -Atc 'select count(*) from play_neml.schema_migrations')" = 6
+ test "$(psql -X -U "$POSTGRES_USER" -d ${name} -Atc 'select count(*) from play_neml.schema_migrations')" = 7
  test "$(psql -X -U "$POSTGRES_USER" -d ${name} -Atc 'select value from play_neml.docker_sentinel')" = preserved
  `;
  execFileSync('docker',[...compose,'exec','-T','db','sh'],{input:script,encoding:'utf8',maxBuffer:8*1024*1024});
@@ -147,8 +147,8 @@ if(mode==='security'){
   docker('run','--rm','--no-deps','--volume',process.cwd().replaceAll('\\','/')+'/tmp/docker-tampered-migration.sql:/opt/play-neml-migrations/2026-10-28-phase5-certificate-batches.sql:ro','migrate');
  }catch(error){rejected=String(error.stderr).includes('Migration checksum mismatch');}
  assert.equal(rejected,true,'Migration checksum changes must block startup');
- assert.equal(sql('select count(*) from play_neml.schema_migrations'),'6');
- summary.migrations={freshSix:true,repeatedWithoutDuplication:true,populatedEarlierSchemaUpgraded:true,sentinelPreserved:true,tamperedChecksumRejected:true};
+ assert.equal(sql('select count(*) from play_neml.schema_migrations'),'7');
+ summary.migrations={freshSeven:true,repeatedWithoutDuplication:true,populatedEarlierSchemaUpgraded:true,sentinelPreserved:true,tamperedChecksumRejected:true};
 }else if(mode==='snapshot'){
  await fs.writeFile('tmp/docker-persistence-before.json',JSON.stringify(await snapshot()));
 }else if(mode==='persistence'){

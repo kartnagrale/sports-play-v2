@@ -49,11 +49,11 @@ jobs:
           cache-dependency-path: frontend/package-lock.json
       - name: Initialize disposable database
         run: psql -X -v ON_ERROR_STOP=1 -f docs/sql/sports-play-complete-schema.sql
-      - name: Apply all six tracked migrations
+      - name: Apply all seven tracked migrations
         shell: pwsh
         run: |
           ./tools/apply-migrations.ps1
-          foreach ($migration in @('2026-10-28-phase4-player-import','2026-10-28-phase4-player-photo','2026-10-28-phase5-certificates','2026-10-28-phase5-certificate-navigation','2026-10-28-phase5-certificate-batches')) {
+          foreach ($migration in @('2026-10-28-phase4-player-import','2026-10-28-phase4-player-photo','2026-10-28-phase5-certificates','2026-10-28-phase5-certificate-navigation','2026-10-28-phase5-certificate-batches','2026-10-29-npl-auction-rules')) {
             ./tools/apply-migrations.ps1 -Migration $migration
           }
       - name: Backend including PostgreSQL integration tests
@@ -66,6 +66,8 @@ jobs:
           npm run lint
           npm run typecheck
           npm run build
+          node --experimental-strip-types --test tests/championship-settings.test.mjs
+          node e2e/auction-model.test.cjs
           npm audit --audit-level=high
       - name: Review resolved Maven advisories (fails on unresolved findings)
         run: |
