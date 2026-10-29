@@ -1,0 +1,95 @@
+{
+  "phase": 7,
+  "date": "2026-10-29",
+  "branch": "feature/release-readiness",
+  "base": "3c0aab0cbff94fa5b3445b1947e890cc0a0a62a7",
+  "productionReadiness": "BLOCKED / PENDING SECURITY AND OPERATIONS APPROVAL",
+  "backend": {
+    "skipped": 0,
+    "failures": 0,
+    "tests": 99,
+    "errors": 0
+  },
+  "browserDistinctPasses": 9,
+  "frontendModelPasses": 18,
+  "containerChecks": {
+    "security": {
+      "onlyLoopbackGatewayPublished": true,
+      "internalNetworks": true,
+      "nonRootReadOnlyApplicationContainers": true,
+      "noRuntimeSecretsInImages": true,
+      "missingAndInvalidCsrfRejected": true,
+      "httpOnlySameSiteCookies": true,
+      "foreignCorsAndWebSocketOriginsRejected": true,
+      "privatePhotosRequireAuthentication": true,
+      "noPublicStorageRoute": true,
+      "restrictedDatabaseRole": true,
+      "migrationCount": 6
+    },
+    "migrations": {
+      "freshSix": true,
+      "repeatedWithoutDuplication": true,
+      "populatedEarlierSchemaUpgraded": true,
+      "sentinelPreserved": true,
+      "tamperedChecksumRejected": true
+    },
+    "restartPersistence": {
+      "allTablesAndRowsUnchanged": true,
+      "tableCount": 43,
+      "photoCount": 2,
+      "photoBytesUnchanged": true,
+      "validAndRevokedCertificatesPreserved": true,
+      "pdfStillDownloads": true
+    },
+    "recreatedBackendPersistence": {
+      "allTablesAndRowsUnchanged": true,
+      "tableCount": 43,
+      "photoCount": 2,
+      "photoBytesUnchanged": true,
+      "validAndRevokedCertificatesPreserved": true,
+      "pdfStillDownloads": true
+    },
+    "recreatedStackPersistence": {
+      "allTablesAndRowsUnchanged": true,
+      "tableCount": 43,
+      "photoCount": 2,
+      "photoBytesUnchanged": true,
+      "validAndRevokedCertificatesPreserved": true,
+      "pdfStillDownloads": true
+    },
+    "backup": {
+      "customDumpCopiedWithoutShellRedirection": true,
+      "restoreIntoSeparateEmptyDatabase": true,
+      "allRestoredTableHashesMatch": true,
+      "privatePhotoBackupHashesMatch": true
+    },
+    "secureCookie": {
+      "secureFlagVerifiedWithProductionSetting": true,
+      "tlsTransportTested": false
+    }
+  },
+  "freshReadiness": {
+    "freshTcpReadiness": true,
+    "migrationCount": 6,
+    "isolatedNewStorage": true,
+    "migrationJobPassed": true
+  },
+  "matchedRecovery": {
+    "ownership": "10001:10001",
+    "photoHashesMatch": true,
+    "pdfDownloadPassed": true,
+    "publicVerificationDisabled": true,
+    "recoveredBackendHealthy": true,
+    "existingStorageUntouched": true,
+    "all43TableHashesMatch": true,
+    "restoredPhotosInNewVolume": true,
+    "validAndRevokedStatesPreserved": true,
+    "authorizedRequestsPassed": true,
+    "recoveredDatabaseCreatedSeparately": true
+  },
+  "privateServicesStopped": true,
+  "imagesRebuilt": false,
+  "pushed": false,
+  "merged": false,
+  "deployed": false
+}
