@@ -209,5 +209,10 @@ performed by this implementation. No dependency manifests were changed. No fresh
 
 Stage A: `981306ed26c15539b2584dfd42cca7073123e7e0`.
 Feature checkpoint: `6eecb518a1529aa34da488b86e9a3e9e753759f5`.
-Final verification/guard fixes are committed locally after these checks; their SHA is recorded in the final report commit and conversation.
+Final verified implementation: `c0adadff837674c036a70f3c9f16ff49e9840f46`.
+A final documentation-only commit records this SHA and the retained test resources.
 No push, merge or production deployment was performed.
+
+## Test resource disposition
+
+The two isolated test Compose projects were stopped after verification. Their PostgreSQL and photo volumes were retained for inspection; no `down -v` or volume deletion was run. Private test configuration, logs and synthetic fixtures remain outside Git under the local Codex temporary directory. The managed feature worktree remains attached for review.
