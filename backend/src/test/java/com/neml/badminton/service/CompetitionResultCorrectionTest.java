@@ -44,4 +44,17 @@ class CompetitionResultCorrectionTest {
     @Test void leagueWithoutAnyPlayoffsRemainsCorrectable(){
         assertThat(service.hasDownstreamFixture(cid,CompetitionStageType.LEAGUE)).isFalse();
     }
+    @Test void recompletingLeaguePreservesItsFrozenQualificationMetadata(){
+        Championship championship=Championship.builder().id(cid).build();
+        Match match=Match.builder().id(mid).championship(championship).stageType(CompetitionStageType.LEAGUE).status(MatchStatus.COMPLETED).build();
+        CompetitionStage stage=CompetitionStage.builder().stageType(CompetitionStageType.LEAGUE).status(CompetitionStageStatus.FROZEN).frozenAt(Instant.now()).standingsSnapshot("immutable qualification").build();
+        when(championships.findByIdForUpdate(cid)).thenReturn(Optional.of(championship));
+        when(fixtures.findByIdAndChampionshipIdForUpdate(mid,cid)).thenReturn(Optional.of(match));
+        when(fixtures.findAllByChampionshipIdAndStageTypeOrderByMatchNumberAsc(cid,CompetitionStageType.LEAGUE)).thenReturn(List.of(match));
+        when(stages.findForUpdate(cid,CompetitionStageType.LEAGUE)).thenReturn(Optional.of(stage));
+        service.advanceAfterCompletion(cid,mid,null);
+        assertThat(stage.getStatus()).isEqualTo(CompetitionStageStatus.FROZEN);
+        assertThat(stage.getStandingsSnapshot()).isEqualTo("immutable qualification");
+        assertThat(stage.getFrozenAt()).isNotNull();verify(stages).save(stage);
+    }
 }

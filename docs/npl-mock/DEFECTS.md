@@ -32,3 +32,10 @@
 - Repair: enforce the guard for cricket delivery corrections and recognize either semifinals or a final as downstream of league results.
 - Real retry returns HTTP 409 without modifying the frozen result. The focused regression verifies the no-semifinal case.
 - Before/after observations are retained in `evidence/correction-before-repair.json`, `correction-result.json`, `frozen-league-before-repair.json`, and `frozen-league-correction.json`.
+
+## NPL-MOCK-004: re-completing a legacy corrected league loses FROZEN status
+
+- Independent read-only SQL reconciliation caught league status COMPLETED after the pre-repair negative correction had been restored. The frozen timestamp, original standings snapshot and seed rows still existed.
+- Root cause: `advanceAfterCompletion` unconditionally wrote COMPLETED for the league stage.
+- Repair: retain FROZEN for an already frozen stage. Idempotent playoff generation reconciles legacy stage metadata only when an original frozen timestamp and snapshot already exist; it preserves all seeds, pairings and snapshot contents.
+- Regression: an additional focused case verifies re-completion preserves frozen status and the original snapshot. Full suite: 128 passed, no skipped tests. The real idempotent playoff API and independent database assertions verify the retained mock after repair.

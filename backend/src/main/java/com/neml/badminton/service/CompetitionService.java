@@ -214,8 +214,16 @@ public class CompetitionService {
                 league.stream().anyMatch(match->match.getStatus()!=MatchStatus.COMPLETED))
             conflict("Every generated league fixture must be completed before playoff generation");
         if(fixtures.existsByChampionshipIdAndStageType(cid,CompetitionStageType.SEMI_FINAL)||
-                fixtures.existsByChampionshipIdAndStageType(cid,CompetitionStageType.FINAL))
+                fixtures.existsByChampionshipIdAndStageType(cid,CompetitionStageType.FINAL)) {
+            // Reconcile legacy correction metadata without changing frozen seeds or their snapshot.
+            stages.findForUpdate(cid,CompetitionStageType.LEAGUE).ifPresent(stage->{
+                if(stage.getFrozenAt()!=null&&stage.getStandingsSnapshot()!=null&&stage.getStatus()!=CompetitionStageStatus.FROZEN){
+                    stage.setStatus(CompetitionStageStatus.FROZEN);stages.save(stage);
+                    audit(championship,null,actor,"LEAGUE_FREEZE_RECONCILED",c.getConfigurationVersion(),Map.of("reason","Existing playoffs retain their frozen qualification"));
+                }
+            });
             return overview(championship,c,fixtures.findAllByChampionshipIdOrderByMatchNumberAsc(cid));
+        }
         List<StandingDto> table=standings(cid,true);
         if(table.size()<c.getQualifyingTeamCount()) conflict("Not enough ranked teams are available for playoffs");
         CompetitionStage leagueStage=stages.findForUpdate(cid,CompetitionStageType.LEAGUE).orElseThrow(()->notFound("League stage"));
@@ -271,7 +279,7 @@ public class CompetitionService {
             List<Match> league=fixtures.findAllByChampionshipIdAndStageTypeOrderByMatchNumberAsc(cid,CompetitionStageType.LEAGUE);
             if(!league.isEmpty()&&league.stream().allMatch(match->match.getStatus()==MatchStatus.COMPLETED))
                 stages.findForUpdate(cid,CompetitionStageType.LEAGUE).ifPresent(stage->{
-                    stage.setStatus(CompetitionStageStatus.COMPLETED); stage.setCompletedAt(Instant.now()); stages.save(stage);
+                    stage.setStatus(stage.getFrozenAt()==null?CompetitionStageStatus.COMPLETED:CompetitionStageStatus.FROZEN); stage.setCompletedAt(Instant.now()); stages.save(stage);
                 });
         } else if(completed.getStageType()==CompetitionStageType.SEMI_FINAL&&completed.getWinnerTeam()!=null) {
             List<Match> semis=fixtures.findAllByChampionshipIdAndStageTypeOrderByMatchNumberAsc(cid,CompetitionStageType.SEMI_FINAL);
