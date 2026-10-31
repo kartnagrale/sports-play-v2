@@ -1,0 +1,20 @@
+{
+  "finalStatus": "LIVE",
+  "champion": {
+    "id": "f8f1cb35-8ae4-4f9e-acba-047e2a048728",
+    "name": "NPL Thunder",
+    "shortCode": "NPT",
+    "primaryColor": "#2563EB"
+  },
+  "runnerUp": {
+    "id": "dc4aa7d6-9453-478f-9eb2-076dc559b4bf",
+    "name": "NPL Warriors",
+    "shortCode": "NPW",
+    "primaryColor": "#DC2626"
+  },
+  "status": "COMPLETED",
+  "lifecyclePhase": "COMPLETED",
+  "finalStageStatus": "COMPLETED",
+  "staleApprovalRejected": true,
+  "certificateAutomaticallyRevoked": true
+}
