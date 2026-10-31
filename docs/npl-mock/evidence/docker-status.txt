@@ -1,0 +1,6 @@
+NAME                                    IMAGE                                          COMMAND                  SERVICE    CREATED              STATUS                      PORTS
+playneml-npl-mock-verified-backend-1    playneml-npl-mock-verified-backend:phase6.5    "java -jar /app/app.…"   backend    58 seconds ago       Up 46 seconds (healthy)     8001/tcp
+playneml-npl-mock-verified-db-1         playneml-npl-mock-verified-db:phase6.5         "docker-entrypoint.s…"   db         About a minute ago   Up 53 seconds (healthy)     5432/tcp
+playneml-npl-mock-verified-frontend-1   playneml-npl-mock-verified-frontend:phase6.5   "docker-entrypoint.s…"   frontend   55 seconds ago       Up 19 seconds (healthy)     3000/tcp
+playneml-npl-mock-verified-gateway-1    playneml-npl-mock-verified-gateway:phase6.5    "/docker-entrypoint.…"   gateway    54 seconds ago       Up 14 seconds (healthy)     127.0.0.1:18090->8080/tcp
+playneml-npl-mock-verified-migrate-1    playneml-npl-mock-verified-db:phase6.5         "sh /opt/play-neml/m…"   migrate    About a minute ago   Exited (0) 47 seconds ago

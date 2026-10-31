@@ -1,0 +1,10 @@
+{
+  "nodeLocal": "22.20.0",
+  "nodeContainer": "22.23.4",
+  "eslint": {"command": "npm run lint", "exitCode": 0},
+  "typescript": {"command": "npm run typecheck", "exitCode": 0},
+  "productionBuild": {"command": "docker compose build frontend", "exitCode": 0, "framework": "Next.js 16.4.3", "routes": 26},
+  "settingsModel": {"command": "node --experimental-strip-types --test tests/championship-settings.test.mjs", "passed": 3, "failed": 0, "skipped": 0},
+  "auctionAndPresentationModels": {"command": "node --test e2e/auction-model.test.cjs e2e/live-refresh.test.cjs e2e/portal-presentation.test.cjs", "passed": 18, "failed": 0, "skipped": 0},
+  "frontendSourceAndDependencyLockUnchanged": true
+}

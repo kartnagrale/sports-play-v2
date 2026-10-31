@@ -1,0 +1,10 @@
+{
+  "finalStatus": "LIVE",
+  "champion": null,
+  "runnerUp": null,
+  "status": "ACTIVE",
+  "lifecyclePhase": "FINAL",
+  "finalStageStatus": "ACTIVE",
+  "staleApprovalRejected": true,
+  "certificateAutomaticallyRevoked": true
+}

@@ -1,0 +1,28 @@
+{
+  "finalProject": "playneml-npl-mock-verified",
+  "browser": "Authorized in-app browser",
+  "superAdminRealLogin": "PASSED",
+  "championshipAdminRealLogin": "PASSED",
+  "captainRealLogins": {"passed": 4, "mode": "sequential independent sign-ins"},
+  "captainOwnTeamAndRestrictedNavigation": "PASSED",
+  "completedAuctionAndFinancialCounters": "PASSED",
+  "lockedSquadsAndChampionDisplay": "PASSED",
+  "mobile390pxDarkAndLight": "PASSED; no document horizontal overflow",
+  "desktopDarkAndLight": "PASSED",
+  "serverReconnectAndReloadAfterRecreation": "PASSED",
+  "initialProjectLiveChecks": {
+    "project": "playneml-npl-mock",
+    "frontendSourceUnchangedSinceTheseChecks": true,
+    "presetButtonsAndSettingsSaveReload": "PASSED",
+    "spotlightSyntheticPhotographLeadingBidAndRankings": "PASSED",
+    "ceilingDisabledButtons": "PASSED",
+    "soldCelebration": "PASSED; observed visible sold-celebration element after actual committed purchase"
+  },
+  "unverified": [
+    "Four simultaneously isolated captain browser contexts: the available tool exposes a shared browser session",
+    "Visual UNSOLD notice; its backend state and real timer/reauction behavior were verified",
+    "Injected network outage during a live bid and every resulting disabled-button state",
+    "Frame-by-frame animation timing and reduced-motion presentation"
+  ],
+  "browserCoverageDisposition": "PARTIALLY VERIFIED; no skipped browser assertions counted as passed"
+}

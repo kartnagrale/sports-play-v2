@@ -1,0 +1,33 @@
+Verified playneml-npl-mock-verified; dedicated postgres_data/player_photos volumes; 127.0.0.1:18090
+PASS gateway/frontend health, anonymous denial, CSRF enforcement and bootstrap API login
+CHECKPOINT health
+PASS settings persistence, invalid transaction rollback, stale version and competition separation
+CHECKPOINT configured
+PASS four activated captains, male preassigned players, idempotent assignment and untouched opening purses
+CHECKPOINT teams
+PASS downloaded XLSX template, preview/confirm/retry, invalid rows and duplicates, 44 identities and 12 imported women
+CHECKPOINT imported
+PASS synthetic player photograph normalized, authorized and anonymous access rejected
+PASS roles, wrong championship, fixture/squad prerequisites, timer, illegal prices, team binding, pending undo, unsold/reauction
+CHECKPOINT auction-preflight
+PASS 40 purchases, 16 premium/24 regular, four exact quotas/purses and five live WebSocket subscribers
+CHECKPOINT auction
+PASS four captain confirmations and administrator squad locks
+CHECKPOINT locked
+Verified playneml-npl-mock-verified; dedicated postgres_data/player_photos volumes; 127.0.0.1:18090
+PASS six completed league matches, unique pairings, 6/4/2/0 points and independently calculated NRR
+CHECKPOINT league
+PASS top-two final completed; NPL Thunder champion and NPL Warriors runner-up
+CHECKPOINT final
+PASS 44 participant eligibilities, winner/runner-up certificates, PDF bytes, idempotency, authorization and revocation
+CHECKPOINT certificates
+PASS settings PUT/reload, cross-screen versions, simultaneous saves, quota snapshot/If-Match, synchronization and rollback.
+PASS purse reserve, pending/rejected balances, required captains, opening-price locks, status bypass prevention, authoritative timer auto-unsold/auto-sale and reauction.
+PASS separate-tenant purse/non-member/capacity rejections; wides, no-ball/free-hit/run-out, byes/leg-byes, duplicate delivery, real tie/NRR/name ordering and no-result points
+CHECKPOINT supplemental
+PASS full NPL auction/tournament checkpoints and final API reconciliation.
+PASS full-state persistence, completed tournament, photo authorization/reconnect, correction/invalidation, fresh approval and certificate reissue
+PASS full-state persistence, completed tournament, photo authorization/reconnect, correction/invalidation, fresh approval and certificate reissue
+PASS full-state persistence, completed tournament, photo authorization/reconnect, correction/invalidation, fresh approval and certificate reissue
+PASS full NPL auction/tournament checkpoints and final API reconciliation.
+PASS separate-tenant purse/non-member/capacity rejections; wides, no-ball/free-hit/run-out, byes/leg-byes, duplicate delivery, real tie/NRR/name ordering and no-result points

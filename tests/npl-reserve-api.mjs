@@ -3,17 +3,21 @@ import {Session,createTestChampionship} from './npl-api-client.mjs';
 const root=new Session();await root.request('/auth/login','POST',{email:process.env.NPL_TEST_EMAIL,password:process.env.NPL_TEST_PASSWORD});
 const {admin,cid}=await createTestChampionship(root,'Disposable purse reservation regression');
 const base=`/championships/${cid}`,initial=await admin.request(base+'/settings');
-const saved=await admin.request(base+'/settings','PUT',{auctionName:'Reservation test',expectedVersion:initial.version,maxSquadSize:11,purseLimit:50000,minMale:0,minFemale:3,playerBasePrice:5000,bidIncrement:1000,timerSeconds:300,maximumBid:15000,maximumPremiumPurchases:4,captainPreassignmentRequired:true});
+const saved=await admin.request(base+'/settings','PUT',{auctionName:'Reservation test',expectedVersion:initial.version,maxSquadSize:11,purseLimit:50000,minMale:0,minFemale:3,playerBasePrice:5000,bidIncrement:1000,timerSeconds:5,maximumBid:15000,maximumPremiumPurchases:4,captainPreassignmentRequired:true});
 const configuration=await admin.request(base+'/competition/configuration');
 const {championshipId,sportCode,configurationVersion,configurationStatus,resultSchemaVersion,champion,runnerUp,...fields}=configuration;
 await admin.request(base+'/admin/competition/configuration','PUT',{...fields,expectedConfigurationVersion:configurationVersion,configuredTeamCount:2,minimumTeamCount:2,maximumTeamCount:2,qualifyingTeamCount:2,playoffFormat:'TOP_TWO_FINAL',leagueStartAt:'2026-11-01T04:00:00Z'});
 const captains=[];
 for(let n=0;n<2;n++)captains.push(await admin.request(base+'/admin/teams','POST',{teamName:`Reserve Team ${n}`,shortCode:`RT${n}`,captainFullName:`Reserve Captain ${n}`,captainEmail:`reserve-${crypto.randomUUID()}@example.invalid`,captainMobile:'9999999999'}));
+const captainSession=new Session(),captainPassword=`Reserve-${crypto.randomUUID()}!`;
+await captainSession.request('/auth/activate','POST',{token:captains[0].setupPath.split('=')[1],password:captainPassword},204);
+await captainSession.request('/auth/login','POST',{email:captains[0].captainEmail,password:captainPassword});
 const auction=`${base}/auctions/${saved.auctionId}`;
 await admin.request(auction+'/admin/start','POST',undefined,409);
 await admin.request(auction+'/admin/set-status','POST',{status:'RUNNING'},409);
 for(const c of captains)await admin.request(`${base}/admin/teams/${c.teamId}/captains/${c.captainUserId}/player`,'PUT',{gender:'FEMALE',playerReference:c.shortCode+'-CAP'});
 const player=await admin.request(base+'/admin/players','POST',{fullName:'Reserve purchase candidate',gender:'MALE',playerReference:'RESERVE-ONE'});
+const timed=await admin.request(base+'/admin/players','POST',{fullName:'Synthetic timer candidate',gender:'MALE',playerReference:'RESERVE-TIMER'});
 await admin.request(auction+'/admin/start','POST');
 const rejected=await admin.request(auction+'/bid','POST',{playerId:player.id,teamId:captains[0].teamId,amount:6000},400);
 assert.match(rejected.message,/reserve/);
@@ -24,6 +28,20 @@ await admin.request(`${base}/admin/players/${player.id}`,'PUT',{fullName:player.
 assert.equal((await admin.request(auction+'/state')).teams.find(t=>t.id===captains[0].teamId).purseRemaining,50000,'pending bid never deducts');
 await admin.request(auction+'/admin/sell','POST');
 assert.equal((await admin.request(auction+'/state')).teams.find(t=>t.id===captains[0].teamId).purseRemaining,45000);
+async function waitForStatus(playerId,status){
+  const limit=Date.now()+15000;
+  while(Date.now()<limit){const current=(await admin.request(base+'/players')).find(p=>p.id===playerId);if(current.status===status)return;await new Promise(resolve=>setTimeout(resolve,150));}
+  throw Error(`Authoritative timer failed to transition the synthetic player to ${status}`);
+}
+await waitForStatus(timed.id,'UNSOLD');
+assert.equal((await admin.request(auction+'/state')).teams.find(t=>t.id===captains[1].teamId).purseRemaining,50000);
+await admin.request(auction+'/admin/reset-unsold','POST');await admin.request(auction+'/admin/start','POST');
+await admin.request(auction+'/bid','POST',{playerId:timed.id,teamId:captains[1].teamId,amount:5000});
+await waitForStatus(timed.id,'SOLD');
+assert.equal((await admin.request(auction+'/state')).teams.find(t=>t.id===captains[1].teamId).purseRemaining,45000);
+const incomplete=await captainSession.request(`${base}/squad-confirmations/teams/${captains[0].teamId}/confirm`,'POST',{},409);
+assert.match(incomplete.message,/11/,'completed auction does not make a two-member roster valid');
+await admin.request(`${base}/squad-confirmations/teams/${captains[0].teamId}/lock`,'POST',{},409);
 await admin.request(auction+'/admin/set-status','POST',{status:'NOT_STARTED'});
 await admin.request(base+'/settings','PUT',{auctionName:'Cannot unlock historical rules',expectedVersion:(await admin.request(base+'/settings')).version,maxSquadSize:11,purseLimit:60000,minMale:0,minFemale:3,playerBasePrice:5000,bidIncrement:1000,timerSeconds:300},409);
-console.log('PASS actual purse reserve rejection, pending/rejected balances, one sale deduction, required captains, status bypass prevention, opening-price locks and reset rule lock.');
+console.log('PASS purse reserve, pending/rejected balances, required captains, opening-price locks, status bypass prevention, authoritative timer auto-unsold/auto-sale, reauction and incomplete squad rejection after auction completion.');

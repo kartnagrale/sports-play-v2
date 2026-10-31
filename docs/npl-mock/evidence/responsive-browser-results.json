@@ -1,0 +1,13 @@
+{
+  "project": "playneml-npl-mock-verified",
+  "dark": {
+    "scrollWidth": 383,
+    "theme": "dark",
+    "width": 390
+  },
+  "light": {
+    "scrollWidth": 383,
+    "theme": "light",
+    "width": 390
+  }
+}

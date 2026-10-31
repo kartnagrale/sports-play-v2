@@ -214,8 +214,16 @@ public class CompetitionService {
                 league.stream().anyMatch(match->match.getStatus()!=MatchStatus.COMPLETED))
             conflict("Every generated league fixture must be completed before playoff generation");
         if(fixtures.existsByChampionshipIdAndStageType(cid,CompetitionStageType.SEMI_FINAL)||
-                fixtures.existsByChampionshipIdAndStageType(cid,CompetitionStageType.FINAL))
+                fixtures.existsByChampionshipIdAndStageType(cid,CompetitionStageType.FINAL)) {
+            // Reconcile legacy correction metadata without changing frozen seeds or their snapshot.
+            stages.findForUpdate(cid,CompetitionStageType.LEAGUE).ifPresent(stage->{
+                if(stage.getFrozenAt()!=null&&stage.getStandingsSnapshot()!=null&&stage.getStatus()!=CompetitionStageStatus.FROZEN){
+                    stage.setStatus(CompetitionStageStatus.FROZEN);stages.save(stage);
+                    audit(championship,null,actor,"LEAGUE_FREEZE_RECONCILED",c.getConfigurationVersion(),Map.of("reason","Existing playoffs retain their frozen qualification"));
+                }
+            });
             return overview(championship,c,fixtures.findAllByChampionshipIdOrderByMatchNumberAsc(cid));
+        }
         List<StandingDto> table=standings(cid,true);
         if(table.size()<c.getQualifyingTeamCount()) conflict("Not enough ranked teams are available for playoffs");
         CompetitionStage leagueStage=stages.findForUpdate(cid,CompetitionStageType.LEAGUE).orElseThrow(()->notFound("League stage"));
@@ -271,7 +279,7 @@ public class CompetitionService {
             List<Match> league=fixtures.findAllByChampionshipIdAndStageTypeOrderByMatchNumberAsc(cid,CompetitionStageType.LEAGUE);
             if(!league.isEmpty()&&league.stream().allMatch(match->match.getStatus()==MatchStatus.COMPLETED))
                 stages.findForUpdate(cid,CompetitionStageType.LEAGUE).ifPresent(stage->{
-                    stage.setStatus(CompetitionStageStatus.COMPLETED); stage.setCompletedAt(Instant.now()); stages.save(stage);
+                    stage.setStatus(stage.getFrozenAt()==null?CompetitionStageStatus.COMPLETED:CompetitionStageStatus.FROZEN); stage.setCompletedAt(Instant.now()); stages.save(stage);
                 });
         } else if(completed.getStageType()==CompetitionStageType.SEMI_FINAL&&completed.getWinnerTeam()!=null) {
             List<Match> semis=fixtures.findAllByChampionshipIdAndStageTypeOrderByMatchNumberAsc(cid,CompetitionStageType.SEMI_FINAL);
@@ -392,9 +400,26 @@ public class CompetitionService {
     @Transactional public ConfigurationWorkspaceDto reopenConfiguration(UUID cid,ConfigurationActionRequest request,User actor,Authentication auth){Championship ch=lockedChampionship(cid);CompetitionConfiguration c=lockedConfig(cid);if(!Objects.equals(request.expectedVersion(),c.getConfigurationVersion()))conflict("Configuration version conflict: reload before reopening");if(!fixtures.findAllByChampionshipIdOrderByMatchNumberAsc(cid).isEmpty())conflict("Configuration cannot be reopened after fixtures exist; downstream state cannot be rebuilt safely");ConfigurationStatus before=c.getConfigurationStatus();c.setConfigurationStatus(ConfigurationStatus.DRAFT);c.setConfigurationVersion(c.getConfigurationVersion()+1);c.setLockedAt(null);configs.save(c);configurationSections.reopenEditable(cid,actor);audit(ch,null,actor,"CONFIGURATION_REOPENED",c.getConfigurationVersion(),Map.of("before",before,"after",c.getConfigurationStatus(),"reason",request.reason()));return workspace(cid,auth);}
     @Transactional public PhaseReadinessDto phaseReadiness(UUID cid,ChampionshipPhase target){Championship ch=championship(cid);CompetitionConfiguration c=config(cid);List<String> blockers=new ArrayList<>();if(target.ordinal()!=ch.getLifecyclePhase().ordinal()+1&&target!=ch.getLifecyclePhase())blockers.add("Target phase must immediately follow the current phase");int teamCount=teams.findAllByChampionshipIdOrderByName(cid).size();boolean auctionEnabled=auctionConfigurations.findFirstByChampionshipIdOrderByConfigurationVersionDesc(cid).map(AuctionConfiguration::getEnabled).orElse(true);switch(target){case TEAM_PROVISIONING->{if(c.getConfigurationStatus()!=ConfigurationStatus.VALID)blockers.add("Validate championship configuration");}case PLAYER_REGISTRATION->{if(teamCount<c.getMinimumTeamCount()||teamCount!=c.getConfiguredTeamCount())blockers.add("Provision exactly "+c.getConfiguredTeamCount()+" teams");}case AUCTION->{if(players.findAllByChampionshipIdOrderByAuctionOrderAsc(cid).isEmpty())blockers.add("Register eligible players");}case SQUAD_CONFIRMATION->{if(auctionEnabled&&!auctions.existsByChampionshipIdAndStatus(cid,AuctionStatus.COMPLETED))blockers.add("Complete the auction");}case LEAGUE_STAGE->{if(!squads.summary(cid).allSquadsLocked())blockers.add("Lock every valid squad");if(c.getLeagueStartAt()==null)blockers.add("Configure league scheduling");}case PLAYOFFS->{List<Match> league=fixtures.findAllByChampionshipIdAndStageTypeOrderByMatchNumberAsc(cid,CompetitionStageType.LEAGUE);if(league.isEmpty()||league.stream().anyMatch(m->m.getStatus()!=MatchStatus.COMPLETED))blockers.add("Complete every league fixture");}case FINAL->{if(!fixtures.existsByChampionshipIdAndStageType(cid,CompetitionStageType.FINAL))blockers.add("Generate the final fixture");}case COMPLETED->{List<Match> finals=fixtures.findAllByChampionshipIdAndStageTypeOrderByMatchNumberAsc(cid,CompetitionStageType.FINAL);if(finals.isEmpty()||finals.stream().anyMatch(m->m.getStatus()!=MatchStatus.COMPLETED))blockers.add("Confirm the final result");}default->{}}return new PhaseReadinessDto(ch.getLifecyclePhase(),target,blockers.isEmpty(),blockers);}
     @Transactional public PhaseReadinessDto advancePhase(UUID cid,ChampionshipPhase target,User actor){Championship ch=lockedChampionship(cid);PhaseReadinessDto ready=phaseReadiness(cid,target);if(!ready.ready())conflict(String.join("; ",ready.blockers()));ChampionshipPhase before=ch.getLifecyclePhase();ch.setLifecyclePhase(target);championships.save(ch);audit(ch,null,actor,"PHASE_PROGRESSED",config(cid).getConfigurationVersion(),Map.of("before",before,"after",target));return new PhaseReadinessDto(target,target,true,List.of());}
+    /** Reverse completion metadata in the same transaction as a delivery correction. */
+    @Transactional public void reopenAfterCorrection(UUID cid,UUID fixtureId) {
+        Championship championship=lockedChampionship(cid);
+        Match fixture=lockedFixture(cid,fixtureId);
+        stages.findForUpdate(cid,fixture.getStageType()).ifPresent(stage->{
+            stage.setStatus(CompetitionStageStatus.ACTIVE);
+            stage.setCompletedAt(null);
+            stages.save(stage);
+        });
+        if(fixture.getStageType()==CompetitionStageType.FINAL){
+            CompetitionConfiguration configuration=lockedConfig(cid);
+            configuration.setChampion(null);configuration.setRunnerUp(null);configs.save(configuration);
+            championship.setStatus(ChampionshipStatus.ACTIVE);
+            championship.setLifecyclePhase(ChampionshipPhase.FINAL);championships.save(championship);
+        }
+    }
     public boolean hasDownstreamFixture(UUID cid,CompetitionStageType type) {
         return type==CompetitionStageType.LEAGUE
                 ?fixtures.existsByChampionshipIdAndStageType(cid,CompetitionStageType.SEMI_FINAL)
+                    ||fixtures.existsByChampionshipIdAndStageType(cid,CompetitionStageType.FINAL)
                 :type==CompetitionStageType.SEMI_FINAL&&fixtures.existsByChampionshipIdAndStageType(cid,CompetitionStageType.FINAL);
     }
     public void recordResultAudit(Match fixture,User actor,String type,Object payload) {

@@ -1,0 +1,81 @@
+[
+  {
+    "volumes": [
+      "playneml-npl-mock_postgres_data"
+    ],
+    "bootstrapEnabled": false,
+    "name": "/playneml-npl-mock-db-1",
+    "service": "db",
+    "ports": {
+      "5432/tcp": null
+    },
+    "exitCode": 0,
+    "status": "running",
+    "project": "playneml-npl-mock",
+    "health": "healthy",
+    "image": "sha256:7fe74cb66d260179c7d10de763c9d55d69b349240ba735f6bdb7e0e621c13fd6"
+  },
+  {
+    "volumes": [
+      "4c678af41b67582020174dece2891786dd549a91b0b5856eba951aeb0b2e081f"
+    ],
+    "bootstrapEnabled": false,
+    "name": "/playneml-npl-mock-migrate-1",
+    "service": "migrate",
+    "ports": {},
+    "exitCode": 0,
+    "status": "exited",
+    "project": "playneml-npl-mock",
+    "health": null,
+    "image": "sha256:7fe74cb66d260179c7d10de763c9d55d69b349240ba735f6bdb7e0e621c13fd6"
+  },
+  {
+    "volumes": [
+      "playneml-npl-mock_player_photos"
+    ],
+    "bootstrapEnabled": false,
+    "name": "/playneml-npl-mock-backend-1",
+    "service": "backend",
+    "ports": {
+      "8001/tcp": null
+    },
+    "exitCode": 0,
+    "status": "running",
+    "project": "playneml-npl-mock",
+    "health": "healthy",
+    "image": "sha256:7ed77eba586138e3ea3c63a954f69bc90488841da00accf0af4a277981a06a60"
+  },
+  {
+    "volumes": [],
+    "bootstrapEnabled": false,
+    "name": "/playneml-npl-mock-frontend-1",
+    "service": "frontend",
+    "ports": {
+      "3000/tcp": null
+    },
+    "exitCode": 0,
+    "status": "running",
+    "project": "playneml-npl-mock",
+    "health": "healthy",
+    "image": "sha256:ecc3e5c71d08a70c7ad3af5150a23e1b50bf3088c8dfc71dfb725349027d9978"
+  },
+  {
+    "volumes": [],
+    "bootstrapEnabled": false,
+    "name": "/playneml-npl-mock-gateway-1",
+    "service": "gateway",
+    "ports": {
+      "8080/tcp": [
+        {
+          "HostIp": "127.0.0.1",
+          "HostPort": "18090"
+        }
+      ]
+    },
+    "exitCode": 0,
+    "status": "running",
+    "project": "playneml-npl-mock",
+    "health": "healthy",
+    "image": "sha256:0355a306a2ddacb43faba0dccd722f54f7197866afb61345d3605d377fb57844"
+  }
+]

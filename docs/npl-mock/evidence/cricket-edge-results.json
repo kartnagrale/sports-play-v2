@@ -1,0 +1,263 @@
+{
+  "championshipId": "385947fb-75d2-476a-abee-014405452a76",
+  "distinctFromFullMock": true,
+  "insufficientPurseRejected": true,
+  "offIncrementRejected": true,
+  "nonMemberAccessRejected": true,
+  "memberSpectatorCanViewButCannotBid": true,
+  "fullSquadRejected": true,
+  "unchangedRejectedBalances": true,
+  "duplicateWideIdempotent": true,
+  "freeHitDismissalRejected": true,
+  "runOutWicketRecorded": true,
+  "byesAndLegByesValidated": true,
+  "tiePoints": [
+    1,
+    1
+  ],
+  "noResultPoints": [
+    3,
+    3
+  ],
+  "tiedNetRunRates": [
+    0,
+    0
+  ],
+  "nameTieBreakVerified": true,
+  "tieState": {
+    "matchId": "0329e8a1-9916-4d65-b869-290cc0c78b29",
+    "tossWinnerTeamId": "d5881f13-0af7-490f-9687-f380f48f05fd",
+    "tossDecision": "BAT",
+    "resultText": "Match tied",
+    "innings": [
+      {
+        "id": "a8ef4a15-4172-476a-aacb-c89c073aeccf",
+        "version": 3,
+        "inningsNumber": 1,
+        "battingTeamId": "d5881f13-0af7-490f-9687-f380f48f05fd",
+        "runs": 3,
+        "wickets": 1,
+        "legalBalls": 1,
+        "overs": "0.1",
+        "status": "COMPLETED",
+        "batters": [
+          {
+            "playerId": "2feb91f4-4bdd-41d2-8cd6-b5cc2d2fe1a0",
+            "runs": 0,
+            "balls": 0,
+            "fours": 0,
+            "sixes": 0,
+            "out": false
+          },
+          {
+            "playerId": "4a913701-7d4a-444d-9835-7d5a1bae477d",
+            "runs": 1,
+            "balls": 2,
+            "fours": 0,
+            "sixes": 0,
+            "out": true
+          }
+        ],
+        "bowlers": [
+          {
+            "playerId": "09b8476a-2b14-4e40-87f8-e4f35eefd04a",
+            "runsConceded": 3,
+            "wickets": 0,
+            "legalBalls": 1,
+            "overs": "0.1"
+          }
+        ],
+        "deliveries": [
+          {
+            "id": "0dab7c75-5370-46ce-bba1-09b31a87a5b4",
+            "sequence": 1,
+            "strikerPlayerId": "2feb91f4-4bdd-41d2-8cd6-b5cc2d2fe1a0",
+            "nonStrikerPlayerId": "4a913701-7d4a-444d-9835-7d5a1bae477d",
+            "bowlerPlayerId": "09b8476a-2b14-4e40-87f8-e4f35eefd04a",
+            "batterRuns": 0,
+            "wides": 1,
+            "noBalls": 0,
+            "byes": 0,
+            "legByes": 0,
+            "penaltyRuns": 0,
+            "wicket": false,
+            "legalBall": false,
+            "totalRuns": 1
+          },
+          {
+            "id": "5abc301b-10cc-47cb-b605-2ff9f06d2bd1",
+            "sequence": 2,
+            "strikerPlayerId": "4a913701-7d4a-444d-9835-7d5a1bae477d",
+            "nonStrikerPlayerId": "2feb91f4-4bdd-41d2-8cd6-b5cc2d2fe1a0",
+            "bowlerPlayerId": "09b8476a-2b14-4e40-87f8-e4f35eefd04a",
+            "batterRuns": 1,
+            "wides": 0,
+            "noBalls": 1,
+            "byes": 0,
+            "legByes": 0,
+            "penaltyRuns": 0,
+            "wicket": false,
+            "legalBall": false,
+            "totalRuns": 2
+          },
+          {
+            "id": "f3947446-a7bd-40b3-81b4-152da191ebc8",
+            "sequence": 3,
+            "strikerPlayerId": "4a913701-7d4a-444d-9835-7d5a1bae477d",
+            "nonStrikerPlayerId": "2feb91f4-4bdd-41d2-8cd6-b5cc2d2fe1a0",
+            "bowlerPlayerId": "09b8476a-2b14-4e40-87f8-e4f35eefd04a",
+            "batterRuns": 0,
+            "wides": 0,
+            "noBalls": 0,
+            "byes": 0,
+            "legByes": 0,
+            "penaltyRuns": 0,
+            "wicket": true,
+            "dismissalType": "RUN_OUT",
+            "legalBall": true,
+            "totalRuns": 0
+          }
+        ]
+      },
+      {
+        "id": "d5cf85ad-60e4-498e-9ca8-1e5addbcbd05",
+        "version": 6,
+        "inningsNumber": 2,
+        "battingTeamId": "33933c19-6a54-408a-a80a-dc018a8a55ed",
+        "runs": 3,
+        "wickets": 0,
+        "legalBalls": 6,
+        "overs": "1.0",
+        "status": "COMPLETED",
+        "target": 4,
+        "nextStrikerPlayerId": "09b8476a-2b14-4e40-87f8-e4f35eefd04a",
+        "nextNonStrikerPlayerId": "9cb22385-5281-4db2-9a36-3d98f6acba9e",
+        "batters": [
+          {
+            "playerId": "09b8476a-2b14-4e40-87f8-e4f35eefd04a",
+            "runs": 1,
+            "balls": 2,
+            "fours": 0,
+            "sixes": 0,
+            "out": false
+          },
+          {
+            "playerId": "9cb22385-5281-4db2-9a36-3d98f6acba9e",
+            "runs": 0,
+            "balls": 4,
+            "fours": 0,
+            "sixes": 0,
+            "out": false
+          }
+        ],
+        "bowlers": [
+          {
+            "playerId": "2feb91f4-4bdd-41d2-8cd6-b5cc2d2fe1a0",
+            "runsConceded": 1,
+            "wickets": 0,
+            "legalBalls": 6,
+            "overs": "1.0"
+          }
+        ],
+        "deliveries": [
+          {
+            "id": "0d8bab72-c3f1-448b-91b6-e3891fd83823",
+            "sequence": 1,
+            "strikerPlayerId": "09b8476a-2b14-4e40-87f8-e4f35eefd04a",
+            "nonStrikerPlayerId": "9cb22385-5281-4db2-9a36-3d98f6acba9e",
+            "bowlerPlayerId": "2feb91f4-4bdd-41d2-8cd6-b5cc2d2fe1a0",
+            "batterRuns": 0,
+            "wides": 0,
+            "noBalls": 0,
+            "byes": 1,
+            "legByes": 0,
+            "penaltyRuns": 0,
+            "wicket": false,
+            "legalBall": true,
+            "totalRuns": 1
+          },
+          {
+            "id": "7e6fc7ac-5574-4851-a57a-59c94b0783a3",
+            "sequence": 2,
+            "strikerPlayerId": "9cb22385-5281-4db2-9a36-3d98f6acba9e",
+            "nonStrikerPlayerId": "09b8476a-2b14-4e40-87f8-e4f35eefd04a",
+            "bowlerPlayerId": "2feb91f4-4bdd-41d2-8cd6-b5cc2d2fe1a0",
+            "batterRuns": 0,
+            "wides": 0,
+            "noBalls": 0,
+            "byes": 0,
+            "legByes": 1,
+            "penaltyRuns": 0,
+            "wicket": false,
+            "legalBall": true,
+            "totalRuns": 1
+          },
+          {
+            "id": "1ef41431-b3da-48dc-be3d-44376cfdd1b0",
+            "sequence": 3,
+            "strikerPlayerId": "09b8476a-2b14-4e40-87f8-e4f35eefd04a",
+            "nonStrikerPlayerId": "9cb22385-5281-4db2-9a36-3d98f6acba9e",
+            "bowlerPlayerId": "2feb91f4-4bdd-41d2-8cd6-b5cc2d2fe1a0",
+            "batterRuns": 1,
+            "wides": 0,
+            "noBalls": 0,
+            "byes": 0,
+            "legByes": 0,
+            "penaltyRuns": 0,
+            "wicket": false,
+            "legalBall": true,
+            "totalRuns": 1
+          },
+          {
+            "id": "786b985e-4733-4e97-b00d-ec9eee04c903",
+            "sequence": 4,
+            "strikerPlayerId": "9cb22385-5281-4db2-9a36-3d98f6acba9e",
+            "nonStrikerPlayerId": "09b8476a-2b14-4e40-87f8-e4f35eefd04a",
+            "bowlerPlayerId": "2feb91f4-4bdd-41d2-8cd6-b5cc2d2fe1a0",
+            "batterRuns": 0,
+            "wides": 0,
+            "noBalls": 0,
+            "byes": 0,
+            "legByes": 0,
+            "penaltyRuns": 0,
+            "wicket": false,
+            "legalBall": true,
+            "totalRuns": 0
+          },
+          {
+            "id": "b2d342e7-a5dc-4fdf-9d0e-d1a78e4380e2",
+            "sequence": 5,
+            "strikerPlayerId": "9cb22385-5281-4db2-9a36-3d98f6acba9e",
+            "nonStrikerPlayerId": "09b8476a-2b14-4e40-87f8-e4f35eefd04a",
+            "bowlerPlayerId": "2feb91f4-4bdd-41d2-8cd6-b5cc2d2fe1a0",
+            "batterRuns": 0,
+            "wides": 0,
+            "noBalls": 0,
+            "byes": 0,
+            "legByes": 0,
+            "penaltyRuns": 0,
+            "wicket": false,
+            "legalBall": true,
+            "totalRuns": 0
+          },
+          {
+            "id": "4f6c9562-d934-413c-918c-134c28d944bc",
+            "sequence": 6,
+            "strikerPlayerId": "9cb22385-5281-4db2-9a36-3d98f6acba9e",
+            "nonStrikerPlayerId": "09b8476a-2b14-4e40-87f8-e4f35eefd04a",
+            "bowlerPlayerId": "2feb91f4-4bdd-41d2-8cd6-b5cc2d2fe1a0",
+            "batterRuns": 0,
+            "wides": 0,
+            "noBalls": 0,
+            "byes": 0,
+            "legByes": 0,
+            "penaltyRuns": 0,
+            "wicket": false,
+            "legalBall": true,
+            "totalRuns": 0
+          }
+        ]
+      }
+    ]
+  }
+}

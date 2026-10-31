@@ -1,0 +1,3185 @@
+{
+  "project": "playneml-npl-mock",
+  "completed": [
+    "health",
+    "configured",
+    "teams",
+    "imported",
+    "auction-preflight",
+    "sale-1",
+    "bid-2",
+    "bid-3",
+    "auction",
+    "locked",
+    "league",
+    "final",
+    "certificates",
+    "persistence",
+    "supplemental"
+  ],
+  "checks": [
+    {
+      "name": "gateway/frontend health, anonymous denial, CSRF enforcement and bootstrap API login"
+    },
+    {
+      "name": "settings persistence, invalid transaction rollback, stale version and competition separation"
+    },
+    {
+      "name": "four activated captains, male preassigned players, idempotent assignment and untouched opening purses"
+    },
+    {
+      "name": "downloaded XLSX template, preview/confirm/retry, invalid rows and duplicates, 44 identities and 12 imported women"
+    },
+    {
+      "name": "roles, wrong championship, fixture/squad prerequisites, timer, illegal prices, team binding, pending undo, unsold/reauction"
+    },
+    {
+      "name": "synthetic player photograph normalized, authorized and anonymous access rejected"
+    },
+    {
+      "name": "40 purchases, 16 premium/24 regular, four exact quotas/purses and five live WebSocket subscribers",
+      "subscribers": 5,
+      "eventCounts": [
+        415,
+        415,
+        415,
+        415,
+        415
+      ]
+    },
+    {
+      "name": "four captain confirmations and administrator squad locks"
+    },
+    {
+      "name": "six completed league matches, unique pairings, 6/4/2/0 points and independently calculated NRR"
+    },
+    {
+      "name": "top-two final completed; NPL Thunder champion and NPL Warriors runner-up"
+    },
+    {
+      "name": "44 participant eligibilities, winner/runner-up certificates, PDF bytes, idempotency, authorization and revocation"
+    }
+  ],
+  "sales": [
+    {
+      "playerId": "607fd749-5715-4702-955a-c40ef35b8195",
+      "reference": "MOCK-EMP-0-0",
+      "teamId": "f8f1cb35-8ae4-4f9e-acba-047e2a048728",
+      "amount": 15000
+    },
+    {
+      "playerId": "30e0e28e-638b-4ced-b457-0481c281a0eb",
+      "reference": "MOCK-EMP-0-1",
+      "teamId": "f8f1cb35-8ae4-4f9e-acba-047e2a048728",
+      "amount": 15000
+    },
+    {
+      "playerId": "ef39fbfe-a863-45a6-aa54-192db21ae21e",
+      "reference": "MOCK-EMP-0-2",
+      "teamId": "f8f1cb35-8ae4-4f9e-acba-047e2a048728",
+      "amount": 15000
+    },
+    {
+      "playerId": "dfabb8c8-e924-46a8-a136-640418d0e88d",
+      "reference": "MOCK-EMP-0-3",
+      "teamId": "f8f1cb35-8ae4-4f9e-acba-047e2a048728",
+      "amount": 15000
+    },
+    {
+      "playerId": "e58ef780-02bd-4188-9fa8-a072376d36a5",
+      "reference": "MOCK-EMP-0-4",
+      "teamId": "f8f1cb35-8ae4-4f9e-acba-047e2a048728",
+      "amount": 5000
+    },
+    {
+      "playerId": "44ebdcff-c651-40eb-bcf3-565b782f9c81",
+      "reference": "MOCK-EMP-0-5",
+      "teamId": "f8f1cb35-8ae4-4f9e-acba-047e2a048728",
+      "amount": 5000
+    },
+    {
+      "playerId": "c2892c9c-79d4-4d0a-8cec-1d208d972694",
+      "reference": "MOCK-EMP-0-6",
+      "teamId": "f8f1cb35-8ae4-4f9e-acba-047e2a048728",
+      "amount": 5000
+    },
+    {
+      "playerId": "1b2cc492-deee-46c0-8b42-dbf962e0b3f7",
+      "reference": "MOCK-EMP-0-7",
+      "teamId": "f8f1cb35-8ae4-4f9e-acba-047e2a048728",
+      "amount": 5000
+    },
+    {
+      "playerId": "e48d3735-c83e-4e52-8fa1-3406a51da163",
+      "reference": "MOCK-EMP-0-8",
+      "teamId": "f8f1cb35-8ae4-4f9e-acba-047e2a048728",
+      "amount": 5000
+    },
+    {
+      "playerId": "1aea960d-0c93-416b-9c4a-66d8c5ab5ebe",
+      "reference": "MOCK-EMP-0-9",
+      "teamId": "f8f1cb35-8ae4-4f9e-acba-047e2a048728",
+      "amount": 5000
+    },
+    {
+      "playerId": "140b2e38-90a9-4b3f-8fe6-69f8a9e5aeaf",
+      "reference": "MOCK-EMP-1-0",
+      "teamId": "dc4aa7d6-9453-478f-9eb2-076dc559b4bf",
+      "amount": 15000
+    },
+    {
+      "playerId": "2d09022f-59e5-45eb-a36b-39357c1afbf1",
+      "reference": "MOCK-EMP-1-1",
+      "teamId": "dc4aa7d6-9453-478f-9eb2-076dc559b4bf",
+      "amount": 15000
+    },
+    {
+      "playerId": "5b4a77aa-4246-448e-85f7-f416b8d6bccd",
+      "reference": "MOCK-EMP-1-2",
+      "teamId": "dc4aa7d6-9453-478f-9eb2-076dc559b4bf",
+      "amount": 15000
+    },
+    {
+      "playerId": "d1bf52a1-abae-4fb0-aaac-ba90a40a6411",
+      "reference": "MOCK-EMP-1-3",
+      "teamId": "dc4aa7d6-9453-478f-9eb2-076dc559b4bf",
+      "amount": 15000
+    },
+    {
+      "playerId": "7798410c-1554-4db3-9f89-2171129ef7cf",
+      "reference": "MOCK-EMP-1-4",
+      "teamId": "dc4aa7d6-9453-478f-9eb2-076dc559b4bf",
+      "amount": 5000
+    },
+    {
+      "playerId": "78c3582d-f28a-448c-8fd8-3d6352050904",
+      "reference": "MOCK-EMP-1-5",
+      "teamId": "dc4aa7d6-9453-478f-9eb2-076dc559b4bf",
+      "amount": 5000
+    },
+    {
+      "playerId": "4a6f9e74-a075-4c65-af09-7bd8459a11ef",
+      "reference": "MOCK-EMP-1-6",
+      "teamId": "dc4aa7d6-9453-478f-9eb2-076dc559b4bf",
+      "amount": 5000
+    },
+    {
+      "playerId": "315b28dd-40b7-4d11-aaf7-821be237fedd",
+      "reference": "MOCK-EMP-1-7",
+      "teamId": "dc4aa7d6-9453-478f-9eb2-076dc559b4bf",
+      "amount": 5000
+    },
+    {
+      "playerId": "8a910acf-f703-431b-a912-a632959157cb",
+      "reference": "MOCK-EMP-1-8",
+      "teamId": "dc4aa7d6-9453-478f-9eb2-076dc559b4bf",
+      "amount": 5000
+    },
+    {
+      "playerId": "50bbd1de-4b6e-4b4e-b987-a291d04074e3",
+      "reference": "MOCK-EMP-1-9",
+      "teamId": "dc4aa7d6-9453-478f-9eb2-076dc559b4bf",
+      "amount": 5000
+    },
+    {
+      "playerId": "50d6ea96-de28-40a5-8392-6253cfd2ecac",
+      "reference": "MOCK-EMP-2-0",
+      "teamId": "ab3ba70e-fb85-4ef9-b9ac-6d741aff97d1",
+      "amount": 15000
+    },
+    {
+      "playerId": "cf727df1-8b87-4a6d-ad15-2995168c73a8",
+      "reference": "MOCK-EMP-2-1",
+      "teamId": "ab3ba70e-fb85-4ef9-b9ac-6d741aff97d1",
+      "amount": 15000
+    },
+    {
+      "playerId": "95d1472d-5b1a-4b78-911c-357f56d4e605",
+      "reference": "MOCK-EMP-2-2",
+      "teamId": "ab3ba70e-fb85-4ef9-b9ac-6d741aff97d1",
+      "amount": 15000
+    },
+    {
+      "playerId": "2821c7f8-249c-45d8-87f2-bca0d49ccbb3",
+      "reference": "MOCK-EMP-2-3",
+      "teamId": "ab3ba70e-fb85-4ef9-b9ac-6d741aff97d1",
+      "amount": 15000
+    },
+    {
+      "playerId": "23549b51-c6b1-44fe-bbe0-ccc0956de790",
+      "reference": "MOCK-EMP-2-4",
+      "teamId": "ab3ba70e-fb85-4ef9-b9ac-6d741aff97d1",
+      "amount": 5000
+    },
+    {
+      "playerId": "0d92a840-3b95-4196-b560-53ca61b62e47",
+      "reference": "MOCK-EMP-2-5",
+      "teamId": "ab3ba70e-fb85-4ef9-b9ac-6d741aff97d1",
+      "amount": 5000
+    },
+    {
+      "playerId": "006cdaf4-8f93-47f4-b780-153b62c6d449",
+      "reference": "MOCK-EMP-2-6",
+      "teamId": "ab3ba70e-fb85-4ef9-b9ac-6d741aff97d1",
+      "amount": 5000
+    },
+    {
+      "playerId": "61b378f3-dad1-4289-a45b-e6ab8d4c5649",
+      "reference": "MOCK-EMP-2-7",
+      "teamId": "ab3ba70e-fb85-4ef9-b9ac-6d741aff97d1",
+      "amount": 5000
+    },
+    {
+      "playerId": "89b9a573-9231-4c63-90d6-503b084df693",
+      "reference": "MOCK-EMP-2-8",
+      "teamId": "ab3ba70e-fb85-4ef9-b9ac-6d741aff97d1",
+      "amount": 5000
+    },
+    {
+      "playerId": "53208fa2-4797-4444-8acf-d6637e6c3f86",
+      "reference": "MOCK-EMP-2-9",
+      "teamId": "ab3ba70e-fb85-4ef9-b9ac-6d741aff97d1",
+      "amount": 5000
+    },
+    {
+      "playerId": "5dd4eca6-323b-41d0-957d-bfc9b5443a21",
+      "reference": "MOCK-EMP-3-0",
+      "teamId": "b2bfc147-35f2-4531-bc83-c536214f8eef",
+      "amount": 15000
+    },
+    {
+      "playerId": "4b2eb39d-dd50-4d33-be2e-910604d1a426",
+      "reference": "MOCK-EMP-3-1",
+      "teamId": "b2bfc147-35f2-4531-bc83-c536214f8eef",
+      "amount": 15000
+    },
+    {
+      "playerId": "3a1531ca-e2c6-48fe-8330-449b0fb9682f",
+      "reference": "MOCK-EMP-3-2",
+      "teamId": "b2bfc147-35f2-4531-bc83-c536214f8eef",
+      "amount": 15000
+    },
+    {
+      "playerId": "dadf23de-7548-4d90-a209-800e7d8f6a9c",
+      "reference": "MOCK-EMP-3-3",
+      "teamId": "b2bfc147-35f2-4531-bc83-c536214f8eef",
+      "amount": 15000
+    },
+    {
+      "playerId": "714b0040-9e49-496c-a9cf-8b38bcd53e42",
+      "reference": "MOCK-EMP-3-4",
+      "teamId": "b2bfc147-35f2-4531-bc83-c536214f8eef",
+      "amount": 5000
+    },
+    {
+      "playerId": "07c076ea-bccb-453d-a3bf-1a9c53ac3c68",
+      "reference": "MOCK-EMP-3-5",
+      "teamId": "b2bfc147-35f2-4531-bc83-c536214f8eef",
+      "amount": 5000
+    },
+    {
+      "playerId": "bef97505-0b14-4e5e-a571-95951d652295",
+      "reference": "MOCK-EMP-3-6",
+      "teamId": "b2bfc147-35f2-4531-bc83-c536214f8eef",
+      "amount": 5000
+    },
+    {
+      "playerId": "bd913953-2b50-435d-8745-5d384f85ee87",
+      "reference": "MOCK-EMP-3-7",
+      "teamId": "b2bfc147-35f2-4531-bc83-c536214f8eef",
+      "amount": 5000
+    },
+    {
+      "playerId": "4f1b468f-e462-4e6f-a77c-35da28f5adc9",
+      "reference": "MOCK-EMP-3-8",
+      "teamId": "b2bfc147-35f2-4531-bc83-c536214f8eef",
+      "amount": 5000
+    },
+    {
+      "playerId": "4666e3b6-caa5-4e9a-b68d-e133d56538b4",
+      "reference": "MOCK-EMP-3-9",
+      "teamId": "b2bfc147-35f2-4531-bc83-c536214f8eef",
+      "amount": 5000
+    }
+  ],
+  "cid": "264db527-5352-4cfb-a827-d4004a0ffc60",
+  "aid": "b6683455-1224-4c09-9d97-26d6e5d94fc8",
+  "photoUrl": "/championships/264db527-5352-4cfb-a827-d4004a0ffc60/players/ef39fbfe-a863-45a6-aa54-192db21ae21e/photo?version=b47e18d1-7f95-4ea0-9769-e066188023f1",
+  "photoHash": "0b058e21c6ae18548c81806f51ae137dc960f0db79ccd861fa3420e8e04db4fa",
+  "websocket": {
+    "subscribers": 5,
+    "eventCounts": [
+      415,
+      415,
+      415,
+      415,
+      415
+    ]
+  },
+  "lockedXis": {
+    "27474334-af5b-461a-9053-b9a506ee4005": [
+      "dc4aa7d6-9453-478f-9eb2-076dc559b4bf",
+      "ab3ba70e-fb85-4ef9-b9ac-6d741aff97d1"
+    ],
+    "3f304726-b04b-4efc-80a1-d2ec0a38d220": [
+      "f8f1cb35-8ae4-4f9e-acba-047e2a048728",
+      "b2bfc147-35f2-4531-bc83-c536214f8eef"
+    ],
+    "8da868f2-dd38-4ba1-b3c0-26a43a04ba4e": [
+      "ab3ba70e-fb85-4ef9-b9ac-6d741aff97d1",
+      "b2bfc147-35f2-4531-bc83-c536214f8eef"
+    ],
+    "72cf5c2a-8630-4b23-8bab-306639aca129": [
+      "f8f1cb35-8ae4-4f9e-acba-047e2a048728",
+      "dc4aa7d6-9453-478f-9eb2-076dc559b4bf"
+    ],
+    "ce134e7d-ba0a-4749-b5a8-f749c3bd885c": [
+      "f8f1cb35-8ae4-4f9e-acba-047e2a048728",
+      "ab3ba70e-fb85-4ef9-b9ac-6d741aff97d1"
+    ],
+    "a9c6af73-333d-41d1-afec-20960abd006c": [
+      "dc4aa7d6-9453-478f-9eb2-076dc559b4bf",
+      "b2bfc147-35f2-4531-bc83-c536214f8eef"
+    ],
+    "1a85d714-6483-449d-9444-71089b01a642": [
+      "f8f1cb35-8ae4-4f9e-acba-047e2a048728",
+      "dc4aa7d6-9453-478f-9eb2-076dc559b4bf"
+    ]
+  },
+  "matches": {
+    "27474334-af5b-461a-9053-b9a506ee4005": {
+      "matchId": "27474334-af5b-461a-9053-b9a506ee4005",
+      "tossWinnerTeamId": "ab3ba70e-fb85-4ef9-b9ac-6d741aff97d1",
+      "tossDecision": "BAT",
+      "resultText": "Won by 10 wickets",
+      "innings": [
+        {
+          "id": "570883c8-b574-427b-8284-8cdf54f931fc",
+          "version": 6,
+          "inningsNumber": 1,
+          "battingTeamId": "ab3ba70e-fb85-4ef9-b9ac-6d741aff97d1",
+          "runs": 6,
+          "wickets": 0,
+          "legalBalls": 6,
+          "overs": "1.0",
+          "status": "COMPLETED",
+          "nextStrikerPlayerId": "cf727df1-8b87-4a6d-ad15-2995168c73a8",
+          "nextNonStrikerPlayerId": "50d6ea96-de28-40a5-8392-6253cfd2ecac",
+          "batters": [
+            {
+              "playerId": "50d6ea96-de28-40a5-8392-6253cfd2ecac",
+              "runs": 3,
+              "balls": 3,
+              "fours": 0,
+              "sixes": 0,
+              "out": false
+            },
+            {
+              "playerId": "cf727df1-8b87-4a6d-ad15-2995168c73a8",
+              "runs": 3,
+              "balls": 3,
+              "fours": 0,
+              "sixes": 0,
+              "out": false
+            }
+          ],
+          "bowlers": [
+            {
+              "playerId": "140b2e38-90a9-4b3f-8fe6-69f8a9e5aeaf",
+              "runsConceded": 6,
+              "wickets": 0,
+              "legalBalls": 6,
+              "overs": "1.0"
+            }
+          ],
+          "deliveries": [
+            {
+              "id": "23c83320-ef66-41f7-b167-a5f2f8beb908",
+              "sequence": 1,
+              "strikerPlayerId": "50d6ea96-de28-40a5-8392-6253cfd2ecac",
+              "nonStrikerPlayerId": "cf727df1-8b87-4a6d-ad15-2995168c73a8",
+              "bowlerPlayerId": "140b2e38-90a9-4b3f-8fe6-69f8a9e5aeaf",
+              "batterRuns": 1,
+              "wides": 0,
+              "noBalls": 0,
+              "byes": 0,
+              "legByes": 0,
+              "penaltyRuns": 0,
+              "wicket": false,
+              "legalBall": true,
+              "totalRuns": 1
+            },
+            {
+              "id": "b25b4bd4-e9c1-4dbf-a560-8c6ba30f30ac",
+              "sequence": 2,
+              "strikerPlayerId": "cf727df1-8b87-4a6d-ad15-2995168c73a8",
+              "nonStrikerPlayerId": "50d6ea96-de28-40a5-8392-6253cfd2ecac",
+              "bowlerPlayerId": "140b2e38-90a9-4b3f-8fe6-69f8a9e5aeaf",
+              "batterRuns": 1,
+              "wides": 0,
+              "noBalls": 0,
+              "byes": 0,
+              "legByes": 0,
+              "penaltyRuns": 0,
+              "wicket": false,
+              "legalBall": true,
+              "totalRuns": 1
+            },
+            {
+              "id": "ef039f8a-d977-4c5a-9d67-a05158bccd5a",
+              "sequence": 3,
+              "strikerPlayerId": "50d6ea96-de28-40a5-8392-6253cfd2ecac",
+              "nonStrikerPlayerId": "cf727df1-8b87-4a6d-ad15-2995168c73a8",
+              "bowlerPlayerId": "140b2e38-90a9-4b3f-8fe6-69f8a9e5aeaf",
+              "batterRuns": 1,
+              "wides": 0,
+              "noBalls": 0,
+              "byes": 0,
+              "legByes": 0,
+              "penaltyRuns": 0,
+              "wicket": false,
+              "legalBall": true,
+              "totalRuns": 1
+            },
+            {
+              "id": "e5d43000-a8a3-4ddf-883e-d9f098f8e6a1",
+              "sequence": 4,
+              "strikerPlayerId": "cf727df1-8b87-4a6d-ad15-2995168c73a8",
+              "nonStrikerPlayerId": "50d6ea96-de28-40a5-8392-6253cfd2ecac",
+              "bowlerPlayerId": "140b2e38-90a9-4b3f-8fe6-69f8a9e5aeaf",
+              "batterRuns": 1,
+              "wides": 0,
+              "noBalls": 0,
+              "byes": 0,
+              "legByes": 0,
+              "penaltyRuns": 0,
+              "wicket": false,
+              "legalBall": true,
+              "totalRuns": 1
+            },
+            {
+              "id": "c156c7a5-a0b9-478a-bd29-0082a3b971ea",
+              "sequence": 5,
+              "strikerPlayerId": "50d6ea96-de28-40a5-8392-6253cfd2ecac",
+              "nonStrikerPlayerId": "cf727df1-8b87-4a6d-ad15-2995168c73a8",
+              "bowlerPlayerId": "140b2e38-90a9-4b3f-8fe6-69f8a9e5aeaf",
+              "batterRuns": 1,
+              "wides": 0,
+              "noBalls": 0,
+              "byes": 0,
+              "legByes": 0,
+              "penaltyRuns": 0,
+              "wicket": false,
+              "legalBall": true,
+              "totalRuns": 1
+            },
+            {
+              "id": "fa5c5733-f0ac-4a9a-81ec-c37b28a95547",
+              "sequence": 6,
+              "strikerPlayerId": "cf727df1-8b87-4a6d-ad15-2995168c73a8",
+              "nonStrikerPlayerId": "50d6ea96-de28-40a5-8392-6253cfd2ecac",
+              "bowlerPlayerId": "140b2e38-90a9-4b3f-8fe6-69f8a9e5aeaf",
+              "batterRuns": 1,
+              "wides": 0,
+              "noBalls": 0,
+              "byes": 0,
+              "legByes": 0,
+              "penaltyRuns": 0,
+              "wicket": false,
+              "legalBall": true,
+              "totalRuns": 1
+            }
+          ]
+        },
+        {
+          "id": "ecc29b49-a8d9-4cbc-837f-af98519b8fb2",
+          "version": 4,
+          "inningsNumber": 2,
+          "battingTeamId": "dc4aa7d6-9453-478f-9eb2-076dc559b4bf",
+          "runs": 12,
+          "wickets": 0,
+          "legalBalls": 2,
+          "overs": "0.2",
+          "status": "COMPLETED",
+          "target": 7,
+          "nextStrikerPlayerId": "140b2e38-90a9-4b3f-8fe6-69f8a9e5aeaf",
+          "nextNonStrikerPlayerId": "2d09022f-59e5-45eb-a36b-39357c1afbf1",
+          "batters": [
+            {
+              "playerId": "140b2e38-90a9-4b3f-8fe6-69f8a9e5aeaf",
+              "runs": 12,
+              "balls": 2,
+              "fours": 0,
+              "sixes": 2,
+              "out": false
+            }
+          ],
+          "bowlers": [
+            {
+              "playerId": "50d6ea96-de28-40a5-8392-6253cfd2ecac",
+              "runsConceded": 12,
+              "wickets": 0,
+              "legalBalls": 2,
+              "overs": "0.2"
+            }
+          ],
+          "deliveries": [
+            {
+              "id": "cd96e26f-f3b1-4741-8063-fc7504a8f1be",
+              "sequence": 1,
+              "strikerPlayerId": "140b2e38-90a9-4b3f-8fe6-69f8a9e5aeaf",
+              "nonStrikerPlayerId": "2d09022f-59e5-45eb-a36b-39357c1afbf1",
+              "bowlerPlayerId": "50d6ea96-de28-40a5-8392-6253cfd2ecac",
+              "batterRuns": 6,
+              "wides": 0,
+              "noBalls": 0,
+              "byes": 0,
+              "legByes": 0,
+              "penaltyRuns": 0,
+              "wicket": false,
+              "legalBall": true,
+              "totalRuns": 6
+            },
+            {
+              "id": "ec8aae11-f3ca-47be-bc68-f2579057ae2f",
+              "sequence": 3,
+              "strikerPlayerId": "140b2e38-90a9-4b3f-8fe6-69f8a9e5aeaf",
+              "nonStrikerPlayerId": "2d09022f-59e5-45eb-a36b-39357c1afbf1",
+              "bowlerPlayerId": "50d6ea96-de28-40a5-8392-6253cfd2ecac",
+              "batterRuns": 6,
+              "wides": 0,
+              "noBalls": 0,
+              "byes": 0,
+              "legByes": 0,
+              "penaltyRuns": 0,
+              "wicket": false,
+              "legalBall": true,
+              "totalRuns": 6
+            }
+          ]
+        }
+      ]
+    },
+    "3f304726-b04b-4efc-80a1-d2ec0a38d220": {
+      "matchId": "3f304726-b04b-4efc-80a1-d2ec0a38d220",
+      "tossWinnerTeamId": "b2bfc147-35f2-4531-bc83-c536214f8eef",
+      "tossDecision": "BAT",
+      "resultText": "Won by 10 wickets",
+      "innings": [
+        {
+          "id": "f45670ee-2eb4-4bcb-8d88-5c731aa1e4d6",
+          "version": 6,
+          "inningsNumber": 1,
+          "battingTeamId": "b2bfc147-35f2-4531-bc83-c536214f8eef",
+          "runs": 6,
+          "wickets": 0,
+          "legalBalls": 6,
+          "overs": "1.0",
+          "status": "COMPLETED",
+          "nextStrikerPlayerId": "4b2eb39d-dd50-4d33-be2e-910604d1a426",
+          "nextNonStrikerPlayerId": "5dd4eca6-323b-41d0-957d-bfc9b5443a21",
+          "batters": [
+            {
+              "playerId": "5dd4eca6-323b-41d0-957d-bfc9b5443a21",
+              "runs": 3,
+              "balls": 3,
+              "fours": 0,
+              "sixes": 0,
+              "out": false
+            },
+            {
+              "playerId": "4b2eb39d-dd50-4d33-be2e-910604d1a426",
+              "runs": 3,
+              "balls": 3,
+              "fours": 0,
+              "sixes": 0,
+              "out": false
+            }
+          ],
+          "bowlers": [
+            {
+              "playerId": "607fd749-5715-4702-955a-c40ef35b8195",
+              "runsConceded": 6,
+              "wickets": 0,
+              "legalBalls": 6,
+              "overs": "1.0"
+            }
+          ],
+          "deliveries": [
+            {
+              "id": "5545d7dd-7151-4cb8-a6c9-aef2aa471ca9",
+              "sequence": 1,
+              "strikerPlayerId": "5dd4eca6-323b-41d0-957d-bfc9b5443a21",
+              "nonStrikerPlayerId": "4b2eb39d-dd50-4d33-be2e-910604d1a426",
+              "bowlerPlayerId": "607fd749-5715-4702-955a-c40ef35b8195",
+              "batterRuns": 1,
+              "wides": 0,
+              "noBalls": 0,
+              "byes": 0,
+              "legByes": 0,
+              "penaltyRuns": 0,
+              "wicket": false,
+              "legalBall": true,
+              "totalRuns": 1
+            },
+            {
+              "id": "7f7b7a69-f9fe-408b-b6f8-65382162f243",
+              "sequence": 2,
+              "strikerPlayerId": "4b2eb39d-dd50-4d33-be2e-910604d1a426",
+              "nonStrikerPlayerId": "5dd4eca6-323b-41d0-957d-bfc9b5443a21",
+              "bowlerPlayerId": "607fd749-5715-4702-955a-c40ef35b8195",
+              "batterRuns": 1,
+              "wides": 0,
+              "noBalls": 0,
+              "byes": 0,
+              "legByes": 0,
+              "penaltyRuns": 0,
+              "wicket": false,
+              "legalBall": true,
+              "totalRuns": 1
+            },
+            {
+              "id": "d38773b9-5c7b-4a40-ac82-febd5a304549",
+              "sequence": 3,
+              "strikerPlayerId": "5dd4eca6-323b-41d0-957d-bfc9b5443a21",
+              "nonStrikerPlayerId": "4b2eb39d-dd50-4d33-be2e-910604d1a426",
+              "bowlerPlayerId": "607fd749-5715-4702-955a-c40ef35b8195",
+              "batterRuns": 1,
+              "wides": 0,
+              "noBalls": 0,
+              "byes": 0,
+              "legByes": 0,
+              "penaltyRuns": 0,
+              "wicket": false,
+              "legalBall": true,
+              "totalRuns": 1
+            },
+            {
+              "id": "ee2b8e1f-a67e-49b8-96c6-ebf843d9a6c4",
+              "sequence": 4,
+              "strikerPlayerId": "4b2eb39d-dd50-4d33-be2e-910604d1a426",
+              "nonStrikerPlayerId": "5dd4eca6-323b-41d0-957d-bfc9b5443a21",
+              "bowlerPlayerId": "607fd749-5715-4702-955a-c40ef35b8195",
+              "batterRuns": 1,
+              "wides": 0,
+              "noBalls": 0,
+              "byes": 0,
+              "legByes": 0,
+              "penaltyRuns": 0,
+              "wicket": false,
+              "legalBall": true,
+              "totalRuns": 1
+            },
+            {
+              "id": "12734008-1791-499c-906e-99f860119ffa",
+              "sequence": 5,
+              "strikerPlayerId": "5dd4eca6-323b-41d0-957d-bfc9b5443a21",
+              "nonStrikerPlayerId": "4b2eb39d-dd50-4d33-be2e-910604d1a426",
+              "bowlerPlayerId": "607fd749-5715-4702-955a-c40ef35b8195",
+              "batterRuns": 1,
+              "wides": 0,
+              "noBalls": 0,
+              "byes": 0,
+              "legByes": 0,
+              "penaltyRuns": 0,
+              "wicket": false,
+              "legalBall": true,
+              "totalRuns": 1
+            },
+            {
+              "id": "e00c5d5b-67a7-4d7a-b5ae-d36257fee213",
+              "sequence": 6,
+              "strikerPlayerId": "4b2eb39d-dd50-4d33-be2e-910604d1a426",
+              "nonStrikerPlayerId": "5dd4eca6-323b-41d0-957d-bfc9b5443a21",
+              "bowlerPlayerId": "607fd749-5715-4702-955a-c40ef35b8195",
+              "batterRuns": 1,
+              "wides": 0,
+              "noBalls": 0,
+              "byes": 0,
+              "legByes": 0,
+              "penaltyRuns": 0,
+              "wicket": false,
+              "legalBall": true,
+              "totalRuns": 1
+            }
+          ]
+        },
+        {
+          "id": "de19cfe4-2c38-4980-bd7a-53374484f093",
+          "version": 2,
+          "inningsNumber": 2,
+          "battingTeamId": "f8f1cb35-8ae4-4f9e-acba-047e2a048728",
+          "runs": 12,
+          "wickets": 0,
+          "legalBalls": 2,
+          "overs": "0.2",
+          "status": "COMPLETED",
+          "target": 7,
+          "nextStrikerPlayerId": "607fd749-5715-4702-955a-c40ef35b8195",
+          "nextNonStrikerPlayerId": "30e0e28e-638b-4ced-b457-0481c281a0eb",
+          "batters": [
+            {
+              "playerId": "607fd749-5715-4702-955a-c40ef35b8195",
+              "runs": 12,
+              "balls": 2,
+              "fours": 0,
+              "sixes": 2,
+              "out": false
+            }
+          ],
+          "bowlers": [
+            {
+              "playerId": "5dd4eca6-323b-41d0-957d-bfc9b5443a21",
+              "runsConceded": 12,
+              "wickets": 0,
+              "legalBalls": 2,
+              "overs": "0.2"
+            }
+          ],
+          "deliveries": [
+            {
+              "id": "4f5e8b0a-2e3b-4cd1-abcd-6c88cbc2a950",
+              "sequence": 1,
+              "strikerPlayerId": "607fd749-5715-4702-955a-c40ef35b8195",
+              "nonStrikerPlayerId": "30e0e28e-638b-4ced-b457-0481c281a0eb",
+              "bowlerPlayerId": "5dd4eca6-323b-41d0-957d-bfc9b5443a21",
+              "batterRuns": 6,
+              "wides": 0,
+              "noBalls": 0,
+              "byes": 0,
+              "legByes": 0,
+              "penaltyRuns": 0,
+              "wicket": false,
+              "legalBall": true,
+              "totalRuns": 6
+            },
+            {
+              "id": "a3c49fda-3d4f-4cec-bed7-f348765a34d0",
+              "sequence": 2,
+              "strikerPlayerId": "607fd749-5715-4702-955a-c40ef35b8195",
+              "nonStrikerPlayerId": "30e0e28e-638b-4ced-b457-0481c281a0eb",
+              "bowlerPlayerId": "5dd4eca6-323b-41d0-957d-bfc9b5443a21",
+              "batterRuns": 6,
+              "wides": 0,
+              "noBalls": 0,
+              "byes": 0,
+              "legByes": 0,
+              "penaltyRuns": 0,
+              "wicket": false,
+              "legalBall": true,
+              "totalRuns": 6
+            }
+          ]
+        }
+      ]
+    },
+    "8da868f2-dd38-4ba1-b3c0-26a43a04ba4e": {
+      "matchId": "8da868f2-dd38-4ba1-b3c0-26a43a04ba4e",
+      "tossWinnerTeamId": "b2bfc147-35f2-4531-bc83-c536214f8eef",
+      "tossDecision": "BAT",
+      "resultText": "Won by 10 wickets",
+      "innings": [
+        {
+          "id": "3f36538d-c558-4b8d-b98c-6d45a31c06d8",
+          "version": 6,
+          "inningsNumber": 1,
+          "battingTeamId": "b2bfc147-35f2-4531-bc83-c536214f8eef",
+          "runs": 6,
+          "wickets": 0,
+          "legalBalls": 6,
+          "overs": "1.0",
+          "status": "COMPLETED",
+          "nextStrikerPlayerId": "4b2eb39d-dd50-4d33-be2e-910604d1a426",
+          "nextNonStrikerPlayerId": "5dd4eca6-323b-41d0-957d-bfc9b5443a21",
+          "batters": [
+            {
+              "playerId": "5dd4eca6-323b-41d0-957d-bfc9b5443a21",
+              "runs": 3,
+              "balls": 3,
+              "fours": 0,
+              "sixes": 0,
+              "out": false
+            },
+            {
+              "playerId": "4b2eb39d-dd50-4d33-be2e-910604d1a426",
+              "runs": 3,
+              "balls": 3,
+              "fours": 0,
+              "sixes": 0,
+              "out": false
+            }
+          ],
+          "bowlers": [
+            {
+              "playerId": "50d6ea96-de28-40a5-8392-6253cfd2ecac",
+              "runsConceded": 6,
+              "wickets": 0,
+              "legalBalls": 6,
+              "overs": "1.0"
+            }
+          ],
+          "deliveries": [
+            {
+              "id": "8b64b028-b5e9-4551-8a57-0b41d9e7125b",
+              "sequence": 1,
+              "strikerPlayerId": "5dd4eca6-323b-41d0-957d-bfc9b5443a21",
+              "nonStrikerPlayerId": "4b2eb39d-dd50-4d33-be2e-910604d1a426",
+              "bowlerPlayerId": "50d6ea96-de28-40a5-8392-6253cfd2ecac",
+              "batterRuns": 1,
+              "wides": 0,
+              "noBalls": 0,
+              "byes": 0,
+              "legByes": 0,
+              "penaltyRuns": 0,
+              "wicket": false,
+              "legalBall": true,
+              "totalRuns": 1
+            },
+            {
+              "id": "de33bcfc-eabd-48f9-a34f-d43161f94962",
+              "sequence": 2,
+              "strikerPlayerId": "4b2eb39d-dd50-4d33-be2e-910604d1a426",
+              "nonStrikerPlayerId": "5dd4eca6-323b-41d0-957d-bfc9b5443a21",
+              "bowlerPlayerId": "50d6ea96-de28-40a5-8392-6253cfd2ecac",
+              "batterRuns": 1,
+              "wides": 0,
+              "noBalls": 0,
+              "byes": 0,
+              "legByes": 0,
+              "penaltyRuns": 0,
+              "wicket": false,
+              "legalBall": true,
+              "totalRuns": 1
+            },
+            {
+              "id": "453f6133-4568-404f-ad3f-00df3d0b0dfe",
+              "sequence": 3,
+              "strikerPlayerId": "5dd4eca6-323b-41d0-957d-bfc9b5443a21",
+              "nonStrikerPlayerId": "4b2eb39d-dd50-4d33-be2e-910604d1a426",
+              "bowlerPlayerId": "50d6ea96-de28-40a5-8392-6253cfd2ecac",
+              "batterRuns": 1,
+              "wides": 0,
+              "noBalls": 0,
+              "byes": 0,
+              "legByes": 0,
+              "penaltyRuns": 0,
+              "wicket": false,
+              "legalBall": true,
+              "totalRuns": 1
+            },
+            {
+              "id": "64a070dc-0c98-4803-92f0-c0520cd6e4ce",
+              "sequence": 4,
+              "strikerPlayerId": "4b2eb39d-dd50-4d33-be2e-910604d1a426",
+              "nonStrikerPlayerId": "5dd4eca6-323b-41d0-957d-bfc9b5443a21",
+              "bowlerPlayerId": "50d6ea96-de28-40a5-8392-6253cfd2ecac",
+              "batterRuns": 1,
+              "wides": 0,
+              "noBalls": 0,
+              "byes": 0,
+              "legByes": 0,
+              "penaltyRuns": 0,
+              "wicket": false,
+              "legalBall": true,
+              "totalRuns": 1
+            },
+            {
+              "id": "59f3f0f0-345a-49fc-8f71-a494afaff858",
+              "sequence": 5,
+              "strikerPlayerId": "5dd4eca6-323b-41d0-957d-bfc9b5443a21",
+              "nonStrikerPlayerId": "4b2eb39d-dd50-4d33-be2e-910604d1a426",
+              "bowlerPlayerId": "50d6ea96-de28-40a5-8392-6253cfd2ecac",
+              "batterRuns": 1,
+              "wides": 0,
+              "noBalls": 0,
+              "byes": 0,
+              "legByes": 0,
+              "penaltyRuns": 0,
+              "wicket": false,
+              "legalBall": true,
+              "totalRuns": 1
+            },
+            {
+              "id": "2f10abea-8731-4cd4-98a0-9715c95b60ad",
+              "sequence": 6,
+              "strikerPlayerId": "4b2eb39d-dd50-4d33-be2e-910604d1a426",
+              "nonStrikerPlayerId": "5dd4eca6-323b-41d0-957d-bfc9b5443a21",
+              "bowlerPlayerId": "50d6ea96-de28-40a5-8392-6253cfd2ecac",
+              "batterRuns": 1,
+              "wides": 0,
+              "noBalls": 0,
+              "byes": 0,
+              "legByes": 0,
+              "penaltyRuns": 0,
+              "wicket": false,
+              "legalBall": true,
+              "totalRuns": 1
+            }
+          ]
+        },
+        {
+          "id": "fcf8ea28-6542-4f72-ad23-f22432185a63",
+          "version": 2,
+          "inningsNumber": 2,
+          "battingTeamId": "ab3ba70e-fb85-4ef9-b9ac-6d741aff97d1",
+          "runs": 12,
+          "wickets": 0,
+          "legalBalls": 2,
+          "overs": "0.2",
+          "status": "COMPLETED",
+          "target": 7,
+          "nextStrikerPlayerId": "50d6ea96-de28-40a5-8392-6253cfd2ecac",
+          "nextNonStrikerPlayerId": "cf727df1-8b87-4a6d-ad15-2995168c73a8",
+          "batters": [
+            {
+              "playerId": "50d6ea96-de28-40a5-8392-6253cfd2ecac",
+              "runs": 12,
+              "balls": 2,
+              "fours": 0,
+              "sixes": 2,
+              "out": false
+            }
+          ],
+          "bowlers": [
+            {
+              "playerId": "5dd4eca6-323b-41d0-957d-bfc9b5443a21",
+              "runsConceded": 12,
+              "wickets": 0,
+              "legalBalls": 2,
+              "overs": "0.2"
+            }
+          ],
+          "deliveries": [
+            {
+              "id": "a0f85d6c-9079-4e68-a6f5-20eb96207447",
+              "sequence": 1,
+              "strikerPlayerId": "50d6ea96-de28-40a5-8392-6253cfd2ecac",
+              "nonStrikerPlayerId": "cf727df1-8b87-4a6d-ad15-2995168c73a8",
+              "bowlerPlayerId": "5dd4eca6-323b-41d0-957d-bfc9b5443a21",
+              "batterRuns": 6,
+              "wides": 0,
+              "noBalls": 0,
+              "byes": 0,
+              "legByes": 0,
+              "penaltyRuns": 0,
+              "wicket": false,
+              "legalBall": true,
+              "totalRuns": 6
+            },
+            {
+              "id": "387fcac5-8fae-44b6-aafa-d52c4eec2875",
+              "sequence": 2,
+              "strikerPlayerId": "50d6ea96-de28-40a5-8392-6253cfd2ecac",
+              "nonStrikerPlayerId": "cf727df1-8b87-4a6d-ad15-2995168c73a8",
+              "bowlerPlayerId": "5dd4eca6-323b-41d0-957d-bfc9b5443a21",
+              "batterRuns": 6,
+              "wides": 0,
+              "noBalls": 0,
+              "byes": 0,
+              "legByes": 0,
+              "penaltyRuns": 0,
+              "wicket": false,
+              "legalBall": true,
+              "totalRuns": 6
+            }
+          ]
+        }
+      ]
+    },
+    "72cf5c2a-8630-4b23-8bab-306639aca129": {
+      "matchId": "72cf5c2a-8630-4b23-8bab-306639aca129",
+      "tossWinnerTeamId": "dc4aa7d6-9453-478f-9eb2-076dc559b4bf",
+      "tossDecision": "BAT",
+      "resultText": "Won by 10 wickets",
+      "innings": [
+        {
+          "id": "acc59859-cf64-4513-804b-48980a3e4769",
+          "version": 6,
+          "inningsNumber": 1,
+          "battingTeamId": "dc4aa7d6-9453-478f-9eb2-076dc559b4bf",
+          "runs": 6,
+          "wickets": 0,
+          "legalBalls": 6,
+          "overs": "1.0",
+          "status": "COMPLETED",
+          "nextStrikerPlayerId": "2d09022f-59e5-45eb-a36b-39357c1afbf1",
+          "nextNonStrikerPlayerId": "140b2e38-90a9-4b3f-8fe6-69f8a9e5aeaf",
+          "batters": [
+            {
+              "playerId": "140b2e38-90a9-4b3f-8fe6-69f8a9e5aeaf",
+              "runs": 3,
+              "balls": 3,
+              "fours": 0,
+              "sixes": 0,
+              "out": false
+            },
+            {
+              "playerId": "2d09022f-59e5-45eb-a36b-39357c1afbf1",
+              "runs": 3,
+              "balls": 3,
+              "fours": 0,
+              "sixes": 0,
+              "out": false
+            }
+          ],
+          "bowlers": [
+            {
+              "playerId": "607fd749-5715-4702-955a-c40ef35b8195",
+              "runsConceded": 6,
+              "wickets": 0,
+              "legalBalls": 6,
+              "overs": "1.0"
+            }
+          ],
+          "deliveries": [
+            {
+              "id": "e28c42ce-f246-4aa0-9875-53f1b713d884",
+              "sequence": 1,
+              "strikerPlayerId": "140b2e38-90a9-4b3f-8fe6-69f8a9e5aeaf",
+              "nonStrikerPlayerId": "2d09022f-59e5-45eb-a36b-39357c1afbf1",
+              "bowlerPlayerId": "607fd749-5715-4702-955a-c40ef35b8195",
+              "batterRuns": 1,
+              "wides": 0,
+              "noBalls": 0,
+              "byes": 0,
+              "legByes": 0,
+              "penaltyRuns": 0,
+              "wicket": false,
+              "legalBall": true,
+              "totalRuns": 1
+            },
+            {
+              "id": "7db00cec-946c-413a-b99e-a4f5a58cb53b",
+              "sequence": 2,
+              "strikerPlayerId": "2d09022f-59e5-45eb-a36b-39357c1afbf1",
+              "nonStrikerPlayerId": "140b2e38-90a9-4b3f-8fe6-69f8a9e5aeaf",
+              "bowlerPlayerId": "607fd749-5715-4702-955a-c40ef35b8195",
+              "batterRuns": 1,
+              "wides": 0,
+              "noBalls": 0,
+              "byes": 0,
+              "legByes": 0,
+              "penaltyRuns": 0,
+              "wicket": false,
+              "legalBall": true,
+              "totalRuns": 1
+            },
+            {
+              "id": "7923c9b6-f832-4f0c-b865-3a9dd8087890",
+              "sequence": 3,
+              "strikerPlayerId": "140b2e38-90a9-4b3f-8fe6-69f8a9e5aeaf",
+              "nonStrikerPlayerId": "2d09022f-59e5-45eb-a36b-39357c1afbf1",
+              "bowlerPlayerId": "607fd749-5715-4702-955a-c40ef35b8195",
+              "batterRuns": 1,
+              "wides": 0,
+              "noBalls": 0,
+              "byes": 0,
+              "legByes": 0,
+              "penaltyRuns": 0,
+              "wicket": false,
+              "legalBall": true,
+              "totalRuns": 1
+            },
+            {
+              "id": "d54ff5f8-c5ed-48d3-9c7b-39f57601778a",
+              "sequence": 4,
+              "strikerPlayerId": "2d09022f-59e5-45eb-a36b-39357c1afbf1",
+              "nonStrikerPlayerId": "140b2e38-90a9-4b3f-8fe6-69f8a9e5aeaf",
+              "bowlerPlayerId": "607fd749-5715-4702-955a-c40ef35b8195",
+              "batterRuns": 1,
+              "wides": 0,
+              "noBalls": 0,
+              "byes": 0,
+              "legByes": 0,
+              "penaltyRuns": 0,
+              "wicket": false,
+              "legalBall": true,
+              "totalRuns": 1
+            },
+            {
+              "id": "f5c89c5f-ee16-4efa-a0b4-6447143648cf",
+              "sequence": 5,
+              "strikerPlayerId": "140b2e38-90a9-4b3f-8fe6-69f8a9e5aeaf",
+              "nonStrikerPlayerId": "2d09022f-59e5-45eb-a36b-39357c1afbf1",
+              "bowlerPlayerId": "607fd749-5715-4702-955a-c40ef35b8195",
+              "batterRuns": 1,
+              "wides": 0,
+              "noBalls": 0,
+              "byes": 0,
+              "legByes": 0,
+              "penaltyRuns": 0,
+              "wicket": false,
+              "legalBall": true,
+              "totalRuns": 1
+            },
+            {
+              "id": "ffdf9e75-48a8-4ef7-a78c-6cb26a2755f3",
+              "sequence": 6,
+              "strikerPlayerId": "2d09022f-59e5-45eb-a36b-39357c1afbf1",
+              "nonStrikerPlayerId": "140b2e38-90a9-4b3f-8fe6-69f8a9e5aeaf",
+              "bowlerPlayerId": "607fd749-5715-4702-955a-c40ef35b8195",
+              "batterRuns": 1,
+              "wides": 0,
+              "noBalls": 0,
+              "byes": 0,
+              "legByes": 0,
+              "penaltyRuns": 0,
+              "wicket": false,
+              "legalBall": true,
+              "totalRuns": 1
+            }
+          ]
+        },
+        {
+          "id": "c4d7ae75-822a-4fee-9558-845642d3b3a9",
+          "version": 2,
+          "inningsNumber": 2,
+          "battingTeamId": "f8f1cb35-8ae4-4f9e-acba-047e2a048728",
+          "runs": 12,
+          "wickets": 0,
+          "legalBalls": 2,
+          "overs": "0.2",
+          "status": "COMPLETED",
+          "target": 7,
+          "nextStrikerPlayerId": "607fd749-5715-4702-955a-c40ef35b8195",
+          "nextNonStrikerPlayerId": "30e0e28e-638b-4ced-b457-0481c281a0eb",
+          "batters": [
+            {
+              "playerId": "607fd749-5715-4702-955a-c40ef35b8195",
+              "runs": 12,
+              "balls": 2,
+              "fours": 0,
+              "sixes": 2,
+              "out": false
+            }
+          ],
+          "bowlers": [
+            {
+              "playerId": "140b2e38-90a9-4b3f-8fe6-69f8a9e5aeaf",
+              "runsConceded": 12,
+              "wickets": 0,
+              "legalBalls": 2,
+              "overs": "0.2"
+            }
+          ],
+          "deliveries": [
+            {
+              "id": "da642b3f-6406-4c0f-bf42-8668a6030ee3",
+              "sequence": 1,
+              "strikerPlayerId": "607fd749-5715-4702-955a-c40ef35b8195",
+              "nonStrikerPlayerId": "30e0e28e-638b-4ced-b457-0481c281a0eb",
+              "bowlerPlayerId": "140b2e38-90a9-4b3f-8fe6-69f8a9e5aeaf",
+              "batterRuns": 6,
+              "wides": 0,
+              "noBalls": 0,
+              "byes": 0,
+              "legByes": 0,
+              "penaltyRuns": 0,
+              "wicket": false,
+              "legalBall": true,
+              "totalRuns": 6
+            },
+            {
+              "id": "0fbbb32f-1708-465f-84e0-7064a59a229a",
+              "sequence": 2,
+              "strikerPlayerId": "607fd749-5715-4702-955a-c40ef35b8195",
+              "nonStrikerPlayerId": "30e0e28e-638b-4ced-b457-0481c281a0eb",
+              "bowlerPlayerId": "140b2e38-90a9-4b3f-8fe6-69f8a9e5aeaf",
+              "batterRuns": 6,
+              "wides": 0,
+              "noBalls": 0,
+              "byes": 0,
+              "legByes": 0,
+              "penaltyRuns": 0,
+              "wicket": false,
+              "legalBall": true,
+              "totalRuns": 6
+            }
+          ]
+        }
+      ]
+    },
+    "ce134e7d-ba0a-4749-b5a8-f749c3bd885c": {
+      "matchId": "ce134e7d-ba0a-4749-b5a8-f749c3bd885c",
+      "tossWinnerTeamId": "ab3ba70e-fb85-4ef9-b9ac-6d741aff97d1",
+      "tossDecision": "BAT",
+      "resultText": "Won by 10 wickets",
+      "innings": [
+        {
+          "id": "9c867784-6885-437a-acff-aed0891c4e6f",
+          "version": 6,
+          "inningsNumber": 1,
+          "battingTeamId": "ab3ba70e-fb85-4ef9-b9ac-6d741aff97d1",
+          "runs": 6,
+          "wickets": 0,
+          "legalBalls": 6,
+          "overs": "1.0",
+          "status": "COMPLETED",
+          "nextStrikerPlayerId": "cf727df1-8b87-4a6d-ad15-2995168c73a8",
+          "nextNonStrikerPlayerId": "50d6ea96-de28-40a5-8392-6253cfd2ecac",
+          "batters": [
+            {
+              "playerId": "50d6ea96-de28-40a5-8392-6253cfd2ecac",
+              "runs": 3,
+              "balls": 3,
+              "fours": 0,
+              "sixes": 0,
+              "out": false
+            },
+            {
+              "playerId": "cf727df1-8b87-4a6d-ad15-2995168c73a8",
+              "runs": 3,
+              "balls": 3,
+              "fours": 0,
+              "sixes": 0,
+              "out": false
+            }
+          ],
+          "bowlers": [
+            {
+              "playerId": "607fd749-5715-4702-955a-c40ef35b8195",
+              "runsConceded": 6,
+              "wickets": 0,
+              "legalBalls": 6,
+              "overs": "1.0"
+            }
+          ],
+          "deliveries": [
+            {
+              "id": "ab231034-1f46-4d80-aa19-17aef16c21bd",
+              "sequence": 1,
+              "strikerPlayerId": "50d6ea96-de28-40a5-8392-6253cfd2ecac",
+              "nonStrikerPlayerId": "cf727df1-8b87-4a6d-ad15-2995168c73a8",
+              "bowlerPlayerId": "607fd749-5715-4702-955a-c40ef35b8195",
+              "batterRuns": 1,
+              "wides": 0,
+              "noBalls": 0,
+              "byes": 0,
+              "legByes": 0,
+              "penaltyRuns": 0,
+              "wicket": false,
+              "legalBall": true,
+              "totalRuns": 1
+            },
+            {
+              "id": "1689b1a5-fae1-459b-863d-5a88363fdd5b",
+              "sequence": 2,
+              "strikerPlayerId": "cf727df1-8b87-4a6d-ad15-2995168c73a8",
+              "nonStrikerPlayerId": "50d6ea96-de28-40a5-8392-6253cfd2ecac",
+              "bowlerPlayerId": "607fd749-5715-4702-955a-c40ef35b8195",
+              "batterRuns": 1,
+              "wides": 0,
+              "noBalls": 0,
+              "byes": 0,
+              "legByes": 0,
+              "penaltyRuns": 0,
+              "wicket": false,
+              "legalBall": true,
+              "totalRuns": 1
+            },
+            {
+              "id": "a04f4f3c-80f8-4181-b4ac-b35f26a78b95",
+              "sequence": 3,
+              "strikerPlayerId": "50d6ea96-de28-40a5-8392-6253cfd2ecac",
+              "nonStrikerPlayerId": "cf727df1-8b87-4a6d-ad15-2995168c73a8",
+              "bowlerPlayerId": "607fd749-5715-4702-955a-c40ef35b8195",
+              "batterRuns": 1,
+              "wides": 0,
+              "noBalls": 0,
+              "byes": 0,
+              "legByes": 0,
+              "penaltyRuns": 0,
+              "wicket": false,
+              "legalBall": true,
+              "totalRuns": 1
+            },
+            {
+              "id": "050976db-dd64-462d-b5bc-dab37bba76bc",
+              "sequence": 4,
+              "strikerPlayerId": "cf727df1-8b87-4a6d-ad15-2995168c73a8",
+              "nonStrikerPlayerId": "50d6ea96-de28-40a5-8392-6253cfd2ecac",
+              "bowlerPlayerId": "607fd749-5715-4702-955a-c40ef35b8195",
+              "batterRuns": 1,
+              "wides": 0,
+              "noBalls": 0,
+              "byes": 0,
+              "legByes": 0,
+              "penaltyRuns": 0,
+              "wicket": false,
+              "legalBall": true,
+              "totalRuns": 1
+            },
+            {
+              "id": "a6fbb543-b94f-47fe-859b-66f91c0c231c",
+              "sequence": 5,
+              "strikerPlayerId": "50d6ea96-de28-40a5-8392-6253cfd2ecac",
+              "nonStrikerPlayerId": "cf727df1-8b87-4a6d-ad15-2995168c73a8",
+              "bowlerPlayerId": "607fd749-5715-4702-955a-c40ef35b8195",
+              "batterRuns": 1,
+              "wides": 0,
+              "noBalls": 0,
+              "byes": 0,
+              "legByes": 0,
+              "penaltyRuns": 0,
+              "wicket": false,
+              "legalBall": true,
+              "totalRuns": 1
+            },
+            {
+              "id": "11d38cfa-5671-4f6d-9c26-1bdf535974e9",
+              "sequence": 6,
+              "strikerPlayerId": "cf727df1-8b87-4a6d-ad15-2995168c73a8",
+              "nonStrikerPlayerId": "50d6ea96-de28-40a5-8392-6253cfd2ecac",
+              "bowlerPlayerId": "607fd749-5715-4702-955a-c40ef35b8195",
+              "batterRuns": 1,
+              "wides": 0,
+              "noBalls": 0,
+              "byes": 0,
+              "legByes": 0,
+              "penaltyRuns": 0,
+              "wicket": false,
+              "legalBall": true,
+              "totalRuns": 1
+            }
+          ]
+        },
+        {
+          "id": "deab3445-3196-4ef8-a71a-f4bd8b7de954",
+          "version": 2,
+          "inningsNumber": 2,
+          "battingTeamId": "f8f1cb35-8ae4-4f9e-acba-047e2a048728",
+          "runs": 12,
+          "wickets": 0,
+          "legalBalls": 2,
+          "overs": "0.2",
+          "status": "COMPLETED",
+          "target": 7,
+          "nextStrikerPlayerId": "607fd749-5715-4702-955a-c40ef35b8195",
+          "nextNonStrikerPlayerId": "30e0e28e-638b-4ced-b457-0481c281a0eb",
+          "batters": [
+            {
+              "playerId": "607fd749-5715-4702-955a-c40ef35b8195",
+              "runs": 12,
+              "balls": 2,
+              "fours": 0,
+              "sixes": 2,
+              "out": false
+            }
+          ],
+          "bowlers": [
+            {
+              "playerId": "50d6ea96-de28-40a5-8392-6253cfd2ecac",
+              "runsConceded": 12,
+              "wickets": 0,
+              "legalBalls": 2,
+              "overs": "0.2"
+            }
+          ],
+          "deliveries": [
+            {
+              "id": "2b71aa24-ad91-423e-8892-23a660b24241",
+              "sequence": 1,
+              "strikerPlayerId": "607fd749-5715-4702-955a-c40ef35b8195",
+              "nonStrikerPlayerId": "30e0e28e-638b-4ced-b457-0481c281a0eb",
+              "bowlerPlayerId": "50d6ea96-de28-40a5-8392-6253cfd2ecac",
+              "batterRuns": 6,
+              "wides": 0,
+              "noBalls": 0,
+              "byes": 0,
+              "legByes": 0,
+              "penaltyRuns": 0,
+              "wicket": false,
+              "legalBall": true,
+              "totalRuns": 6
+            },
+            {
+              "id": "01f6a01a-d93a-494a-9180-d5981978334b",
+              "sequence": 2,
+              "strikerPlayerId": "607fd749-5715-4702-955a-c40ef35b8195",
+              "nonStrikerPlayerId": "30e0e28e-638b-4ced-b457-0481c281a0eb",
+              "bowlerPlayerId": "50d6ea96-de28-40a5-8392-6253cfd2ecac",
+              "batterRuns": 6,
+              "wides": 0,
+              "noBalls": 0,
+              "byes": 0,
+              "legByes": 0,
+              "penaltyRuns": 0,
+              "wicket": false,
+              "legalBall": true,
+              "totalRuns": 6
+            }
+          ]
+        }
+      ]
+    },
+    "a9c6af73-333d-41d1-afec-20960abd006c": {
+      "matchId": "a9c6af73-333d-41d1-afec-20960abd006c",
+      "tossWinnerTeamId": "b2bfc147-35f2-4531-bc83-c536214f8eef",
+      "tossDecision": "BAT",
+      "resultText": "Won by 10 wickets",
+      "innings": [
+        {
+          "id": "fed78095-32dc-43be-8c29-886937f13daa",
+          "version": 6,
+          "inningsNumber": 1,
+          "battingTeamId": "b2bfc147-35f2-4531-bc83-c536214f8eef",
+          "runs": 6,
+          "wickets": 0,
+          "legalBalls": 6,
+          "overs": "1.0",
+          "status": "COMPLETED",
+          "nextStrikerPlayerId": "4b2eb39d-dd50-4d33-be2e-910604d1a426",
+          "nextNonStrikerPlayerId": "5dd4eca6-323b-41d0-957d-bfc9b5443a21",
+          "batters": [
+            {
+              "playerId": "5dd4eca6-323b-41d0-957d-bfc9b5443a21",
+              "runs": 3,
+              "balls": 3,
+              "fours": 0,
+              "sixes": 0,
+              "out": false
+            },
+            {
+              "playerId": "4b2eb39d-dd50-4d33-be2e-910604d1a426",
+              "runs": 3,
+              "balls": 3,
+              "fours": 0,
+              "sixes": 0,
+              "out": false
+            }
+          ],
+          "bowlers": [
+            {
+              "playerId": "140b2e38-90a9-4b3f-8fe6-69f8a9e5aeaf",
+              "runsConceded": 6,
+              "wickets": 0,
+              "legalBalls": 6,
+              "overs": "1.0"
+            }
+          ],
+          "deliveries": [
+            {
+              "id": "62cd799a-dc43-46c4-a5d5-85de2056536c",
+              "sequence": 1,
+              "strikerPlayerId": "5dd4eca6-323b-41d0-957d-bfc9b5443a21",
+              "nonStrikerPlayerId": "4b2eb39d-dd50-4d33-be2e-910604d1a426",
+              "bowlerPlayerId": "140b2e38-90a9-4b3f-8fe6-69f8a9e5aeaf",
+              "batterRuns": 1,
+              "wides": 0,
+              "noBalls": 0,
+              "byes": 0,
+              "legByes": 0,
+              "penaltyRuns": 0,
+              "wicket": false,
+              "legalBall": true,
+              "totalRuns": 1
+            },
+            {
+              "id": "7a25bb5a-d688-45ac-ae12-6cbf6a528e87",
+              "sequence": 2,
+              "strikerPlayerId": "4b2eb39d-dd50-4d33-be2e-910604d1a426",
+              "nonStrikerPlayerId": "5dd4eca6-323b-41d0-957d-bfc9b5443a21",
+              "bowlerPlayerId": "140b2e38-90a9-4b3f-8fe6-69f8a9e5aeaf",
+              "batterRuns": 1,
+              "wides": 0,
+              "noBalls": 0,
+              "byes": 0,
+              "legByes": 0,
+              "penaltyRuns": 0,
+              "wicket": false,
+              "legalBall": true,
+              "totalRuns": 1
+            },
+            {
+              "id": "b13c517f-3e8d-4acb-87cc-d0033fa05eaa",
+              "sequence": 3,
+              "strikerPlayerId": "5dd4eca6-323b-41d0-957d-bfc9b5443a21",
+              "nonStrikerPlayerId": "4b2eb39d-dd50-4d33-be2e-910604d1a426",
+              "bowlerPlayerId": "140b2e38-90a9-4b3f-8fe6-69f8a9e5aeaf",
+              "batterRuns": 1,
+              "wides": 0,
+              "noBalls": 0,
+              "byes": 0,
+              "legByes": 0,
+              "penaltyRuns": 0,
+              "wicket": false,
+              "legalBall": true,
+              "totalRuns": 1
+            },
+            {
+              "id": "247ff77e-5378-4217-8897-a5980aa2535b",
+              "sequence": 4,
+              "strikerPlayerId": "4b2eb39d-dd50-4d33-be2e-910604d1a426",
+              "nonStrikerPlayerId": "5dd4eca6-323b-41d0-957d-bfc9b5443a21",
+              "bowlerPlayerId": "140b2e38-90a9-4b3f-8fe6-69f8a9e5aeaf",
+              "batterRuns": 1,
+              "wides": 0,
+              "noBalls": 0,
+              "byes": 0,
+              "legByes": 0,
+              "penaltyRuns": 0,
+              "wicket": false,
+              "legalBall": true,
+              "totalRuns": 1
+            },
+            {
+              "id": "a834a209-f6bf-404d-86c2-edc778770dbe",
+              "sequence": 5,
+              "strikerPlayerId": "5dd4eca6-323b-41d0-957d-bfc9b5443a21",
+              "nonStrikerPlayerId": "4b2eb39d-dd50-4d33-be2e-910604d1a426",
+              "bowlerPlayerId": "140b2e38-90a9-4b3f-8fe6-69f8a9e5aeaf",
+              "batterRuns": 1,
+              "wides": 0,
+              "noBalls": 0,
+              "byes": 0,
+              "legByes": 0,
+              "penaltyRuns": 0,
+              "wicket": false,
+              "legalBall": true,
+              "totalRuns": 1
+            },
+            {
+              "id": "aefdda12-21af-4aa7-8b31-32988e143c35",
+              "sequence": 6,
+              "strikerPlayerId": "4b2eb39d-dd50-4d33-be2e-910604d1a426",
+              "nonStrikerPlayerId": "5dd4eca6-323b-41d0-957d-bfc9b5443a21",
+              "bowlerPlayerId": "140b2e38-90a9-4b3f-8fe6-69f8a9e5aeaf",
+              "batterRuns": 1,
+              "wides": 0,
+              "noBalls": 0,
+              "byes": 0,
+              "legByes": 0,
+              "penaltyRuns": 0,
+              "wicket": false,
+              "legalBall": true,
+              "totalRuns": 1
+            }
+          ]
+        },
+        {
+          "id": "3d03f20a-4369-47e3-8e17-6bdc8981de5a",
+          "version": 2,
+          "inningsNumber": 2,
+          "battingTeamId": "dc4aa7d6-9453-478f-9eb2-076dc559b4bf",
+          "runs": 12,
+          "wickets": 0,
+          "legalBalls": 2,
+          "overs": "0.2",
+          "status": "COMPLETED",
+          "target": 7,
+          "nextStrikerPlayerId": "140b2e38-90a9-4b3f-8fe6-69f8a9e5aeaf",
+          "nextNonStrikerPlayerId": "2d09022f-59e5-45eb-a36b-39357c1afbf1",
+          "batters": [
+            {
+              "playerId": "140b2e38-90a9-4b3f-8fe6-69f8a9e5aeaf",
+              "runs": 12,
+              "balls": 2,
+              "fours": 0,
+              "sixes": 2,
+              "out": false
+            }
+          ],
+          "bowlers": [
+            {
+              "playerId": "5dd4eca6-323b-41d0-957d-bfc9b5443a21",
+              "runsConceded": 12,
+              "wickets": 0,
+              "legalBalls": 2,
+              "overs": "0.2"
+            }
+          ],
+          "deliveries": [
+            {
+              "id": "d5f5d7ef-8506-4d55-b60b-9b4ad293fa24",
+              "sequence": 1,
+              "strikerPlayerId": "140b2e38-90a9-4b3f-8fe6-69f8a9e5aeaf",
+              "nonStrikerPlayerId": "2d09022f-59e5-45eb-a36b-39357c1afbf1",
+              "bowlerPlayerId": "5dd4eca6-323b-41d0-957d-bfc9b5443a21",
+              "batterRuns": 6,
+              "wides": 0,
+              "noBalls": 0,
+              "byes": 0,
+              "legByes": 0,
+              "penaltyRuns": 0,
+              "wicket": false,
+              "legalBall": true,
+              "totalRuns": 6
+            },
+            {
+              "id": "7fcbdf5b-3bc8-43a7-b4a7-6beffa41554c",
+              "sequence": 2,
+              "strikerPlayerId": "140b2e38-90a9-4b3f-8fe6-69f8a9e5aeaf",
+              "nonStrikerPlayerId": "2d09022f-59e5-45eb-a36b-39357c1afbf1",
+              "bowlerPlayerId": "5dd4eca6-323b-41d0-957d-bfc9b5443a21",
+              "batterRuns": 6,
+              "wides": 0,
+              "noBalls": 0,
+              "byes": 0,
+              "legByes": 0,
+              "penaltyRuns": 0,
+              "wicket": false,
+              "legalBall": true,
+              "totalRuns": 6
+            }
+          ]
+        }
+      ]
+    },
+    "1a85d714-6483-449d-9444-71089b01a642": {
+      "matchId": "1a85d714-6483-449d-9444-71089b01a642",
+      "tossWinnerTeamId": "dc4aa7d6-9453-478f-9eb2-076dc559b4bf",
+      "tossDecision": "BAT",
+      "resultText": "Won by 10 wickets",
+      "innings": [
+        {
+          "id": "c72313de-c801-430c-a24b-57f28e084494",
+          "version": 6,
+          "inningsNumber": 1,
+          "battingTeamId": "dc4aa7d6-9453-478f-9eb2-076dc559b4bf",
+          "runs": 6,
+          "wickets": 0,
+          "legalBalls": 6,
+          "overs": "1.0",
+          "status": "COMPLETED",
+          "nextStrikerPlayerId": "2d09022f-59e5-45eb-a36b-39357c1afbf1",
+          "nextNonStrikerPlayerId": "140b2e38-90a9-4b3f-8fe6-69f8a9e5aeaf",
+          "batters": [
+            {
+              "playerId": "140b2e38-90a9-4b3f-8fe6-69f8a9e5aeaf",
+              "runs": 3,
+              "balls": 3,
+              "fours": 0,
+              "sixes": 0,
+              "out": false
+            },
+            {
+              "playerId": "2d09022f-59e5-45eb-a36b-39357c1afbf1",
+              "runs": 3,
+              "balls": 3,
+              "fours": 0,
+              "sixes": 0,
+              "out": false
+            }
+          ],
+          "bowlers": [
+            {
+              "playerId": "607fd749-5715-4702-955a-c40ef35b8195",
+              "runsConceded": 6,
+              "wickets": 0,
+              "legalBalls": 6,
+              "overs": "1.0"
+            }
+          ],
+          "deliveries": [
+            {
+              "id": "8a799eb6-833d-4af8-a615-f34d724971ba",
+              "sequence": 1,
+              "strikerPlayerId": "140b2e38-90a9-4b3f-8fe6-69f8a9e5aeaf",
+              "nonStrikerPlayerId": "2d09022f-59e5-45eb-a36b-39357c1afbf1",
+              "bowlerPlayerId": "607fd749-5715-4702-955a-c40ef35b8195",
+              "batterRuns": 1,
+              "wides": 0,
+              "noBalls": 0,
+              "byes": 0,
+              "legByes": 0,
+              "penaltyRuns": 0,
+              "wicket": false,
+              "legalBall": true,
+              "totalRuns": 1
+            },
+            {
+              "id": "6599d3e8-ff4c-49d8-bc4e-be23f91ca4c5",
+              "sequence": 2,
+              "strikerPlayerId": "2d09022f-59e5-45eb-a36b-39357c1afbf1",
+              "nonStrikerPlayerId": "140b2e38-90a9-4b3f-8fe6-69f8a9e5aeaf",
+              "bowlerPlayerId": "607fd749-5715-4702-955a-c40ef35b8195",
+              "batterRuns": 1,
+              "wides": 0,
+              "noBalls": 0,
+              "byes": 0,
+              "legByes": 0,
+              "penaltyRuns": 0,
+              "wicket": false,
+              "legalBall": true,
+              "totalRuns": 1
+            },
+            {
+              "id": "771ebd22-fe15-45b5-b819-6b1c3b8128ec",
+              "sequence": 3,
+              "strikerPlayerId": "140b2e38-90a9-4b3f-8fe6-69f8a9e5aeaf",
+              "nonStrikerPlayerId": "2d09022f-59e5-45eb-a36b-39357c1afbf1",
+              "bowlerPlayerId": "607fd749-5715-4702-955a-c40ef35b8195",
+              "batterRuns": 1,
+              "wides": 0,
+              "noBalls": 0,
+              "byes": 0,
+              "legByes": 0,
+              "penaltyRuns": 0,
+              "wicket": false,
+              "legalBall": true,
+              "totalRuns": 1
+            },
+            {
+              "id": "d0173738-b149-48c7-b2e1-b25ad7a048db",
+              "sequence": 4,
+              "strikerPlayerId": "2d09022f-59e5-45eb-a36b-39357c1afbf1",
+              "nonStrikerPlayerId": "140b2e38-90a9-4b3f-8fe6-69f8a9e5aeaf",
+              "bowlerPlayerId": "607fd749-5715-4702-955a-c40ef35b8195",
+              "batterRuns": 1,
+              "wides": 0,
+              "noBalls": 0,
+              "byes": 0,
+              "legByes": 0,
+              "penaltyRuns": 0,
+              "wicket": false,
+              "legalBall": true,
+              "totalRuns": 1
+            },
+            {
+              "id": "0794964f-d987-438a-99b1-8a0d942918de",
+              "sequence": 5,
+              "strikerPlayerId": "140b2e38-90a9-4b3f-8fe6-69f8a9e5aeaf",
+              "nonStrikerPlayerId": "2d09022f-59e5-45eb-a36b-39357c1afbf1",
+              "bowlerPlayerId": "607fd749-5715-4702-955a-c40ef35b8195",
+              "batterRuns": 1,
+              "wides": 0,
+              "noBalls": 0,
+              "byes": 0,
+              "legByes": 0,
+              "penaltyRuns": 0,
+              "wicket": false,
+              "legalBall": true,
+              "totalRuns": 1
+            },
+            {
+              "id": "d8a4c005-bee9-45ca-acfc-06dfea7f4a79",
+              "sequence": 6,
+              "strikerPlayerId": "2d09022f-59e5-45eb-a36b-39357c1afbf1",
+              "nonStrikerPlayerId": "140b2e38-90a9-4b3f-8fe6-69f8a9e5aeaf",
+              "bowlerPlayerId": "607fd749-5715-4702-955a-c40ef35b8195",
+              "batterRuns": 1,
+              "wides": 0,
+              "noBalls": 0,
+              "byes": 0,
+              "legByes": 0,
+              "penaltyRuns": 0,
+              "wicket": false,
+              "legalBall": true,
+              "totalRuns": 1
+            }
+          ]
+        },
+        {
+          "id": "ed6e1efe-f170-452f-b8be-798a70dc9305",
+          "version": 6,
+          "inningsNumber": 2,
+          "battingTeamId": "f8f1cb35-8ae4-4f9e-acba-047e2a048728",
+          "runs": 12,
+          "wickets": 0,
+          "legalBalls": 2,
+          "overs": "0.2",
+          "status": "COMPLETED",
+          "target": 7,
+          "nextStrikerPlayerId": "607fd749-5715-4702-955a-c40ef35b8195",
+          "nextNonStrikerPlayerId": "30e0e28e-638b-4ced-b457-0481c281a0eb",
+          "batters": [
+            {
+              "playerId": "607fd749-5715-4702-955a-c40ef35b8195",
+              "runs": 12,
+              "balls": 2,
+              "fours": 0,
+              "sixes": 2,
+              "out": false
+            }
+          ],
+          "bowlers": [
+            {
+              "playerId": "140b2e38-90a9-4b3f-8fe6-69f8a9e5aeaf",
+              "runsConceded": 12,
+              "wickets": 0,
+              "legalBalls": 2,
+              "overs": "0.2"
+            }
+          ],
+          "deliveries": [
+            {
+              "id": "8ed5395e-d589-4c77-8398-098cbba43112",
+              "sequence": 1,
+              "strikerPlayerId": "607fd749-5715-4702-955a-c40ef35b8195",
+              "nonStrikerPlayerId": "30e0e28e-638b-4ced-b457-0481c281a0eb",
+              "bowlerPlayerId": "140b2e38-90a9-4b3f-8fe6-69f8a9e5aeaf",
+              "batterRuns": 6,
+              "wides": 0,
+              "noBalls": 0,
+              "byes": 0,
+              "legByes": 0,
+              "penaltyRuns": 0,
+              "wicket": false,
+              "legalBall": true,
+              "totalRuns": 6
+            },
+            {
+              "id": "8376c3be-22a1-466f-ad80-21471a02fd4d",
+              "sequence": 4,
+              "strikerPlayerId": "607fd749-5715-4702-955a-c40ef35b8195",
+              "nonStrikerPlayerId": "30e0e28e-638b-4ced-b457-0481c281a0eb",
+              "bowlerPlayerId": "140b2e38-90a9-4b3f-8fe6-69f8a9e5aeaf",
+              "batterRuns": 6,
+              "wides": 0,
+              "noBalls": 0,
+              "byes": 0,
+              "legByes": 0,
+              "penaltyRuns": 0,
+              "wicket": false,
+              "legalBall": true,
+              "totalRuns": 6
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "standings": [
+    {
+      "team": {
+        "id": "f8f1cb35-8ae4-4f9e-acba-047e2a048728",
+        "name": "NPL Thunder",
+        "shortCode": "NPT",
+        "primaryColor": "#2563EB"
+      },
+      "played": 3,
+      "won": 3,
+      "lost": 0,
+      "formatWins": 0,
+      "formatLosses": 0,
+      "formatDiff": 0,
+      "basePoints": 6,
+      "penalty": 0,
+      "totalPoints": 6,
+      "netRunRate": 30,
+      "rank": 1,
+      "unplayedPlayerIds": []
+    },
+    {
+      "team": {
+        "id": "dc4aa7d6-9453-478f-9eb2-076dc559b4bf",
+        "name": "NPL Warriors",
+        "shortCode": "NPW",
+        "primaryColor": "#DC2626"
+      },
+      "played": 3,
+      "won": 2,
+      "lost": 1,
+      "formatWins": 0,
+      "formatLosses": 0,
+      "formatDiff": 0,
+      "basePoints": 4,
+      "penalty": 0,
+      "totalPoints": 4,
+      "netRunRate": 7.714,
+      "rank": 2,
+      "unplayedPlayerIds": []
+    },
+    {
+      "team": {
+        "id": "ab3ba70e-fb85-4ef9-b9ac-6d741aff97d1",
+        "name": "NPL Strikers",
+        "shortCode": "NPS",
+        "primaryColor": "#16A34A"
+      },
+      "played": 3,
+      "won": 1,
+      "lost": 2,
+      "formatWins": 0,
+      "formatLosses": 0,
+      "formatDiff": 0,
+      "basePoints": 2,
+      "penalty": 0,
+      "totalPoints": 2,
+      "netRunRate": -7.714,
+      "rank": 3,
+      "unplayedPlayerIds": []
+    },
+    {
+      "team": {
+        "id": "b2bfc147-35f2-4531-bc83-c536214f8eef",
+        "name": "NPL Titans",
+        "shortCode": "NTT",
+        "primaryColor": "#9333EA"
+      },
+      "played": 3,
+      "won": 0,
+      "lost": 3,
+      "formatWins": 0,
+      "formatLosses": 0,
+      "formatDiff": 0,
+      "basePoints": 0,
+      "penalty": 0,
+      "totalPoints": 0,
+      "netRunRate": -30,
+      "rank": 4,
+      "unplayedPlayerIds": []
+    }
+  ],
+  "final": {
+    "id": "1a85d714-6483-449d-9444-71089b01a642",
+    "matchNumber": 7,
+    "stageType": "FINAL",
+    "roundNumber": 1,
+    "legNumber": 1,
+    "fixtureKey": "FINAL-S1-S2",
+    "seedA": 1,
+    "seedB": 2,
+    "teamA": {
+      "id": "f8f1cb35-8ae4-4f9e-acba-047e2a048728",
+      "name": "NPL Thunder",
+      "shortCode": "NPT",
+      "primaryColor": "#2563EB"
+    },
+    "teamB": {
+      "id": "dc4aa7d6-9453-478f-9eb2-076dc559b4bf",
+      "name": "NPL Warriors",
+      "shortCode": "NPW",
+      "primaryColor": "#DC2626"
+    },
+    "scheduledAt": "2026-11-18T10:00:00Z",
+    "status": "SCHEDULED",
+    "teamAFormatWins": 0,
+    "teamBFormatWins": 0,
+    "teamAPoints": 0,
+    "teamBPoints": 0,
+    "resultRevision": 0,
+    "venue": "Mock Aurora Cricket Ground",
+    "formats": []
+  },
+  "finalState": {
+    "matchId": "1a85d714-6483-449d-9444-71089b01a642",
+    "tossWinnerTeamId": "dc4aa7d6-9453-478f-9eb2-076dc559b4bf",
+    "tossDecision": "BAT",
+    "resultText": "Won by 10 wickets",
+    "innings": [
+      {
+        "id": "c72313de-c801-430c-a24b-57f28e084494",
+        "version": 6,
+        "inningsNumber": 1,
+        "battingTeamId": "dc4aa7d6-9453-478f-9eb2-076dc559b4bf",
+        "runs": 6,
+        "wickets": 0,
+        "legalBalls": 6,
+        "overs": "1.0",
+        "status": "COMPLETED",
+        "nextStrikerPlayerId": "2d09022f-59e5-45eb-a36b-39357c1afbf1",
+        "nextNonStrikerPlayerId": "140b2e38-90a9-4b3f-8fe6-69f8a9e5aeaf",
+        "batters": [
+          {
+            "playerId": "140b2e38-90a9-4b3f-8fe6-69f8a9e5aeaf",
+            "runs": 3,
+            "balls": 3,
+            "fours": 0,
+            "sixes": 0,
+            "out": false
+          },
+          {
+            "playerId": "2d09022f-59e5-45eb-a36b-39357c1afbf1",
+            "runs": 3,
+            "balls": 3,
+            "fours": 0,
+            "sixes": 0,
+            "out": false
+          }
+        ],
+        "bowlers": [
+          {
+            "playerId": "607fd749-5715-4702-955a-c40ef35b8195",
+            "runsConceded": 6,
+            "wickets": 0,
+            "legalBalls": 6,
+            "overs": "1.0"
+          }
+        ],
+        "deliveries": [
+          {
+            "id": "8a799eb6-833d-4af8-a615-f34d724971ba",
+            "sequence": 1,
+            "strikerPlayerId": "140b2e38-90a9-4b3f-8fe6-69f8a9e5aeaf",
+            "nonStrikerPlayerId": "2d09022f-59e5-45eb-a36b-39357c1afbf1",
+            "bowlerPlayerId": "607fd749-5715-4702-955a-c40ef35b8195",
+            "batterRuns": 1,
+            "wides": 0,
+            "noBalls": 0,
+            "byes": 0,
+            "legByes": 0,
+            "penaltyRuns": 0,
+            "wicket": false,
+            "legalBall": true,
+            "totalRuns": 1
+          },
+          {
+            "id": "6599d3e8-ff4c-49d8-bc4e-be23f91ca4c5",
+            "sequence": 2,
+            "strikerPlayerId": "2d09022f-59e5-45eb-a36b-39357c1afbf1",
+            "nonStrikerPlayerId": "140b2e38-90a9-4b3f-8fe6-69f8a9e5aeaf",
+            "bowlerPlayerId": "607fd749-5715-4702-955a-c40ef35b8195",
+            "batterRuns": 1,
+            "wides": 0,
+            "noBalls": 0,
+            "byes": 0,
+            "legByes": 0,
+            "penaltyRuns": 0,
+            "wicket": false,
+            "legalBall": true,
+            "totalRuns": 1
+          },
+          {
+            "id": "771ebd22-fe15-45b5-b819-6b1c3b8128ec",
+            "sequence": 3,
+            "strikerPlayerId": "140b2e38-90a9-4b3f-8fe6-69f8a9e5aeaf",
+            "nonStrikerPlayerId": "2d09022f-59e5-45eb-a36b-39357c1afbf1",
+            "bowlerPlayerId": "607fd749-5715-4702-955a-c40ef35b8195",
+            "batterRuns": 1,
+            "wides": 0,
+            "noBalls": 0,
+            "byes": 0,
+            "legByes": 0,
+            "penaltyRuns": 0,
+            "wicket": false,
+            "legalBall": true,
+            "totalRuns": 1
+          },
+          {
+            "id": "d0173738-b149-48c7-b2e1-b25ad7a048db",
+            "sequence": 4,
+            "strikerPlayerId": "2d09022f-59e5-45eb-a36b-39357c1afbf1",
+            "nonStrikerPlayerId": "140b2e38-90a9-4b3f-8fe6-69f8a9e5aeaf",
+            "bowlerPlayerId": "607fd749-5715-4702-955a-c40ef35b8195",
+            "batterRuns": 1,
+            "wides": 0,
+            "noBalls": 0,
+            "byes": 0,
+            "legByes": 0,
+            "penaltyRuns": 0,
+            "wicket": false,
+            "legalBall": true,
+            "totalRuns": 1
+          },
+          {
+            "id": "0794964f-d987-438a-99b1-8a0d942918de",
+            "sequence": 5,
+            "strikerPlayerId": "140b2e38-90a9-4b3f-8fe6-69f8a9e5aeaf",
+            "nonStrikerPlayerId": "2d09022f-59e5-45eb-a36b-39357c1afbf1",
+            "bowlerPlayerId": "607fd749-5715-4702-955a-c40ef35b8195",
+            "batterRuns": 1,
+            "wides": 0,
+            "noBalls": 0,
+            "byes": 0,
+            "legByes": 0,
+            "penaltyRuns": 0,
+            "wicket": false,
+            "legalBall": true,
+            "totalRuns": 1
+          },
+          {
+            "id": "d8a4c005-bee9-45ca-acfc-06dfea7f4a79",
+            "sequence": 6,
+            "strikerPlayerId": "2d09022f-59e5-45eb-a36b-39357c1afbf1",
+            "nonStrikerPlayerId": "140b2e38-90a9-4b3f-8fe6-69f8a9e5aeaf",
+            "bowlerPlayerId": "607fd749-5715-4702-955a-c40ef35b8195",
+            "batterRuns": 1,
+            "wides": 0,
+            "noBalls": 0,
+            "byes": 0,
+            "legByes": 0,
+            "penaltyRuns": 0,
+            "wicket": false,
+            "legalBall": true,
+            "totalRuns": 1
+          }
+        ]
+      },
+      {
+        "id": "ed6e1efe-f170-452f-b8be-798a70dc9305",
+        "version": 6,
+        "inningsNumber": 2,
+        "battingTeamId": "f8f1cb35-8ae4-4f9e-acba-047e2a048728",
+        "runs": 12,
+        "wickets": 0,
+        "legalBalls": 2,
+        "overs": "0.2",
+        "status": "COMPLETED",
+        "target": 7,
+        "nextStrikerPlayerId": "607fd749-5715-4702-955a-c40ef35b8195",
+        "nextNonStrikerPlayerId": "30e0e28e-638b-4ced-b457-0481c281a0eb",
+        "batters": [
+          {
+            "playerId": "607fd749-5715-4702-955a-c40ef35b8195",
+            "runs": 12,
+            "balls": 2,
+            "fours": 0,
+            "sixes": 2,
+            "out": false
+          }
+        ],
+        "bowlers": [
+          {
+            "playerId": "140b2e38-90a9-4b3f-8fe6-69f8a9e5aeaf",
+            "runsConceded": 12,
+            "wickets": 0,
+            "legalBalls": 2,
+            "overs": "0.2"
+          }
+        ],
+        "deliveries": [
+          {
+            "id": "8ed5395e-d589-4c77-8398-098cbba43112",
+            "sequence": 1,
+            "strikerPlayerId": "607fd749-5715-4702-955a-c40ef35b8195",
+            "nonStrikerPlayerId": "30e0e28e-638b-4ced-b457-0481c281a0eb",
+            "bowlerPlayerId": "140b2e38-90a9-4b3f-8fe6-69f8a9e5aeaf",
+            "batterRuns": 6,
+            "wides": 0,
+            "noBalls": 0,
+            "byes": 0,
+            "legByes": 0,
+            "penaltyRuns": 0,
+            "wicket": false,
+            "legalBall": true,
+            "totalRuns": 6
+          },
+          {
+            "id": "8376c3be-22a1-466f-ad80-21471a02fd4d",
+            "sequence": 4,
+            "strikerPlayerId": "607fd749-5715-4702-955a-c40ef35b8195",
+            "nonStrikerPlayerId": "30e0e28e-638b-4ced-b457-0481c281a0eb",
+            "bowlerPlayerId": "140b2e38-90a9-4b3f-8fe6-69f8a9e5aeaf",
+            "batterRuns": 6,
+            "wides": 0,
+            "noBalls": 0,
+            "byes": 0,
+            "legByes": 0,
+            "penaltyRuns": 0,
+            "wicket": false,
+            "legalBall": true,
+            "totalRuns": 6
+          }
+        ]
+      }
+    ]
+  },
+  "tournament": {
+    "configuration": {
+      "championshipId": "264db527-5352-4cfb-a827-d4004a0ffc60",
+      "sportCode": "CRICKET",
+      "configurationVersion": 5,
+      "configurationStatus": "LOCKED",
+      "configuredTeamCount": 4,
+      "minimumTeamCount": 4,
+      "maximumTeamCount": 4,
+      "minimumRosterSize": 11,
+      "maximumRosterSize": 11,
+      "playingSideSize": 11,
+      "maximumSubstitutes": 0,
+      "numberOfLegs": 1,
+      "playoffFormat": "TOP_TWO_FINAL",
+      "roundRobinMode": "SINGLE",
+      "pointsPerWin": 2,
+      "pointsPerLoss": 0,
+      "tieBreakerPriority": [
+        "POINTS",
+        "NET_RUN_RATE",
+        "HEAD_TO_HEAD",
+        "NAME"
+      ],
+      "qualifyingTeamCount": 2,
+      "venues": [
+        "Mock Aurora Cricket Ground"
+      ],
+      "leagueStartAt": "2026-11-15T04:00:00Z",
+      "fixtureSpacingDays": 1,
+      "manualDateEditing": true,
+      "resultSchemaVersion": 1,
+      "pointsPerTie": 1,
+      "pointsPerNoResult": 1,
+      "timezone": "Asia/Kolkata",
+      "presetCode": "CUSTOM_CHAMPIONSHIP",
+      "allowedWeekdays": [
+        "MONDAY",
+        "TUESDAY",
+        "WEDNESDAY",
+        "THURSDAY",
+        "FRIDAY",
+        "SATURDAY",
+        "SUNDAY"
+      ],
+      "dailyStartTime": "09:00:00",
+      "dailyEndTime": "22:00:00",
+      "fixtureSlotMinutes": 120,
+      "maximumFixturesPerDay": 20,
+      "blackoutDates": [],
+      "minimumRestHours": 0,
+      "simultaneousFixturesAllowed": true,
+      "teamMayPlayTwicePerDay": false,
+      "champion": {
+        "id": "f8f1cb35-8ae4-4f9e-acba-047e2a048728",
+        "name": "NPL Thunder",
+        "shortCode": "NPT",
+        "primaryColor": "#2563EB"
+      },
+      "runnerUp": {
+        "id": "dc4aa7d6-9453-478f-9eb2-076dc559b4bf",
+        "name": "NPL Warriors",
+        "shortCode": "NPW",
+        "primaryColor": "#DC2626"
+      }
+    },
+    "stages": [
+      {
+        "id": "7b47f0fd-aaf3-4375-b846-d3ef38606aca",
+        "type": "LEAGUE",
+        "order": 1,
+        "status": "FROZEN",
+        "startedAt": "2026-10-31T10:08:57.076461Z",
+        "completedAt": "2026-10-31T10:13:26.978723Z",
+        "frozenAt": "2026-10-31T10:09:33.227791Z"
+      },
+      {
+        "id": "a68cf554-a18d-483e-bfc4-d7688ac643dd",
+        "type": "FINAL",
+        "order": 2,
+        "status": "COMPLETED",
+        "startedAt": "2026-10-31T10:09:33.278769Z",
+        "completedAt": "2026-10-31T10:19:52.923420Z"
+      }
+    ],
+    "qualifications": [
+      {
+        "seed": 1,
+        "team": {
+          "id": "f8f1cb35-8ae4-4f9e-acba-047e2a048728",
+          "name": "NPL Thunder",
+          "shortCode": "NPT",
+          "primaryColor": "#2563EB"
+        },
+        "sourceStage": "LEAGUE"
+      },
+      {
+        "seed": 2,
+        "team": {
+          "id": "dc4aa7d6-9453-478f-9eb2-076dc559b4bf",
+          "name": "NPL Warriors",
+          "shortCode": "NPW",
+          "primaryColor": "#DC2626"
+        },
+        "sourceStage": "LEAGUE"
+      }
+    ],
+    "fixtures": [
+      {
+        "id": "27474334-af5b-461a-9053-b9a506ee4005",
+        "matchNumber": 1,
+        "stageType": "LEAGUE",
+        "roundNumber": 1,
+        "legNumber": 1,
+        "fixtureKey": "LEAGUE-L1-R1-ab3ba70e-fb85-4ef9-b9ac-6d741aff97d1-dc4aa7d6-9453-478f-9eb2-076dc559b4bf",
+        "teamA": {
+          "id": "ab3ba70e-fb85-4ef9-b9ac-6d741aff97d1",
+          "name": "NPL Strikers",
+          "shortCode": "NPS",
+          "primaryColor": "#16A34A"
+        },
+        "teamB": {
+          "id": "dc4aa7d6-9453-478f-9eb2-076dc559b4bf",
+          "name": "NPL Warriors",
+          "shortCode": "NPW",
+          "primaryColor": "#DC2626"
+        },
+        "scheduledAt": "2026-11-15T04:00:00Z",
+        "status": "COMPLETED",
+        "winner": {
+          "id": "dc4aa7d6-9453-478f-9eb2-076dc559b4bf",
+          "name": "NPL Warriors",
+          "shortCode": "NPW",
+          "primaryColor": "#DC2626"
+        },
+        "teamAFormatWins": 0,
+        "teamBFormatWins": 0,
+        "teamAPoints": 0,
+        "teamBPoints": 2,
+        "resultRevision": 3,
+        "venue": "Mock Aurora Cricket Ground",
+        "formats": []
+      },
+      {
+        "id": "3f304726-b04b-4efc-80a1-d2ec0a38d220",
+        "matchNumber": 2,
+        "stageType": "LEAGUE",
+        "roundNumber": 1,
+        "legNumber": 1,
+        "fixtureKey": "LEAGUE-L1-R1-b2bfc147-35f2-4531-bc83-c536214f8eef-f8f1cb35-8ae4-4f9e-acba-047e2a048728",
+        "teamA": {
+          "id": "f8f1cb35-8ae4-4f9e-acba-047e2a048728",
+          "name": "NPL Thunder",
+          "shortCode": "NPT",
+          "primaryColor": "#2563EB"
+        },
+        "teamB": {
+          "id": "b2bfc147-35f2-4531-bc83-c536214f8eef",
+          "name": "NPL Titans",
+          "shortCode": "NTT",
+          "primaryColor": "#9333EA"
+        },
+        "scheduledAt": "2026-11-15T06:00:00Z",
+        "status": "COMPLETED",
+        "winner": {
+          "id": "f8f1cb35-8ae4-4f9e-acba-047e2a048728",
+          "name": "NPL Thunder",
+          "shortCode": "NPT",
+          "primaryColor": "#2563EB"
+        },
+        "teamAFormatWins": 0,
+        "teamBFormatWins": 0,
+        "teamAPoints": 2,
+        "teamBPoints": 0,
+        "resultRevision": 1,
+        "venue": "Mock Aurora Cricket Ground",
+        "formats": []
+      },
+      {
+        "id": "8da868f2-dd38-4ba1-b3c0-26a43a04ba4e",
+        "matchNumber": 3,
+        "stageType": "LEAGUE",
+        "roundNumber": 2,
+        "legNumber": 1,
+        "fixtureKey": "LEAGUE-L1-R2-ab3ba70e-fb85-4ef9-b9ac-6d741aff97d1-b2bfc147-35f2-4531-bc83-c536214f8eef",
+        "teamA": {
+          "id": "b2bfc147-35f2-4531-bc83-c536214f8eef",
+          "name": "NPL Titans",
+          "shortCode": "NTT",
+          "primaryColor": "#9333EA"
+        },
+        "teamB": {
+          "id": "ab3ba70e-fb85-4ef9-b9ac-6d741aff97d1",
+          "name": "NPL Strikers",
+          "shortCode": "NPS",
+          "primaryColor": "#16A34A"
+        },
+        "scheduledAt": "2026-11-16T06:00:00Z",
+        "status": "COMPLETED",
+        "winner": {
+          "id": "ab3ba70e-fb85-4ef9-b9ac-6d741aff97d1",
+          "name": "NPL Strikers",
+          "shortCode": "NPS",
+          "primaryColor": "#16A34A"
+        },
+        "teamAFormatWins": 0,
+        "teamBFormatWins": 0,
+        "teamAPoints": 0,
+        "teamBPoints": 2,
+        "resultRevision": 1,
+        "venue": "Mock Aurora Cricket Ground",
+        "formats": []
+      },
+      {
+        "id": "72cf5c2a-8630-4b23-8bab-306639aca129",
+        "matchNumber": 4,
+        "stageType": "LEAGUE",
+        "roundNumber": 2,
+        "legNumber": 1,
+        "fixtureKey": "LEAGUE-L1-R2-dc4aa7d6-9453-478f-9eb2-076dc559b4bf-f8f1cb35-8ae4-4f9e-acba-047e2a048728",
+        "teamA": {
+          "id": "f8f1cb35-8ae4-4f9e-acba-047e2a048728",
+          "name": "NPL Thunder",
+          "shortCode": "NPT",
+          "primaryColor": "#2563EB"
+        },
+        "teamB": {
+          "id": "dc4aa7d6-9453-478f-9eb2-076dc559b4bf",
+          "name": "NPL Warriors",
+          "shortCode": "NPW",
+          "primaryColor": "#DC2626"
+        },
+        "scheduledAt": "2026-11-16T08:00:00Z",
+        "status": "COMPLETED",
+        "winner": {
+          "id": "f8f1cb35-8ae4-4f9e-acba-047e2a048728",
+          "name": "NPL Thunder",
+          "shortCode": "NPT",
+          "primaryColor": "#2563EB"
+        },
+        "teamAFormatWins": 0,
+        "teamBFormatWins": 0,
+        "teamAPoints": 2,
+        "teamBPoints": 0,
+        "resultRevision": 1,
+        "venue": "Mock Aurora Cricket Ground",
+        "formats": []
+      },
+      {
+        "id": "ce134e7d-ba0a-4749-b5a8-f749c3bd885c",
+        "matchNumber": 5,
+        "stageType": "LEAGUE",
+        "roundNumber": 3,
+        "legNumber": 1,
+        "fixtureKey": "LEAGUE-L1-R3-ab3ba70e-fb85-4ef9-b9ac-6d741aff97d1-f8f1cb35-8ae4-4f9e-acba-047e2a048728",
+        "teamA": {
+          "id": "ab3ba70e-fb85-4ef9-b9ac-6d741aff97d1",
+          "name": "NPL Strikers",
+          "shortCode": "NPS",
+          "primaryColor": "#16A34A"
+        },
+        "teamB": {
+          "id": "f8f1cb35-8ae4-4f9e-acba-047e2a048728",
+          "name": "NPL Thunder",
+          "shortCode": "NPT",
+          "primaryColor": "#2563EB"
+        },
+        "scheduledAt": "2026-11-17T08:00:00Z",
+        "status": "COMPLETED",
+        "winner": {
+          "id": "f8f1cb35-8ae4-4f9e-acba-047e2a048728",
+          "name": "NPL Thunder",
+          "shortCode": "NPT",
+          "primaryColor": "#2563EB"
+        },
+        "teamAFormatWins": 0,
+        "teamBFormatWins": 0,
+        "teamAPoints": 0,
+        "teamBPoints": 2,
+        "resultRevision": 1,
+        "venue": "Mock Aurora Cricket Ground",
+        "formats": []
+      },
+      {
+        "id": "a9c6af73-333d-41d1-afec-20960abd006c",
+        "matchNumber": 6,
+        "stageType": "LEAGUE",
+        "roundNumber": 3,
+        "legNumber": 1,
+        "fixtureKey": "LEAGUE-L1-R3-b2bfc147-35f2-4531-bc83-c536214f8eef-dc4aa7d6-9453-478f-9eb2-076dc559b4bf",
+        "teamA": {
+          "id": "b2bfc147-35f2-4531-bc83-c536214f8eef",
+          "name": "NPL Titans",
+          "shortCode": "NTT",
+          "primaryColor": "#9333EA"
+        },
+        "teamB": {
+          "id": "dc4aa7d6-9453-478f-9eb2-076dc559b4bf",
+          "name": "NPL Warriors",
+          "shortCode": "NPW",
+          "primaryColor": "#DC2626"
+        },
+        "scheduledAt": "2026-11-17T10:00:00Z",
+        "status": "COMPLETED",
+        "winner": {
+          "id": "dc4aa7d6-9453-478f-9eb2-076dc559b4bf",
+          "name": "NPL Warriors",
+          "shortCode": "NPW",
+          "primaryColor": "#DC2626"
+        },
+        "teamAFormatWins": 0,
+        "teamBFormatWins": 0,
+        "teamAPoints": 0,
+        "teamBPoints": 2,
+        "resultRevision": 1,
+        "venue": "Mock Aurora Cricket Ground",
+        "formats": []
+      },
+      {
+        "id": "1a85d714-6483-449d-9444-71089b01a642",
+        "matchNumber": 7,
+        "stageType": "FINAL",
+        "roundNumber": 1,
+        "legNumber": 1,
+        "fixtureKey": "FINAL-S1-S2",
+        "seedA": 1,
+        "seedB": 2,
+        "teamA": {
+          "id": "f8f1cb35-8ae4-4f9e-acba-047e2a048728",
+          "name": "NPL Thunder",
+          "shortCode": "NPT",
+          "primaryColor": "#2563EB"
+        },
+        "teamB": {
+          "id": "dc4aa7d6-9453-478f-9eb2-076dc559b4bf",
+          "name": "NPL Warriors",
+          "shortCode": "NPW",
+          "primaryColor": "#DC2626"
+        },
+        "scheduledAt": "2026-11-18T10:00:00Z",
+        "status": "COMPLETED",
+        "winner": {
+          "id": "f8f1cb35-8ae4-4f9e-acba-047e2a048728",
+          "name": "NPL Thunder",
+          "shortCode": "NPT",
+          "primaryColor": "#2563EB"
+        },
+        "teamAFormatWins": 0,
+        "teamBFormatWins": 0,
+        "teamAPoints": 2,
+        "teamBPoints": 0,
+        "resultRevision": 5,
+        "venue": "Mock Aurora Cricket Ground",
+        "formats": []
+      }
+    ],
+    "leagueComplete": true,
+    "playoffsGenerated": false,
+    "finalGenerated": true
+  },
+  "approval": {
+    "id": "f6377710-5f86-4ae8-a861-98df3fbea0e9",
+    "championshipId": "264db527-5352-4cfb-a827-d4004a0ffc60",
+    "championship": "NPL MOCK 2026",
+    "sport": "CRICKET",
+    "champion": "f8f1cb35-8ae4-4f9e-acba-047e2a048728",
+    "runnerUp": "dc4aa7d6-9453-478f-9eb2-076dc559b4bf",
+    "sources": [
+      {
+        "matchId": "1a85d714-6483-449d-9444-71089b01a642",
+        "revision": 5,
+        "stage": "FINAL",
+        "winner": "f8f1cb35-8ae4-4f9e-acba-047e2a048728",
+        "teamA": "f8f1cb35-8ae4-4f9e-acba-047e2a048728",
+        "teamB": "dc4aa7d6-9453-478f-9eb2-076dc559b4bf"
+      },
+      {
+        "matchId": "27474334-af5b-461a-9053-b9a506ee4005",
+        "revision": 3,
+        "stage": "LEAGUE",
+        "winner": "dc4aa7d6-9453-478f-9eb2-076dc559b4bf",
+        "teamA": "ab3ba70e-fb85-4ef9-b9ac-6d741aff97d1",
+        "teamB": "dc4aa7d6-9453-478f-9eb2-076dc559b4bf"
+      },
+      {
+        "matchId": "3f304726-b04b-4efc-80a1-d2ec0a38d220",
+        "revision": 1,
+        "stage": "LEAGUE",
+        "winner": "f8f1cb35-8ae4-4f9e-acba-047e2a048728",
+        "teamA": "f8f1cb35-8ae4-4f9e-acba-047e2a048728",
+        "teamB": "b2bfc147-35f2-4531-bc83-c536214f8eef"
+      },
+      {
+        "matchId": "72cf5c2a-8630-4b23-8bab-306639aca129",
+        "revision": 1,
+        "stage": "LEAGUE",
+        "winner": "f8f1cb35-8ae4-4f9e-acba-047e2a048728",
+        "teamA": "f8f1cb35-8ae4-4f9e-acba-047e2a048728",
+        "teamB": "dc4aa7d6-9453-478f-9eb2-076dc559b4bf"
+      },
+      {
+        "matchId": "8da868f2-dd38-4ba1-b3c0-26a43a04ba4e",
+        "revision": 1,
+        "stage": "LEAGUE",
+        "winner": "ab3ba70e-fb85-4ef9-b9ac-6d741aff97d1",
+        "teamA": "b2bfc147-35f2-4531-bc83-c536214f8eef",
+        "teamB": "ab3ba70e-fb85-4ef9-b9ac-6d741aff97d1"
+      },
+      {
+        "matchId": "a9c6af73-333d-41d1-afec-20960abd006c",
+        "revision": 1,
+        "stage": "LEAGUE",
+        "winner": "dc4aa7d6-9453-478f-9eb2-076dc559b4bf",
+        "teamA": "b2bfc147-35f2-4531-bc83-c536214f8eef",
+        "teamB": "dc4aa7d6-9453-478f-9eb2-076dc559b4bf"
+      },
+      {
+        "matchId": "ce134e7d-ba0a-4749-b5a8-f749c3bd885c",
+        "revision": 1,
+        "stage": "LEAGUE",
+        "winner": "f8f1cb35-8ae4-4f9e-acba-047e2a048728",
+        "teamA": "ab3ba70e-fb85-4ef9-b9ac-6d741aff97d1",
+        "teamB": "f8f1cb35-8ae4-4f9e-acba-047e2a048728"
+      }
+    ],
+    "participants": [
+      {
+        "type": "TEAM",
+        "id": "ab3ba70e-fb85-4ef9-b9ac-6d741aff97d1",
+        "name": "NPL Strikers"
+      },
+      {
+        "type": "TEAM",
+        "id": "b2bfc147-35f2-4531-bc83-c536214f8eef",
+        "name": "NPL Titans"
+      },
+      {
+        "type": "TEAM",
+        "id": "dc4aa7d6-9453-478f-9eb2-076dc559b4bf",
+        "name": "NPL Warriors"
+      },
+      {
+        "type": "TEAM",
+        "id": "f8f1cb35-8ae4-4f9e-acba-047e2a048728",
+        "name": "NPL Thunder"
+      },
+      {
+        "type": "PLAYER",
+        "id": "006cdaf4-8f93-47f4-b780-153b62c6d449",
+        "name": "Mock Riven C",
+        "team": "NPL Strikers"
+      },
+      {
+        "type": "PLAYER",
+        "id": "07c076ea-bccb-453d-a3bf-1a9c53ac3c68",
+        "name": "Mock Quill D",
+        "team": "NPL Titans"
+      },
+      {
+        "type": "PLAYER",
+        "id": "0d92a840-3b95-4196-b560-53ca61b62e47",
+        "name": "Mock Quill C",
+        "team": "NPL Strikers"
+      },
+      {
+        "type": "PLAYER",
+        "id": "140b2e38-90a9-4b3f-8fe6-69f8a9e5aeaf",
+        "name": "Mock Lyra B",
+        "team": "NPL Warriors"
+      },
+      {
+        "type": "PLAYER",
+        "id": "1aea960d-0c93-416b-9c4a-66d8c5ab5ebe",
+        "name": "Mock Vela A",
+        "team": "NPL Thunder"
+      },
+      {
+        "type": "PLAYER",
+        "id": "1b2cc492-deee-46c0-8b42-dbf962e0b3f7",
+        "name": "Mock Sora A",
+        "team": "NPL Thunder"
+      },
+      {
+        "type": "PLAYER",
+        "id": "23549b51-c6b1-44fe-bbe0-ccc0956de790",
+        "name": "Mock Pavo C",
+        "team": "NPL Strikers"
+      },
+      {
+        "type": "PLAYER",
+        "id": "25301f13-b624-461b-a251-37b637ae455d",
+        "name": "Mock Daro Wren",
+        "team": "NPL Titans"
+      },
+      {
+        "type": "PLAYER",
+        "id": "2821c7f8-249c-45d8-87f2-bca0d49ccbb3",
+        "name": "Mock Orin C",
+        "team": "NPL Strikers"
+      },
+      {
+        "type": "PLAYER",
+        "id": "2d09022f-59e5-45eb-a36b-39357c1afbf1",
+        "name": "Mock Mira B",
+        "team": "NPL Warriors"
+      },
+      {
+        "type": "PLAYER",
+        "id": "30e0e28e-638b-4ced-b457-0481c281a0eb",
+        "name": "Mock Mira A",
+        "team": "NPL Thunder"
+      },
+      {
+        "type": "PLAYER",
+        "id": "315b28dd-40b7-4d11-aaf7-821be237fedd",
+        "name": "Mock Sora B",
+        "team": "NPL Warriors"
+      },
+      {
+        "type": "PLAYER",
+        "id": "3a1531ca-e2c6-48fe-8330-449b0fb9682f",
+        "name": "Mock Nova D",
+        "team": "NPL Titans"
+      },
+      {
+        "type": "PLAYER",
+        "id": "44ebdcff-c651-40eb-bcf3-565b782f9c81",
+        "name": "Mock Quill A",
+        "team": "NPL Thunder"
+      },
+      {
+        "type": "PLAYER",
+        "id": "4666e3b6-caa5-4e9a-b68d-e133d56538b4",
+        "name": "Mock Vela D",
+        "team": "NPL Titans"
+      },
+      {
+        "type": "PLAYER",
+        "id": "4a6f9e74-a075-4c65-af09-7bd8459a11ef",
+        "name": "Mock Riven B",
+        "team": "NPL Warriors"
+      },
+      {
+        "type": "PLAYER",
+        "id": "4b2eb39d-dd50-4d33-be2e-910604d1a426",
+        "name": "Mock Mira D",
+        "team": "NPL Titans"
+      },
+      {
+        "type": "PLAYER",
+        "id": "4f1b468f-e462-4e6f-a77c-35da28f5adc9",
+        "name": "Mock Tavi D",
+        "team": "NPL Titans"
+      },
+      {
+        "type": "PLAYER",
+        "id": "50bbd1de-4b6e-4b4e-b987-a291d04074e3",
+        "name": "Mock Vela B",
+        "team": "NPL Warriors"
+      },
+      {
+        "type": "PLAYER",
+        "id": "50d6ea96-de28-40a5-8392-6253cfd2ecac",
+        "name": "Mock Lyra C",
+        "team": "NPL Strikers"
+      },
+      {
+        "type": "PLAYER",
+        "id": "53208fa2-4797-4444-8acf-d6637e6c3f86",
+        "name": "Mock Vela C",
+        "team": "NPL Strikers"
+      },
+      {
+        "type": "PLAYER",
+        "id": "5b4a77aa-4246-448e-85f7-f416b8d6bccd",
+        "name": "Mock Nova B",
+        "team": "NPL Warriors"
+      },
+      {
+        "type": "PLAYER",
+        "id": "5dd4eca6-323b-41d0-957d-bfc9b5443a21",
+        "name": "Mock Lyra D",
+        "team": "NPL Titans"
+      },
+      {
+        "type": "PLAYER",
+        "id": "607fd749-5715-4702-955a-c40ef35b8195",
+        "name": "Mock Lyra A",
+        "team": "NPL Thunder"
+      },
+      {
+        "type": "PLAYER",
+        "id": "61b378f3-dad1-4289-a45b-e6ab8d4c5649",
+        "name": "Mock Sora C",
+        "team": "NPL Strikers"
+      },
+      {
+        "type": "PLAYER",
+        "id": "714b0040-9e49-496c-a9cf-8b38bcd53e42",
+        "name": "Mock Pavo D",
+        "team": "NPL Titans"
+      },
+      {
+        "type": "PLAYER",
+        "id": "7798410c-1554-4db3-9f89-2171129ef7cf",
+        "name": "Mock Pavo B",
+        "team": "NPL Warriors"
+      },
+      {
+        "type": "PLAYER",
+        "id": "78c3582d-f28a-448c-8fd8-3d6352050904",
+        "name": "Mock Quill B",
+        "team": "NPL Warriors"
+      },
+      {
+        "type": "PLAYER",
+        "id": "89b9a573-9231-4c63-90d6-503b084df693",
+        "name": "Mock Tavi C",
+        "team": "NPL Strikers"
+      },
+      {
+        "type": "PLAYER",
+        "id": "8a910acf-f703-431b-a912-a632959157cb",
+        "name": "Mock Tavi B",
+        "team": "NPL Warriors"
+      },
+      {
+        "type": "PLAYER",
+        "id": "95d1472d-5b1a-4b78-911c-357f56d4e605",
+        "name": "Mock Nova C",
+        "team": "NPL Strikers"
+      },
+      {
+        "type": "PLAYER",
+        "id": "bd913953-2b50-435d-8745-5d384f85ee87",
+        "name": "Mock Sora D",
+        "team": "NPL Titans"
+      },
+      {
+        "type": "PLAYER",
+        "id": "bef97505-0b14-4e5e-a571-95951d652295",
+        "name": "Mock Riven D",
+        "team": "NPL Titans"
+      },
+      {
+        "type": "PLAYER",
+        "id": "c2892c9c-79d4-4d0a-8cec-1d208d972694",
+        "name": "Mock Riven A",
+        "team": "NPL Thunder"
+      },
+      {
+        "type": "PLAYER",
+        "id": "c7f59d45-8e81-49e0-96ae-ed9b5dd05640",
+        "name": "Mock Bram Vireo",
+        "team": "NPL Warriors"
+      },
+      {
+        "type": "PLAYER",
+        "id": "cf727df1-8b87-4a6d-ad15-2995168c73a8",
+        "name": "Mock Mira C",
+        "team": "NPL Strikers"
+      },
+      {
+        "type": "PLAYER",
+        "id": "d1bf52a1-abae-4fb0-aaac-ba90a40a6411",
+        "name": "Mock Orin B",
+        "team": "NPL Warriors"
+      },
+      {
+        "type": "PLAYER",
+        "id": "d38f3600-79e0-4d0c-87ba-4bee49343975",
+        "name": "Mock Arlo Quill",
+        "team": "NPL Thunder"
+      },
+      {
+        "type": "PLAYER",
+        "id": "dadf23de-7548-4d90-a209-800e7d8f6a9c",
+        "name": "Mock Orin D",
+        "team": "NPL Titans"
+      },
+      {
+        "type": "PLAYER",
+        "id": "dfabb8c8-e924-46a8-a136-640418d0e88d",
+        "name": "Mock Orin A",
+        "team": "NPL Thunder"
+      },
+      {
+        "type": "PLAYER",
+        "id": "e48d3735-c83e-4e52-8fa1-3406a51da163",
+        "name": "Mock Tavi A",
+        "team": "NPL Thunder"
+      },
+      {
+        "type": "PLAYER",
+        "id": "e58ef780-02bd-4188-9fa8-a072376d36a5",
+        "name": "Mock Pavo A",
+        "team": "NPL Thunder"
+      },
+      {
+        "type": "PLAYER",
+        "id": "ef39fbfe-a863-45a6-aa54-192db21ae21e",
+        "name": "Mock Nova A",
+        "team": "NPL Thunder",
+        "photoUrl": "/api/championships/264db527-5352-4cfb-a827-d4004a0ffc60/players/ef39fbfe-a863-45a6-aa54-192db21ae21e/photo?version=b47e18d1-7f95-4ea0-9769-e066188023f1"
+      },
+      {
+        "type": "PLAYER",
+        "id": "f8e52c18-a1e1-4917-87a9-23b6a670f263",
+        "name": "Mock Cyra Flint",
+        "team": "NPL Strikers"
+      }
+    ],
+    "approvedAt": "2026-10-31T10:19:53.285589619Z",
+    "approvedBy": "Mock Aster Vale",
+    "justification": "Synthetic final correction verified and decisive delivery restored through the scoring engine"
+  },
+  "certificates": [
+    {
+      "certificate": {
+        "templateVersion": 1,
+        "id": "104b1b9e-c4f3-417d-82d7-82468fe83412",
+        "reference": "PN-14AEC898D62640EBAA9F878AFA84A527",
+        "championshipId": "264db527-5352-4cfb-a827-d4004a0ffc60",
+        "championship": "NPL MOCK 2026",
+        "sport": "CRICKET",
+        "event": "Championship · Finalized competition",
+        "approvalId": "f6377710-5f86-4ae8-a861-98df3fbea0e9",
+        "category": "PARTICIPATION",
+        "recipient": {
+          "type": "PLAYER",
+          "id": "d38f3600-79e0-4d0c-87ba-4bee49343975",
+          "name": "Mock Arlo Quill",
+          "team": "NPL Thunder"
+        },
+        "achievement": "In recognition of verified participation and sporting commitment.",
+        "issuedAt": "2026-10-31T10:19:53.718664157Z",
+        "issuer": "Mock Aster Vale",
+        "issuerTitle": "Championship Administrator",
+        "accent": "#3C7C33",
+        "reissuedFrom": "a8c9876e-b921-4c00-9c16-df54fb6a04e6"
+      },
+      "status": "ISSUED"
+    },
+    {
+      "certificate": {
+        "templateVersion": 1,
+        "id": "1ab393bb-138f-40cc-bc34-2d049073d3e7",
+        "reference": "PN-F7FA1ECF6E3C4A058052D5BEFB656DFC",
+        "championshipId": "264db527-5352-4cfb-a827-d4004a0ffc60",
+        "championship": "NPL MOCK 2026",
+        "sport": "CRICKET",
+        "event": "Championship · Finalized competition",
+        "approvalId": "f6377710-5f86-4ae8-a861-98df3fbea0e9",
+        "category": "WINNER",
+        "recipient": {
+          "type": "TEAM",
+          "id": "f8f1cb35-8ae4-4f9e-acba-047e2a048728",
+          "name": "NPL Thunder"
+        },
+        "achievement": "Awarded for becoming championship champions.",
+        "issuedAt": "2026-10-31T10:19:54.699473025Z",
+        "issuer": "Mock Aster Vale",
+        "issuerTitle": "Championship Administrator",
+        "accent": "#AF832E",
+        "reissuedFrom": "93aa3dea-417a-409d-a610-0ea46cdc3484"
+      },
+      "status": "ISSUED"
+    },
+    {
+      "certificate": {
+        "templateVersion": 1,
+        "id": "c14df166-cfaa-48b8-86b5-92f3ca675688",
+        "reference": "PN-1C02C9FBAAF54011BEAAFECA8E5C2947",
+        "championshipId": "264db527-5352-4cfb-a827-d4004a0ffc60",
+        "championship": "NPL MOCK 2026",
+        "sport": "CRICKET",
+        "event": "Championship · Finalized competition",
+        "approvalId": "f6377710-5f86-4ae8-a861-98df3fbea0e9",
+        "category": "RUNNER_UP",
+        "recipient": {
+          "type": "TEAM",
+          "id": "dc4aa7d6-9453-478f-9eb2-076dc559b4bf",
+          "name": "NPL Warriors"
+        },
+        "achievement": "Awarded for achieving the runner-up position.",
+        "issuedAt": "2026-10-31T10:19:54.978428203Z",
+        "issuer": "Mock Aster Vale",
+        "issuerTitle": "Championship Administrator",
+        "accent": "#67778B",
+        "reissuedFrom": "49a041b2-5568-46ca-9dca-e8349b9765b5"
+      },
+      "status": "ISSUED"
+    }
+  ],
+  "correctionObservation": {
+    "finalStatus": "LIVE",
+    "champion": null,
+    "runnerUp": null,
+    "status": "ACTIVE",
+    "lifecyclePhase": "FINAL",
+    "finalStageStatus": "ACTIVE",
+    "staleApprovalRejected": true,
+    "certificateAutomaticallyRevoked": true
+  },
+  "certificateHistory": [
+    {
+      "certificate": {
+        "templateVersion": 1,
+        "id": "39226851-7a53-4f54-bb9d-6753367615b7",
+        "reference": "PN-3AE2424763674AA4BAD4C36F36D8630C",
+        "championshipId": "264db527-5352-4cfb-a827-d4004a0ffc60",
+        "championship": "NPL MOCK 2026",
+        "sport": "CRICKET",
+        "event": "Championship · Finalized competition",
+        "approvalId": "7ec74555-4b63-40c5-b608-304fecd0134e",
+        "category": "PARTICIPATION",
+        "recipient": {
+          "type": "PLAYER",
+          "id": "d38f3600-79e0-4d0c-87ba-4bee49343975",
+          "name": "Mock Arlo Quill",
+          "team": "NPL Thunder"
+        },
+        "achievement": "In recognition of verified participation and sporting commitment.",
+        "issuedAt": "2026-10-31T10:09:34.726809540Z",
+        "issuer": "Mock Aster Vale",
+        "issuerTitle": "Championship Administrator",
+        "accent": "#3C7C33"
+      },
+      "status": "REVOKED",
+      "revokedAt": "2026-10-31T10:09:36.517389Z",
+      "revocationReason": "Synthetic verification of the certificate revocation workflow"
+    },
+    {
+      "certificate": {
+        "templateVersion": 1,
+        "id": "cdf91dd1-db5a-462d-8f00-c7a2ca44dcb0",
+        "reference": "PN-841440B94D5B4B8EA7DDCBEC87CA69C4",
+        "championshipId": "264db527-5352-4cfb-a827-d4004a0ffc60",
+        "championship": "NPL MOCK 2026",
+        "sport": "CRICKET",
+        "event": "Championship · Finalized competition",
+        "approvalId": "7ec74555-4b63-40c5-b608-304fecd0134e",
+        "category": "WINNER",
+        "recipient": {
+          "type": "TEAM",
+          "id": "f8f1cb35-8ae4-4f9e-acba-047e2a048728",
+          "name": "NPL Thunder"
+        },
+        "achievement": "Awarded for becoming championship champions.",
+        "issuedAt": "2026-10-31T10:09:35.937139102Z",
+        "issuer": "Mock Aster Vale",
+        "issuerTitle": "Championship Administrator",
+        "accent": "#AF832E"
+      },
+      "status": "ISSUED"
+    },
+    {
+      "certificate": {
+        "templateVersion": 1,
+        "id": "a2cd1d37-31c4-489b-8c0e-83c658e0baa4",
+        "reference": "PN-FB49449E386E4E91A2B30B366C0E834A",
+        "championshipId": "264db527-5352-4cfb-a827-d4004a0ffc60",
+        "championship": "NPL MOCK 2026",
+        "sport": "CRICKET",
+        "event": "Championship · Finalized competition",
+        "approvalId": "7ec74555-4b63-40c5-b608-304fecd0134e",
+        "category": "RUNNER_UP",
+        "recipient": {
+          "type": "TEAM",
+          "id": "dc4aa7d6-9453-478f-9eb2-076dc559b4bf",
+          "name": "NPL Warriors"
+        },
+        "achievement": "Awarded for achieving the runner-up position.",
+        "issuedAt": "2026-10-31T10:09:36.273243838Z",
+        "issuer": "Mock Aster Vale",
+        "issuerTitle": "Championship Administrator",
+        "accent": "#67778B"
+      },
+      "status": "ISSUED"
+    },
+    {
+      "certificate": {
+        "templateVersion": 1,
+        "id": "a8c9876e-b921-4c00-9c16-df54fb6a04e6",
+        "reference": "PN-E44EA102BF7045DA8249B8677B35AB54",
+        "championshipId": "264db527-5352-4cfb-a827-d4004a0ffc60",
+        "championship": "NPL MOCK 2026",
+        "sport": "CRICKET",
+        "event": "Championship · Finalized competition",
+        "approvalId": "ec2d5d23-f5ee-4030-8345-161c951310f1",
+        "category": "PARTICIPATION",
+        "recipient": {
+          "type": "PLAYER",
+          "id": "d38f3600-79e0-4d0c-87ba-4bee49343975",
+          "name": "Mock Arlo Quill",
+          "team": "NPL Thunder"
+        },
+        "achievement": "In recognition of verified participation and sporting commitment.",
+        "issuedAt": "2026-10-31T10:12:09.321422824Z",
+        "issuer": "Mock Aster Vale",
+        "issuerTitle": "Championship Administrator",
+        "accent": "#3C7C33",
+        "reissuedFrom": "39226851-7a53-4f54-bb9d-6753367615b7"
+      },
+      "status": "ISSUED"
+    },
+    {
+      "certificate": {
+        "templateVersion": 1,
+        "id": "93aa3dea-417a-409d-a610-0ea46cdc3484",
+        "reference": "PN-BBE1EA3413B4408D9EF6722A17206DEF",
+        "championshipId": "264db527-5352-4cfb-a827-d4004a0ffc60",
+        "championship": "NPL MOCK 2026",
+        "sport": "CRICKET",
+        "event": "Championship · Finalized competition",
+        "approvalId": "ec2d5d23-f5ee-4030-8345-161c951310f1",
+        "category": "WINNER",
+        "recipient": {
+          "type": "TEAM",
+          "id": "f8f1cb35-8ae4-4f9e-acba-047e2a048728",
+          "name": "NPL Thunder"
+        },
+        "achievement": "Awarded for becoming championship champions.",
+        "issuedAt": "2026-10-31T10:12:09.403942590Z",
+        "issuer": "Mock Aster Vale",
+        "issuerTitle": "Championship Administrator",
+        "accent": "#AF832E",
+        "reissuedFrom": "cdf91dd1-db5a-462d-8f00-c7a2ca44dcb0"
+      },
+      "status": "ISSUED"
+    },
+    {
+      "certificate": {
+        "templateVersion": 1,
+        "id": "49a041b2-5568-46ca-9dca-e8349b9765b5",
+        "reference": "PN-196FB6EF5E7C45B1ADEFF2D4B6C4E820",
+        "championshipId": "264db527-5352-4cfb-a827-d4004a0ffc60",
+        "championship": "NPL MOCK 2026",
+        "sport": "CRICKET",
+        "event": "Championship · Finalized competition",
+        "approvalId": "ec2d5d23-f5ee-4030-8345-161c951310f1",
+        "category": "RUNNER_UP",
+        "recipient": {
+          "type": "TEAM",
+          "id": "dc4aa7d6-9453-478f-9eb2-076dc559b4bf",
+          "name": "NPL Warriors"
+        },
+        "achievement": "Awarded for achieving the runner-up position.",
+        "issuedAt": "2026-10-31T10:12:09.488771926Z",
+        "issuer": "Mock Aster Vale",
+        "issuerTitle": "Championship Administrator",
+        "accent": "#67778B",
+        "reissuedFrom": "a2cd1d37-31c4-489b-8c0e-83c658e0baa4"
+      },
+      "status": "ISSUED"
+    }
+  ],
+  "frozenLeagueVerified": true,
+  "persistenceDigest": "35e1709936c45ff49bea5d245ff071260947c8b80b30362784d999a9d54740d1",
+  "captains": [
+    {
+      "teamId": "f8f1cb35-8ae4-4f9e-acba-047e2a048728",
+      "teamName": "NPL Thunder",
+      "shortCode": "NPT",
+      "captainUserId": "febce319-bee2-448d-9994-b72655327b5e",
+      "captainName": "Mock Arlo Quill",
+      "captainEmail": "captain-264d182a-9d32-4071-9e6f-28604556c65d@example.invalid",
+      "captainMobile": "0000000200",
+      "setupExpiresAt": "2026-10-31T10:25:47.999887691Z",
+      "messageQueued": true,
+      "email": "captain-264d182a-9d32-4071-9e6f-28604556c65d@example.invalid",
+      "activated": true,
+      "playerId": "d38f3600-79e0-4d0c-87ba-4bee49343975"
+    },
+    {
+      "teamId": "dc4aa7d6-9453-478f-9eb2-076dc559b4bf",
+      "teamName": "NPL Warriors",
+      "shortCode": "NPW",
+      "captainUserId": "2a101dbd-a769-4711-baf1-c5266b68a706",
+      "captainName": "Mock Bram Vireo",
+      "captainEmail": "captain-5cf19d9e-2026-460a-913e-187c38213394@example.invalid",
+      "captainMobile": "0000000201",
+      "setupExpiresAt": "2026-10-31T10:25:48.867618860Z",
+      "messageQueued": true,
+      "email": "captain-5cf19d9e-2026-460a-913e-187c38213394@example.invalid",
+      "activated": true,
+      "playerId": "c7f59d45-8e81-49e0-96ae-ed9b5dd05640"
+    },
+    {
+      "teamId": "ab3ba70e-fb85-4ef9-b9ac-6d741aff97d1",
+      "teamName": "NPL Strikers",
+      "shortCode": "NPS",
+      "captainUserId": "7d09adbf-2021-4945-b5f8-41a7b24ff4a8",
+      "captainName": "Mock Cyra Flint",
+      "captainEmail": "captain-a11489d0-784b-4e7f-b85c-850e9ff66600@example.invalid",
+      "captainMobile": "0000000202",
+      "setupExpiresAt": "2026-10-31T10:25:49.629223436Z",
+      "messageQueued": true,
+      "email": "captain-a11489d0-784b-4e7f-b85c-850e9ff66600@example.invalid",
+      "activated": true,
+      "playerId": "f8e52c18-a1e1-4917-87a9-23b6a670f263"
+    },
+    {
+      "teamId": "b2bfc147-35f2-4531-bc83-c536214f8eef",
+      "teamName": "NPL Titans",
+      "shortCode": "NTT",
+      "captainUserId": "4117a7e5-04dd-4b58-b589-e1cb408f4c48",
+      "captainName": "Mock Daro Wren",
+      "captainEmail": "captain-9355b750-b58a-482a-8010-d7a19d42fa83@example.invalid",
+      "captainMobile": "0000000203",
+      "setupExpiresAt": "2026-10-31T10:25:50.308158147Z",
+      "messageQueued": true,
+      "email": "captain-9355b750-b58a-482a-8010-d7a19d42fa83@example.invalid",
+      "activated": true,
+      "playerId": "25301f13-b624-461b-a251-37b637ae455d"
+    }
+  ]
+}

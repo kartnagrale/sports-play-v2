@@ -1,0 +1,1 @@
+PASS purse reserve, pending/rejected balances, required captains, opening-price locks, status bypass prevention, authoritative timer auto-unsold/auto-sale, reauction and incomplete squad rejection after auction completion.
