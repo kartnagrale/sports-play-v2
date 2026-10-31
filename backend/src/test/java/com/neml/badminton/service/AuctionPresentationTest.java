@@ -4,6 +4,8 @@ import com.neml.badminton.entity.*;
 import com.neml.badminton.repository.*;
 import com.neml.badminton.websocket.AuctionBroadcaster;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.transaction.support.TransactionTemplate;
 import java.math.BigDecimal;
 import java.util.*;
@@ -21,9 +23,10 @@ class AuctionPresentationTest {
     final Auction auction=mock(Auction.class);
     final AuctionState state=mock(AuctionState.class);
     final AuctionRuleEvaluator evaluator=mock(AuctionRuleEvaluator.class);
+    final ChampionshipRepository championships=mock(ChampionshipRepository.class);
     final TenantAuctionService service=new TenantAuctionService(auctions,states,players,teams,bids,settings,
             mock(AuctionBroadcaster.class),mock(TransactionTemplate.class),mock(SquadConfirmationService.class),
-            mock(ChampionshipRepository.class),mock(ConfigurationSectionService.class),mock(jakarta.persistence.EntityManager.class),evaluator);
+            championships,mock(ConfigurationSectionService.class),mock(jakarta.persistence.EntityManager.class),evaluator);
     void prepare() {
         when(evaluator.rules(cid)).thenReturn(new AuctionBidRules.Rules(11,11,0,3,BigDecimal.valueOf(5000),BigDecimal.valueOf(15000),4));
         when(auctions.findByIdAndChampionshipId(aid,cid)).thenReturn(Optional.of(auction));
@@ -58,5 +61,26 @@ class AuctionPresentationTest {
         when(auctions.findByIdAndChampionshipId(aid,cid)).thenReturn(Optional.empty());
         assertThrows(org.springframework.web.server.ResponseStatusException.class,()->service.state(cid,aid));
         verifyNoInteractions(bids);
+    }
+    @ParameterizedTest
+    @CsvSource({"5500,false", "5000.01,false", "6500,true", "6000.01,true"})
+    void offIncrementBidsAreRejectedBeforeAnyFinancialOrBidWrite(String amount,boolean existingBid) {
+        prepare();
+        Player player=Player.builder().id(UUID.randomUUID()).auction(auction).basePrice(new BigDecimal("5000")).build();
+        Team team=Team.builder().id(UUID.randomUUID()).purseRemaining(new BigDecimal("100000")).build();
+        when(championships.findByIdForUpdate(cid)).thenReturn(Optional.of(new Championship()));
+        when(states.findByAuctionIdForUpdate(aid,cid)).thenReturn(Optional.of(state));
+        when(state.getCurrentPlayer()).thenReturn(player);
+        when(players.findByIdAndChampionshipId(player.getId(),cid)).thenReturn(Optional.of(player));
+        when(teams.findByIdAndChampionshipId(team.getId(),cid)).thenReturn(Optional.of(team));
+        TournamentSettings config=TournamentSettings.builder().playerBasePrice(new BigDecimal("5000")).bidIncrement(new BigDecimal("1000")).build();
+        when(settings.findByChampionshipId(cid)).thenReturn(Optional.of(config));
+        if(existingBid)when(bids.findFirstByAuctionIdAndChampionshipIdAndPlayerAndActiveTrueOrderBySequenceNoDesc(aid,cid,player))
+                .thenReturn(Optional.of(Bid.builder().amount(new BigDecimal("5000")).build()));
+        var rejected=assertThrows(org.springframework.web.server.ResponseStatusException.class,()->service.bid(cid,aid,
+                new com.neml.badminton.dto.Dtos.PlaceBidRequest(player.getId(),team.getId(),new BigDecimal(amount))));
+        assertEquals(400,rejected.getStatusCode().value());assertTrue(rejected.getReason().contains("configured increment"));
+        verify(bids,never()).save(any());verify(teams,never()).save(any());
+        assertEquals(new BigDecimal("100000"),team.getPurseRemaining());
     }
 }

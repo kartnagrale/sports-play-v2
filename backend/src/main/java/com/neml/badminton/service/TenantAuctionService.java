@@ -77,7 +77,10 @@ public class TenantAuctionService {
         if(p.getAuction()==null||!p.getAuction().getId().equals(aid)||s.getCurrentPlayer()==null||!p.getId().equals(s.getCurrentPlayer().getId()))bad("Player is not on this auction block");
         TournamentSettings cfg=config(cid);BigDecimal increment=cfg.getBidIncrement();
         BigDecimal previous=bids.findFirstByAuctionIdAndChampionshipIdAndPlayerAndActiveTrueOrderBySequenceNoDesc(aid,cid,p).map(Bid::getAmount).orElse(p.getBasePrice().max(cfg.getPlayerBasePrice()).subtract(increment));
-        if(req.amount().compareTo(previous.add(increment))<0)bad("Bid is below the minimum increment");validateCapacityAndPurse(t,p,req.amount(),cfg);
+        if(req.amount().compareTo(previous.add(increment))<0)bad("Bid is below the minimum increment");
+        if(req.amount().subtract(previous).remainder(increment).signum()!=0)
+            bad("Bid must use the configured increment of ₹"+increment.toPlainString());
+        validateCapacityAndPurse(t,p,req.amount(),cfg);
         long sequence=bids.maxSequence(aid,cid)+1;bids.save(Bid.builder().championship(a.getChampionship()).auction(a).player(p).team(t).amount(req.amount()).sequenceNo(sequence).active(true).build());
         deadline(s);states.save(s);broadcaster.broadcastEvent(cid,aid,"BID_PLACED",Map.of("teamName",t.getName(),"amount",req.amount(),"player",p.getFullName(),"sequence",sequence));
         return publish(cid,aid,snapshot(cid,a,s));
