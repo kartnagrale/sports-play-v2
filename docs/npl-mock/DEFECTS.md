@@ -15,6 +15,8 @@
 - The test harness initially expected 403 where the real gateway returns 401 for unauthenticated/error-dispatched requests. Both deny the request. Invalid import confirmation returns 409, as designed. Test expectations were corrected; security was unchanged.
 - Packaged Windows Python redirects LocalAppData file access. XLSX fixtures now use the repository's ignored `tmp` directory; credentials remain in protected external storage.
 - An initial backend suite overlapped another compilation in the same host target directory, causing missing-class failures. That run is invalid evidence. Subsequent suites use container-local output directories.
+- One legacy supplemental settings test used a fixed fixture password. Its generator now uses cryptographic randomness. Active-account reactivation correctly returned HTTP 409; that policy was preserved. The initial disposable project was stopped with all data intact, and the full workflow was repeated in fresh `playneml-npl-mock-verified` with generated credentials throughout.
+- Windows briefly denied atomic checkpoint replacement while a reader/scanner held a file handle. The harness now retries transient sharing errors without truncating the valid checkpoint. The fresh workflow resumed its live innings successfully without resetting any application data.
 
 ## NPL-MOCK-002: final correction retains stale champion and completion
 

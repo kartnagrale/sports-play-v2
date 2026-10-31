@@ -1,0 +1,31 @@
+{
+  "project": "playneml-npl-mock-verified",
+  "championshipId": "98254646-84a2-4c1b-82a0-22779167a7d9",
+  "mode": "sequential real login; concurrent browser contexts unavailable",
+  "captains": [
+    {
+      "team": "NPL Thunder",
+      "authenticated": true,
+      "ownDashboardVisible": true,
+      "administratorNavigationAbsent": true
+    },
+    {
+      "team": "NPL Warriors",
+      "authenticated": true,
+      "ownDashboardVisible": true,
+      "administratorNavigationAbsent": true
+    },
+    {
+      "team": "NPL Strikers",
+      "authenticated": true,
+      "ownDashboardVisible": true,
+      "administratorNavigationAbsent": true
+    },
+    {
+      "team": "NPL Titans",
+      "authenticated": true,
+      "ownDashboardVisible": true,
+      "administratorNavigationAbsent": true
+    }
+  ]
+}

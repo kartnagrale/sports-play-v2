@@ -1,0 +1,81 @@
+[
+  {
+    "project": "playneml-npl-mock-verified",
+    "image": "sha256:9716c87fcba83296106e7559659da6a27fca4ace6e4c4154facdb94f69f6b338",
+    "bootstrapEnabled": false,
+    "name": "/playneml-npl-mock-verified-db-1",
+    "status": "running",
+    "volumes": [
+      "playneml-npl-mock-verified_postgres_data"
+    ],
+    "exitCode": 0,
+    "ports": {
+      "5432/tcp": null
+    },
+    "service": "db",
+    "health": "healthy"
+  },
+  {
+    "project": "playneml-npl-mock-verified",
+    "image": "sha256:9716c87fcba83296106e7559659da6a27fca4ace6e4c4154facdb94f69f6b338",
+    "bootstrapEnabled": false,
+    "name": "/playneml-npl-mock-verified-migrate-1",
+    "status": "exited",
+    "volumes": [
+      "c60a33e49a52c25fdb7dd31cbdce56e2d8eec1dcf634bd90baff932f332d6d5c"
+    ],
+    "exitCode": 0,
+    "ports": {},
+    "service": "migrate",
+    "health": null
+  },
+  {
+    "project": "playneml-npl-mock-verified",
+    "image": "sha256:e49dcd2ee496064d4e5e66478b588970819bcfcf110fe9e6b75a711e51e3be86",
+    "bootstrapEnabled": false,
+    "name": "/playneml-npl-mock-verified-backend-1",
+    "status": "running",
+    "volumes": [
+      "playneml-npl-mock-verified_player_photos"
+    ],
+    "exitCode": 0,
+    "ports": {
+      "8001/tcp": null
+    },
+    "service": "backend",
+    "health": "healthy"
+  },
+  {
+    "project": "playneml-npl-mock-verified",
+    "image": "sha256:f15359f7f2fd6bade0fae23e7da1d35101b5f662ef80e8fc7db0e8945471e729",
+    "bootstrapEnabled": false,
+    "name": "/playneml-npl-mock-verified-frontend-1",
+    "status": "running",
+    "volumes": [],
+    "exitCode": 0,
+    "ports": {
+      "3000/tcp": null
+    },
+    "service": "frontend",
+    "health": "healthy"
+  },
+  {
+    "project": "playneml-npl-mock-verified",
+    "image": "sha256:50d597d6719308aa3fa3ac3ccdf61e8d8fb3089fa404af2022c8a9354e068ec3",
+    "bootstrapEnabled": false,
+    "name": "/playneml-npl-mock-verified-gateway-1",
+    "status": "running",
+    "volumes": [],
+    "exitCode": 0,
+    "ports": {
+      "8080/tcp": [
+        {
+          "HostIp": "127.0.0.1",
+          "HostPort": "18090"
+        }
+      ]
+    },
+    "service": "gateway",
+    "health": "healthy"
+  }
+]

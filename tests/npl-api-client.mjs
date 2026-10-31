@@ -8,13 +8,15 @@ export class Session {
     if(method!=='GET'){this.csrfRequest ||= this.request('/auth/csrf').then(data=>data.token).finally(()=>{this.csrfRequest=null;});extraHeaders={...extraHeaders,'X-XSRF-TOKEN':await this.csrfRequest};}
     const headers={Cookie:[...this.cookies].map(([k,v])=>`${k}=${v}`).join('; '),...extraHeaders};
     if(body!==undefined&&!(body instanceof FormData)){headers['Content-Type']='application/json';body=JSON.stringify(body);}
-    const response=await fetch(base+path,{method,headers,body});
+    const response=await fetch(base+path,{method,headers,body,signal:AbortSignal.timeout(30000)});
     for(const cookie of response.headers.getSetCookie()){const [key,value]=cookie.split(';')[0].split('=');this.cookies.set(key,value);}
     return response;
   }
   async request(path,method='GET',body,expected=200,headers={}){
     const response=await this.raw(path,method,body,headers);const text=await response.text();
-    assert.equal(response.status,expected,`${method} ${path}: ${text.slice(0,1000)}`);
+    // Authentication/provisioning responses may contain one-time secrets. Never echo those.
+    const safeText= /auth|accounts|admin\/teams$|^\/championships$/.test(path)?'[protected response]':text.slice(0,1000);
+    assert.equal(response.status,expected,`${method} ${path}: ${safeText}`);
     return text?JSON.parse(text):null;
   }
 }

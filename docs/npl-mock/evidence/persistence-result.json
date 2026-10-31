@@ -1,0 +1,11 @@
+{
+  "project": "playneml-npl-mock-verified",
+  "championshipId": "98254646-84a2-4c1b-82a0-22779167a7d9",
+  "photoSha256": "0b058e21c6ae18548c81806f51ae137dc960f0db79ccd861fa3420e8e04db4fa",
+  "stateSha256": "31b30001d957e80551ebc15389d74a2877c534650c0c8dc863987268cfef0b09",
+  "players": 44,
+  "purchases": 40,
+  "lockedSquads": 4,
+  "completedFixtures": 7,
+  "issuedCertificates": 3
+}

@@ -1,0 +1,6 @@
+NAME                           IMAGE                                 COMMAND                  SERVICE    CREATED          STATUS                       PORTS
+playneml-npl-mock-backend-1    playneml-npl-mock-backend:phase6.5    "java -jar /app/app.…"   backend    22 minutes ago   Exited (143) 7 minutes ago   
+playneml-npl-mock-db-1         playneml-npl-mock-db:phase6.5         "docker-entrypoint.s…"   db         22 minutes ago   Exited (0) 7 minutes ago     
+playneml-npl-mock-frontend-1   playneml-npl-mock-frontend:phase6.5   "docker-entrypoint.s…"   frontend   22 minutes ago   Exited (143) 7 minutes ago   
+playneml-npl-mock-gateway-1    playneml-npl-mock-gateway:phase6.5    "/docker-entrypoint.…"   gateway    22 minutes ago   Exited (137) 7 minutes ago   
+playneml-npl-mock-migrate-1    playneml-npl-mock-db:phase6.5         "sh /opt/play-neml/m…"   migrate    22 minutes ago   Exited (0) 22 minutes ago    

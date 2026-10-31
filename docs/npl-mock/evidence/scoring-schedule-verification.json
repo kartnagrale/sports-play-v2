@@ -1,0 +1,81 @@
+{
+  "project": "playneml-npl-mock-verified",
+  "championshipId": "98254646-84a2-4c1b-82a0-22779167a7d9",
+  "fixtureCount": 7,
+  "tosses": 7,
+  "completedInnings": 14,
+  "leaguePoints": [
+    6,
+    4,
+    2,
+    0
+  ],
+  "leagueNetRunRates": [
+    30,
+    7.714,
+    -7.714,
+    -30
+  ],
+  "minimumTeamRestHours": 24,
+  "fixtureSlotMinutes": 120,
+  "timezone": "Asia/Kolkata",
+  "dailyWindow": "09:00-22:00",
+  "fixtures": [
+    {
+      "number": 1,
+      "stage": "LEAGUE",
+      "scheduledAt": "2026-11-15T04:00:00Z",
+      "teamA": "NPL Strikers",
+      "teamB": "NPL Warriors",
+      "winner": "NPL Warriors"
+    },
+    {
+      "number": 2,
+      "stage": "LEAGUE",
+      "scheduledAt": "2026-11-15T06:00:00Z",
+      "teamA": "NPL Thunder",
+      "teamB": "NPL Titans",
+      "winner": "NPL Thunder"
+    },
+    {
+      "number": 3,
+      "stage": "LEAGUE",
+      "scheduledAt": "2026-11-16T06:00:00Z",
+      "teamA": "NPL Titans",
+      "teamB": "NPL Strikers",
+      "winner": "NPL Strikers"
+    },
+    {
+      "number": 4,
+      "stage": "LEAGUE",
+      "scheduledAt": "2026-11-16T08:00:00Z",
+      "teamA": "NPL Thunder",
+      "teamB": "NPL Warriors",
+      "winner": "NPL Thunder"
+    },
+    {
+      "number": 5,
+      "stage": "LEAGUE",
+      "scheduledAt": "2026-11-17T08:00:00Z",
+      "teamA": "NPL Strikers",
+      "teamB": "NPL Thunder",
+      "winner": "NPL Thunder"
+    },
+    {
+      "number": 6,
+      "stage": "LEAGUE",
+      "scheduledAt": "2026-11-17T10:00:00Z",
+      "teamA": "NPL Titans",
+      "teamB": "NPL Warriors",
+      "winner": "NPL Warriors"
+    },
+    {
+      "number": 7,
+      "stage": "FINAL",
+      "scheduledAt": "2026-11-18T10:00:00Z",
+      "teamA": "NPL Thunder",
+      "teamB": "NPL Warriors",
+      "winner": "NPL Thunder"
+    }
+  ]
+}

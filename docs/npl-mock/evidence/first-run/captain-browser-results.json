@@ -1,0 +1,29 @@
+{
+  "mode": "sequential real login; separate simultaneous browser contexts unavailable",
+  "captains": [
+    {
+      "team": "NPL Thunder",
+      "authenticated": true,
+      "ownDashboardVisible": true,
+      "administratorNavigationAbsent": true
+    },
+    {
+      "team": "NPL Warriors",
+      "authenticated": true,
+      "ownDashboardVisible": true,
+      "administratorNavigationAbsent": true
+    },
+    {
+      "team": "NPL Strikers",
+      "authenticated": true,
+      "ownDashboardVisible": true,
+      "administratorNavigationAbsent": true
+    },
+    {
+      "team": "NPL Titans",
+      "authenticated": true,
+      "ownDashboardVisible": true,
+      "administratorNavigationAbsent": true
+    }
+  ]
+}

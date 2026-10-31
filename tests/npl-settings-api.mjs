@@ -9,7 +9,7 @@ await root.request('/auth/login','POST',{email:process.env.NPL_TEST_EMAIL,passwo
 const created=await root.request('/championships','POST',{name:'NPL disposable settings test',sportType:'CRICKET',adminFullName:'Settings Test Admin',adminEmail:`settings-${Date.now()}@example.invalid`,adminMobile:'9999999999'});
 const cid=created.championship.id;
 const admin=new Session();
-const password='Disposable-Settings-Test-7924!';
+const password=`Disposable-Settings-${crypto.randomUUID()}!`;
 await admin.request('/auth/activate','POST',{token:created.admin.setupPath.split('=')[1],password},204);
 await admin.request('/auth/login','POST',{email:created.admin.email,password});
 const path=`/championships/${cid}/settings`;

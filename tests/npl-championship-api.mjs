@@ -3,6 +3,10 @@ import assert from 'node:assert/strict';
 import {readFileSync,writeFileSync} from 'node:fs';
 import {Session,createTestChampionship} from './npl-api-client.mjs';
 import {observeAuction} from './npl-websocket.mjs';
+if(process.env.NPL_FULL_MOCK==='true') {
+  await import('./npl-championship-workflow.mjs');
+  process.exit(0);
+}
 const root=new Session();
 await root.request('/auth/login','POST',{email:process.env.NPL_TEST_EMAIL,password:process.env.NPL_TEST_PASSWORD});
 const {admin,cid}=await createTestChampionship(root);
