@@ -71,4 +71,3 @@ standings=await admin.request(base+'/analytics/standings?penalties=false');asser
 const evidence={championshipId:cid,distinctFromFullMock:true,insufficientPurseRejected:true,offIncrementRejected:true,nonMemberAccessRejected:true,memberSpectatorCanViewButCannotBid:true,fullSquadRejected:true,unchangedRejectedBalances:true,duplicateWideIdempotent:true,freeHitDismissalRejected:true,runOutWicketRecorded:true,byesAndLegByesValidated:true,tiePoints:[1,1],noResultPoints:[3,3],tiedNetRunRates:[0,0],nameTieBreakVerified:true,tieState};
 writeFileSync('docs/npl-mock/evidence/cricket-edge-results.json',JSON.stringify(evidence,null,2));
 console.log('PASS separate-tenant purse/non-member/capacity rejections; wides, no-ball/free-hit/run-out, byes/leg-byes, duplicate delivery, real tie/NRR/name ordering and no-result points');
-

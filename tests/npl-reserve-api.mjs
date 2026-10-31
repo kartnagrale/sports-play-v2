@@ -9,6 +9,9 @@ const {championshipId,sportCode,configurationVersion,configurationStatus,resultS
 await admin.request(base+'/admin/competition/configuration','PUT',{...fields,expectedConfigurationVersion:configurationVersion,configuredTeamCount:2,minimumTeamCount:2,maximumTeamCount:2,qualifyingTeamCount:2,playoffFormat:'TOP_TWO_FINAL',leagueStartAt:'2026-11-01T04:00:00Z'});
 const captains=[];
 for(let n=0;n<2;n++)captains.push(await admin.request(base+'/admin/teams','POST',{teamName:`Reserve Team ${n}`,shortCode:`RT${n}`,captainFullName:`Reserve Captain ${n}`,captainEmail:`reserve-${crypto.randomUUID()}@example.invalid`,captainMobile:'9999999999'}));
+const captainSession=new Session(),captainPassword=`Reserve-${crypto.randomUUID()}!`;
+await captainSession.request('/auth/activate','POST',{token:captains[0].setupPath.split('=')[1],password:captainPassword},204);
+await captainSession.request('/auth/login','POST',{email:captains[0].captainEmail,password:captainPassword});
 const auction=`${base}/auctions/${saved.auctionId}`;
 await admin.request(auction+'/admin/start','POST',undefined,409);
 await admin.request(auction+'/admin/set-status','POST',{status:'RUNNING'},409);
@@ -36,6 +39,9 @@ await admin.request(auction+'/admin/reset-unsold','POST');await admin.request(au
 await admin.request(auction+'/bid','POST',{playerId:timed.id,teamId:captains[1].teamId,amount:5000});
 await waitForStatus(timed.id,'SOLD');
 assert.equal((await admin.request(auction+'/state')).teams.find(t=>t.id===captains[1].teamId).purseRemaining,45000);
+const incomplete=await captainSession.request(`${base}/squad-confirmations/teams/${captains[0].teamId}/confirm`,'POST',{},409);
+assert.match(incomplete.message,/11/,'completed auction does not make a two-member roster valid');
+await admin.request(`${base}/squad-confirmations/teams/${captains[0].teamId}/lock`,'POST',{},409);
 await admin.request(auction+'/admin/set-status','POST',{status:'NOT_STARTED'});
 await admin.request(base+'/settings','PUT',{auctionName:'Cannot unlock historical rules',expectedVersion:(await admin.request(base+'/settings')).version,maxSquadSize:11,purseLimit:60000,minMale:0,minFemale:3,playerBasePrice:5000,bidIncrement:1000,timerSeconds:300},409);
-console.log('PASS purse reserve, pending/rejected balances, required captains, opening-price locks, status bypass prevention, authoritative timer auto-unsold/auto-sale and reauction.');
+console.log('PASS purse reserve, pending/rejected balances, required captains, opening-price locks, status bypass prevention, authoritative timer auto-unsold/auto-sale, reauction and incomplete squad rejection after auction completion.');

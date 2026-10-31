@@ -1,7 +1,7 @@
-[{"version":"2026-10-27-phase1-account-security","checksum":"36bf0fe9b8ccfa31da941a831e5e50a6aa8051f23e3847e2405feadde9367b93"}, 
- {"version":"2026-10-28-phase4-player-import","checksum":"06cc406b06894494342ada7587544ee2bbb98980f78566d0043a37effb7dbd1a"}, 
- {"version":"2026-10-28-phase4-player-photo","checksum":"fa2faeb1a16c6a5113aae0fec6177293cfe433261bea92594e217386e2a7d83a"}, 
- {"version":"2026-10-28-phase5-certificate-batches","checksum":"05f03ca8c2c4c9f8128b7c78e7a0315720791ae4a268392749b2754d03892abb"}, 
- {"version":"2026-10-28-phase5-certificate-navigation","checksum":"0680d77e1906529863f39f93aa50f582818299634d7f1cec767faab168e67c34"}, 
- {"version":"2026-10-28-phase5-certificates","checksum":"fdf66232d0e20609992e2e85a21f7219a1da2d149b19b824e2d964cf2c33b87a"}, 
+[{"version":"2026-10-27-phase1-account-security","checksum":"36bf0fe9b8ccfa31da941a831e5e50a6aa8051f23e3847e2405feadde9367b93"},
+ {"version":"2026-10-28-phase4-player-import","checksum":"06cc406b06894494342ada7587544ee2bbb98980f78566d0043a37effb7dbd1a"},
+ {"version":"2026-10-28-phase4-player-photo","checksum":"fa2faeb1a16c6a5113aae0fec6177293cfe433261bea92594e217386e2a7d83a"},
+ {"version":"2026-10-28-phase5-certificate-batches","checksum":"05f03ca8c2c4c9f8128b7c78e7a0315720791ae4a268392749b2754d03892abb"},
+ {"version":"2026-10-28-phase5-certificate-navigation","checksum":"0680d77e1906529863f39f93aa50f582818299634d7f1cec767faab168e67c34"},
+ {"version":"2026-10-28-phase5-certificates","checksum":"fdf66232d0e20609992e2e85a21f7219a1da2d149b19b824e2d964cf2c33b87a"},
  {"version":"2026-10-29-npl-auction-rules","checksum":"c853ecfd4133d905788197c909338cb692d4e4b233683c582fff9c818d90edca"}]
